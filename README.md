@@ -12,6 +12,13 @@ The current loopback-only application can use a safe simulator or live
 read-only inventory. Live execution remains disabled until each separate
 privileged-helper and first-live-mutation approval gate is explicitly granted.
 
+## License
+
+The owner selected the GNU Affero General Public License version 3 or later
+(`AGPL-3.0-or-later`). See [LICENSE](LICENSE). The exact copyright-holder text
+and remaining M7 release gates are still pending, so no public release is
+authorized yet.
+
 ## Run the development application
 
 Python and frontend dependencies are locked in `uv.lock` and
@@ -105,6 +112,8 @@ supported initial model.
 - [Proposed M7 scope and acceptance gate](docs/M7_PROPOSAL.md)
 - [M7 owner decisions](docs/M7_OWNER_DECISIONS.md)
 - [M7 release-foundations research](docs/research/m7-release-foundations-research.md)
+- [M7 AUR isolation validation](docs/research/m7-aur-isolation-validation.md)
+- [M7 clean build and package validation](docs/research/m7-clean-build-validation.md)
 - [Release asset provenance](docs/release/ASSET_PROVENANCE.md)
 - [M6 acceptance matrix](docs/research/m6-acceptance-matrix.md)
 - [M6 security review](docs/research/m6-security-review.md)

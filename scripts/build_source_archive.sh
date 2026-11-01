@@ -15,17 +15,22 @@ tar -C "$project_root" \
   --exclude='.pytest_cache' --exclude='node_modules' --exclude='build' \
   --exclude='docs/research/m6-validation.md' \
   --exclude='docs/research/m6-independent-review.md' \
+  --exclude='docs/research/m7-clean-build-validation.md' \
+  --exclude='docs/research/m7-independent-review.md' \
   -cf - src scripts tests docs prototypes web | tar -C "$source_root" -xf -
 cp -a "$project_root/packaging/systemd" "$source_root/packaging/"
 cp -a "$project_root/packaging/desktop" "$source_root/packaging/"
 cp -a "$project_root/packaging/config" "$source_root/packaging/"
+tar -C "$project_root/packaging" \
+  --exclude='__pycache__' --exclude='*.pyc' \
+  -cf - release | tar -C "$source_root/packaging" -xf -
 cp -a "$project_root/pyproject.toml" "$project_root/uv.lock" \
   "$project_root/README.md" "$project_root/PLAN.md" \
   "$project_root/MILESTONES.md" "$project_root/ARCHITECTURE.md" \
   "$project_root/DATA_MODEL.md" "$project_root/GLOSSARY.md" \
   "$project_root/CAPABILITY_MATRIX.md" "$project_root/TEST_PLAN.md" \
   "$project_root/OPERATIONS.md" "$project_root/SECURITY.md" \
-  "$project_root/CHANGELOG.md" "$source_root/"
+  "$project_root/CHANGELOG.md" "$project_root/LICENSE" "$source_root/"
 
 tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
   -C "$stage_root" -cf - "updatarr-${version}" | gzip -n > "$output_path"

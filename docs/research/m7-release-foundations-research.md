@@ -181,26 +181,34 @@ claim that one particular argument list is already safe.
 
 ## Local Findings
 
-- The workspace is still not a Git checkout.
-- `packaging/arch/PKGBUILD` still declares
-  `custom:development-only`; the included notice explicitly forbids
-  publication until the owner selects a license.
-- The M6 source archive is checksummed, but it is not tied to an authenticated
-  revision or signed release tag.
+- The owner authorized a local Git baseline, which now exists without a remote
+  or push. No signed release label exists yet.
+- The owner selected `AGPL-3.0-or-later`; the project and package metadata now
+  record it and include the official license text. Exact copyright-holder text
+  remains pending.
+- The M6 source archive is checksummed, but it predates the M7 working tree and
+  is not tied to a signed release label.
 - `git`, `gpg`, `makepkg`, `npm`, `uv` and `bwrap` are present. The standard
   Arch clean-chroot helper commands are not currently on `PATH`; M7 must not
   install them without separate approval.
 - With the current locks, `uv 0.13.1` exports 18 non-development CycloneDX
   components and labels the feature experimental; none contains a license
-  field. `npm 12.2.1` exports three non-development browser components and all
-  three contain declared license fields. These are observed tool outputs, not
-  a legal compatibility conclusion.
+  field. A separate metadata pass found declared SPDX expressions for all 18:
+  MIT, MIT-0, BSD-3-Clause, Apache-2.0 and PSF-2.0. `npm 12.2.1` exports three
+  non-development browser components and all three declare MIT. No obvious
+  conflict with the selected AGPL license was found, but publisher declarations
+  are inventory evidence rather than a legal compatibility conclusion.
 - The project has one first-party generated bitmap logo. The packaged copy and
   browser source copy have the same SHA-256 digest. Browser screenshots are
   generated from Updatarr's own interface and are documentation evidence, not
   third-party artwork.
-- No release-signing key or owner identity was inspected. That information is
-  intentionally left to the owner decision and later visual credential flow.
+- The owner selected one OpenPGP identity for both signed Git release labels
+  and downloaded files. No private key or owner identity was inspected or used;
+  that remains a later local visual credential flow.
+- Official OpenAI image-generation documentation explains how outputs are
+  generated and saved but does not state the redistribution terms that applied
+  to the earlier in-product logo generation. The asset record therefore keeps
+  that permission question open instead of inferring rights.
 
 ## Recommended M7 Direction
 

@@ -186,5 +186,16 @@ Before any live mutation provider is enabled, an independent review must cover:
 Known limitations and deferred decisions must be published rather than hidden
 behind a generic security claim.
 
+M7 now has a project-local AUR isolation prototype with a closed typed
+interface, hidden home/runtime/network, cleared environment, fixed system tools,
+private cgroup limits and separately sandboxed package inspection. Its writable
+tree is confined to a verified memory-backed filesystem and the cgroup memory
+ceiling; process output is drained into fixed-size tails. A disk-backed,
+unbounded build directory is not an acceptable fallback. It is not a live
+provider. Source acquisition and a clean dependency root remain blocking, with
+no override. Resource testing no longer uses
+deliberate memory or process pressure after the initial cgroup check caused an
+unacceptable desktop low-memory notification.
+
 Primary-source basis and decisions still requiring prototypes are recorded in
 [architecture-security-research.md](docs/research/architecture-security-research.md).

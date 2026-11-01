@@ -1,0 +1,39 @@
+pkgname=updatarr-sandbox-hostile
+pkgver=1.0
+pkgrel=1
+pkgdesc='Disposable hostile Updatarr AUR sandbox fixture'
+arch=('any')
+license=('MIT')
+source=()
+sha256sums=()
+
+prepare() {
+  [[ ! -e /tmp/updatarr-aur-host-secret ]]
+  [[ ! -e /run/user ]]
+  [[ ! -e /home/soul ]]
+  [[ ! -e /sys ]]
+  [[ ! -e /var ]]
+  [[ -z ${UPDATARR_TEST_SECRET-} ]]
+  [[ -z ${SSH_AUTH_SOCK-} ]]
+  [[ -z ${GPG_AGENT_INFO-} ]]
+  [[ -z ${DISPLAY-} ]]
+  [[ -z ${WAYLAND_DISPLAY-} ]]
+  [[ ! -S /run/user/1000/bus ]]
+  [[ ! -e /tmp/.X11-unix ]]
+  [[ -z $(find /dev -maxdepth 1 -type b -print -quit) ]]
+
+  if printf 'escape' > /usr/share/updatarr-aur-escape 2>/dev/null; then
+    return 81
+  fi
+  if curl -qfsS --max-time 1 https://example.com >/dev/null 2>&1; then
+    return 82
+  fi
+}
+
+package() {
+  printf 'host data unavailable; network unavailable; environment cleared\n' \
+    > isolation-result
+  install -Dm644 isolation-result \
+    "$pkgdir/usr/share/updatarr-sandbox-hostile/isolation-result"
+}
+

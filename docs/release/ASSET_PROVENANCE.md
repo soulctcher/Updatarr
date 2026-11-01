@@ -1,19 +1,22 @@
 # Release Asset Provenance
 
 **Prepared:** 2026-11-01  
-**Status:** initial M7 inventory; release permission remains tied to the
-owner-selected project license and applicable source terms
+**Status:** initial M7 inventory; the project license is selected, while the
+applicable generated-output terms remain unconfirmed
 
 ## Packaged Brand Asset
 
 | Asset | Origin | Inputs | Local Processing | SHA-256 | Release State |
 | --- | --- | --- | --- | --- | --- |
-| `web/src/assets/updatarr-loop.png` | Generated for Updatarr with OpenAI image generation during M2 | Text request for a minimal circular arrow loop in metallic white on a transparent background; no external reference image | Stored as a 128×128 RGBA PNG; the Ultraviolet rounded square and sizing are applied by Updatarr interface styles | `0abf402bdd51a9913b6116f4630bd245e76353db4836885aa0e2dacb66838a69` | Pending owner license selection and confirmation of the applicable generated-output terms |
+| `web/src/assets/updatarr-loop.png` | Generated for Updatarr with OpenAI image generation during M2 | Text request for a minimal circular arrow loop in metallic white on a transparent background; no external reference image | Stored as a 128×128 RGBA PNG; the Ultraviolet rounded square and sizing are applied by Updatarr interface styles | `0abf402bdd51a9913b6116f4630bd245e76353db4836885aa0e2dacb66838a69` | Project use is intended under AGPL-3.0-or-later; confirmation of the applicable generated-output terms is still required |
 
 The generated copy emitted into the current browser build has the same digest
 as the source asset. The exact image-generation model/version was not retained,
 so this asset cannot be claimed as bit-for-bit regenerable from the prompt.
-That limitation must remain in release evidence.
+The current [official image-generation documentation](https://developers.openai.com/api/docs/guides/tools-image-generation)
+describes creating and saving output but does not state the redistribution
+rights that applied to this earlier in-product generation. That limitation
+must remain in release evidence rather than being treated as permission.
 
 ## Interface Screenshots
 
@@ -42,8 +45,6 @@ client system.
 
 ## Required Follow-Up
 
-- Replace the development-only package notice with the complete owner-selected
-  license before distribution.
 - Record the selected copyright-holder name.
 - Record the exact generated-output terms relied on for the logo, or replace it
   with a newly documented reproducible vector asset if that cannot be

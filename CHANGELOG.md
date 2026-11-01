@@ -87,6 +87,12 @@ All notable project changes will be recorded here once implementation begins.
 - The owner selected one owner-controlled OpenPGP release key for both signed
   Git release labels and downloaded release files. No private key has been
   created, inspected or used.
+- Recorded `AGPL-3.0-or-later` across project, browser and Arch package
+  metadata; exact copyright-holder text remains a publication blocker.
+- Added a closed, networkless AUR isolation prototype with fixed tools,
+  private namespaces/cgroup, exact split-package identities and separately
+  sandboxed output inspection. Live AUR remains disabled while source
+  acquisition, a clean dependency root and independent review are incomplete.
 - M0 decisions accepted by the user on 2026-10-24; project advanced to the M1
   safe-foundation and read-only-product scope without authorizing host mutation.
 - M1 accepted by the user on 2026-10-24; project advanced to the M2 catalog,

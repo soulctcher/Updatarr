@@ -1,0 +1,63 @@
+FROM updatarr-m7-runtime-base:local
+
+ARG EVIDENCE_RUN
+COPY updatarr-0.6.0-1-any.pkg.tar.zst /tmp/release-1.pkg.tar.zst
+COPY updatarr-0.6.0-2-any.pkg.tar.zst /tmp/release-2.pkg.tar.zst
+COPY m7_lifecycle_state.py /tmp/m7_lifecycle_state.py
+
+RUN test -n "$EVIDENCE_RUN" \
+    && pacman -U --noconfirm /tmp/release-1.pkg.tar.zst \
+    && test "$(pacman -Q updatarr)" = "updatarr 0.6.0-1" \
+    && ! find /etc/systemd /usr/lib/systemd -path '*wants/updatarr*.service' -print -quit | grep -q . \
+    && ! find /etc/xdg/autostart /usr/share/autostart -name '*updatarr*' -print -quit 2>/dev/null | grep -q . \
+    && install -d -m 0700 -o updatarr-test -g updatarr-test \
+         /home/updatarr-test/.local/state/updatarr \
+         /home/updatarr-test/.config/updatarr \
+         /home/updatarr-test/.cache/updatarr \
+         /home/updatarr-test/runtime/updatarr \
+         /home/updatarr-test/backups \
+    && install -m 0600 -o updatarr-test -g updatarr-test /dev/null \
+         /home/updatarr-test/.config/updatarr/operator.conf
+
+USER updatarr-test
+RUN python /tmp/m7_lifecycle_state.py create
+
+RUN set -eu; \
+    UPDATARR_PASSWORD=lifecycle-password \
+    UPDATARR_PROVIDER_MODE=simulator \
+    UPDATARR_PORT=8788 \
+    XDG_STATE_HOME=/home/updatarr-test/.local/state \
+    XDG_CACHE_HOME=/home/updatarr-test/.cache \
+    XDG_RUNTIME_DIR=/home/updatarr-test/runtime \
+    /usr/bin/updatarr >/tmp/updatarr.log 2>&1 & \
+    service_pid=$!; \
+    trap 'kill "$service_pid" 2>/dev/null || true' EXIT; \
+    attempts=0; \
+    until curl --fail --silent http://127.0.0.1:8788/healthz | grep -q '"status":"ok"'; do \
+      attempts=$((attempts + 1)); \
+      if [ "$attempts" -ge 30 ]; then cat /tmp/updatarr.log; exit 1; fi; \
+      sleep 0.2; \
+    done; \
+    curl --fail --silent http://127.0.0.1:8788/ | grep -q 'Updatarr'; \
+    kill "$service_pid"; \
+    wait "$service_pid" || true; \
+    trap - EXIT
+
+USER root
+RUN pacman -U --noconfirm /tmp/release-2.pkg.tar.zst \
+    && test "$(pacman -Q updatarr)" = "updatarr 0.6.0-2" \
+    && runuser -u updatarr-test -- python /tmp/m7_lifecycle_state.py restore \
+    && pacman -U --noconfirm /tmp/release-1.pkg.tar.zst \
+    && test "$(pacman -Q updatarr)" = "updatarr 0.6.0-1" \
+    && runuser -u updatarr-test -- python /tmp/m7_lifecycle_state.py verify \
+    && pacman -R --noconfirm updatarr \
+    && ! pacman -Q updatarr \
+    && test -f /home/updatarr-test/.local/state/updatarr/updatarr.db \
+    && test -f /home/updatarr-test/.config/updatarr/operator.conf
+
+RUN test ! -e /usr/bin/updatarr \
+    && test ! -e /usr/lib/systemd/user/updatarr.service \
+    && test -f /home/updatarr-test/.local/state/updatarr/updatarr.db \
+    && test -f /home/updatarr-test/.config/updatarr/operator.conf \
+    && test -f /home/updatarr-test/backups/updatarr.db \
+    && printf 'M7 lifecycle passed: install startup backup restore upgrade downgrade uninstall state-preservation\n'

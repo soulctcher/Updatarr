@@ -1,0 +1,19 @@
+pkgname=updatarr-sandbox-timeout
+pkgver=1.0
+pkgrel=1
+pkgdesc='Disposable timeout Updatarr AUR sandbox fixture'
+arch=('any')
+license=('MIT')
+source=()
+sha256sums=()
+
+build() {
+  while :; do
+    :
+  done
+}
+
+package() {
+  install -Dm644 /dev/null "$pkgdir/usr/share/updatarr-sandbox-timeout/never"
+}
+

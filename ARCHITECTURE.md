@@ -296,3 +296,19 @@ positive expected-version check can turn an interrupted run into success.
 
 These decisions do not grant permission for system dependency installation or
 host mutation.
+
+## M7 AUR Isolation Prototype
+
+The AUR isolation Module exposes one small interface: build one reviewed source
+tree for an exact tuple of expected package identities. It hides all command,
+mount, environment, namespace, resource and package-inspection details. There
+is no caller-provided command surface.
+
+The implementation uses a fixed root-owned Bubblewrap/`makepkg` toolchain in a
+networkless empty-root namespace, wrapped in a collected transient user cgroup.
+It copies input into one private writable tree, clears the environment and
+parses output in a second sandbox before retaining private hashed artifacts.
+Live AUR execution remains disabled because isolated source acquisition and a
+clean dependency/tool root are not implemented and independent review is
+pending. See the
+[M7 isolation validation](docs/research/m7-aur-isolation-validation.md).

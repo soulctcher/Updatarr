@@ -266,7 +266,7 @@ changes, software removal or any live software mutation.
       dependency/license inventory and a software bill of materials.
 - [ ] Test AUR build isolation against hostile inputs, or keep live AUR
       execution visibly disabled with no override.
-- [ ] Prove package install, startup, backup, restore, upgrade and uninstall in
+- [x] Prove package install, startup, backup, restore, upgrade and uninstall in
       a disposable system before requesting any managed-computer pilot.
 - [ ] Prepare a separately approved, loopback-only, read-only host pilot that
       preserves existing services, notifier and user state.
@@ -302,3 +302,23 @@ initialization, signing-key use or live AUR build has occurred yet.
 owner-controlled OpenPGP release key to prove both signed Git release labels
 and downloaded release files. Private-key creation or use remains a local,
 separately prompted action. The exact copyright-holder text is still pending.
+
+**M7 implementation progress (2026-11-01):** Local Git provenance begins at
+commit `373cb91`; no remote or push exists. Project/package metadata now records
+the selected `AGPL-3.0-or-later` license. The closed AUR isolation Module hides
+commands, mounts and environments behind one reviewed-tree interface and passes
+bounded safe, hostile and split-package fixture checks under a 512 MiB test
+ceiling. Live AUR remains blocked by isolated source acquisition, a clean
+dependency root and independent review. Deliberate memory/process pressure
+tests were removed after the first cgroup check caused an unacceptable desktop
+notification; no such test may be run again.
+
+The digest-pinned disposable Arch builder completed two networkless package
+builds under a 2 GiB ceiling. Their 205-file normalized payload manifests and
+builder-package inventories match; only generated package build-time metadata
+differs. A separate networkless disposable system passed package install,
+disabled-by-default startup checks, loopback startup, SQLite backup and offline
+restore, package upgrade, downgrade recovery, uninstall and user-state
+preservation. The drill corrected the Arch runtime dependency name to
+`uvicorn`. The managed computer was not changed. Final evidence generation and
+independent review remain open.

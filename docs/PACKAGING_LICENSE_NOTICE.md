@@ -1,6 +1,9 @@
-# Packaging license notice
+# Packaging License Notice
 
-The M5 package is a local evaluation package for this project workspace. A
-redistribution license has not yet been selected. Do not publish or distribute
-the package until the project owner selects a license and the release PKGBUILD
-records it. This notice is not an open-source license.
+The owner selected `AGPL-3.0-or-later` for Updatarr on 2026-11-01. The complete
+license text is in the top-level `LICENSE` file and is installed with the Arch
+package.
+
+The exact copyright-holder text remains pending. This project is not ready for
+publication until that record, AUR isolation, clean-build evidence, release
+provenance and the remaining M7 gates are complete.

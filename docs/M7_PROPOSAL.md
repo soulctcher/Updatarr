@@ -59,6 +59,12 @@ The project-local `scripts/generate_m7_evidence.sh` tool may generate runtime
 CycloneDX inventories and input hashes before the owner decisions. Its output
 is evaluation evidence, not a release artifact or license determination.
 
+The project-local `scripts/build_m7_arch_container.sh` drill uses a pinned Arch
+base image, installs declared build tools only inside the builder image, then
+runs the package build without network access under container memory, task and
+CPU limits. It is preliminary clean-environment evidence; it does not replace
+the final Arch clean-chroot gate.
+
 ### 3. Decide the Initial AUR Boundary
 
 - Write and test a disposable AUR-build isolation prototype against hostile

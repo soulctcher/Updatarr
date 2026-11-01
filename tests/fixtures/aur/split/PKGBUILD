@@ -1,0 +1,18 @@
+pkgbase=updatarr-sandbox-split
+pkgname=('updatarr-sandbox-split-core' 'updatarr-sandbox-split-extra')
+pkgver=1.0
+pkgrel=1
+pkgdesc='Disposable split-package Updatarr AUR sandbox fixture'
+arch=('any')
+license=('MIT')
+source=()
+sha256sums=()
+
+package_updatarr-sandbox-split-core() {
+  install -Dm644 /dev/null "$pkgdir/usr/share/updatarr-sandbox-split/core"
+}
+
+package_updatarr-sandbox-split-extra() {
+  install -Dm644 /dev/null "$pkgdir/usr/share/updatarr-sandbox-split/extra"
+}
+

@@ -1,0 +1,14 @@
+pkgname=updatarr-sandbox-linked-output
+pkgver=1.0
+pkgrel=1
+pkgdesc='Disposable linked-output Updatarr AUR sandbox fixture'
+arch=('any')
+license=('MIT')
+source=()
+sha256sums=()
+
+package() {
+  install -Dm644 /dev/null "$pkgdir/usr/share/updatarr-sandbox-linked-output/file"
+  ln -s /etc/passwd "$startdir/updatarr-sandbox-linked-output-fake.pkg.tar.zst"
+}
+

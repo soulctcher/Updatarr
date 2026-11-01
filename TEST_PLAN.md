@@ -256,3 +256,17 @@ The 22 scenarios and explicit release blockers are mapped in the
 [M6 acceptance matrix](docs/research/m6-acceptance-matrix.md).
 Final M6 verification passed **300 tests**; the independent re-review found no
 remaining critical, high, medium or low findings.
+
+## M7 Evidence in Progress
+
+M7 adds locked runtime SBOM/input-hash checks and a closed AUR isolation Module.
+The isolation fixture matrix covers a normal package, split packages, hidden
+host data and credentials, no network, read-only system tools, input/output
+links, exact package identity, sandboxed archive inspection and wall-time
+termination. Test builds use a 512 MiB/32-task ceiling, one compression thread
+and two build jobs. Deliberate memory/process pressure is prohibited after the
+initial resource-limit check triggered a desktop low-memory notification.
+
+Live AUR execution remains blocked until isolated source acquisition, a clean
+dependency root, complete output handoff evidence and independent security
+review pass together.

@@ -3,8 +3,14 @@ set -euo pipefail
 
 project_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 output_root=${1:-"$project_root/build/m7-evidence"}
+output_root=$(realpath -m "$output_root")
 stage_root=$(mktemp -d /tmp/updatarr-m7-evidence.XXXXXX)
 trap 'rm -rf -- "$stage_root"' EXIT
+
+if [[ -e "$output_root" ]]; then
+  printf 'Evidence output already exists: %s\n' "$output_root" >&2
+  exit 2
+fi
 
 for required in jq npm sha256sum uv; do
   if ! command -v "$required" >/dev/null 2>&1; then
@@ -12,6 +18,10 @@ for required in jq npm sha256sum uv; do
     exit 2
   fi
 done
+if [[ ! -x "$project_root/.venv/bin/python" ]]; then
+  printf 'The locked project environment is unavailable; run uv sync --locked first.\n' >&2
+  exit 2
+fi
 
 mkdir -p "$stage_root/sboms"
 
@@ -39,6 +49,20 @@ done
 
 (
   cd "$project_root"
+  "$project_root/.venv/bin/python" \
+    scripts/generate_dependency_license_inventory.py \
+    "$stage_root/sboms/python-runtime.cdx.json" \
+    "$stage_root/sboms/web-runtime.cdx.json" \
+    "$stage_root/dependency-licenses.json"
+)
+jq -e '
+  .format == "updatarr-declared-license-inventory-v1" and
+  (.python_runtime | type == "array" and length > 0) and
+  (.browser_runtime | type == "array" and length > 0)
+' "$stage_root/dependency-licenses.json" >/dev/null
+
+(
+  cd "$project_root"
   sha256sum \
     pyproject.toml \
     uv.lock \
@@ -52,10 +76,9 @@ done
 
 (
   cd "$stage_root"
-  sha256sum sboms/*.json > sboms.sha256
+  sha256sum dependency-licenses.json sboms/*.json > sboms.sha256
 )
 
-rm -rf -- "$output_root"
 mkdir -p "$(dirname "$output_root")"
 mv "$stage_root" "$output_root"
 trap - EXIT
