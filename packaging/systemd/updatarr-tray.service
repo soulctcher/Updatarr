@@ -1,0 +1,18 @@
+[Unit]
+Description=Updatarr KDE tray
+Documentation=file:///usr/share/doc/updatarr/OPERATIONS.md
+After=graphical-session.target updatarr.service
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+EnvironmentFile=-%h/.config/updatarr/updatarr.env
+ExecStart=/usr/bin/updatarr-tray
+Restart=on-failure
+RestartSec=5s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=graphical-session.target

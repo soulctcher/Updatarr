@@ -1,0 +1,26 @@
+[Unit]
+Description=Updatarr software update service
+Documentation=file:///usr/share/doc/updatarr/OPERATIONS.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.config/updatarr/updatarr.env
+Environment=UPDATARR_STATE_PATH=%S/updatarr/updatarr.db
+Environment=XDG_CACHE_HOME=%C/updatarr
+ExecStart=/usr/bin/updatarr
+Restart=on-failure
+RestartSec=5s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+RuntimeDirectory=updatarr
+RuntimeDirectoryMode=0700
+StateDirectory=updatarr
+StateDirectoryMode=0700
+CacheDirectory=updatarr
+CacheDirectoryMode=0700
+
+[Install]
+WantedBy=default.target

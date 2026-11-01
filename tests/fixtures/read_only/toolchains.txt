@@ -1,0 +1,14 @@
+[rustup-toolchains stdout]
+stable-x86_64-unknown-linux-gnu (active, default)
+
+[cargo-tools stdout]
+
+[fnm-versions stdout]
+* v23.6.0 default
+* system
+
+[uv-tools stderr]
+No tools installed
+
+[dkms-status stdout]
+nvidia/615.78.08, 7.2.11-arch1-1, x86_64: installed

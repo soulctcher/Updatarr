@@ -1,0 +1,48 @@
+# Maintainer: Updatarr contributors
+# Local milestone package built from the deterministic M6 source archive.
+pkgname=updatarr
+pkgver=0.6.0
+pkgrel=1
+pkgdesc='Local-first software update review service for Arch Linux and KDE'
+arch=('any')
+url='https://github.com/updatarr/updatarr'
+license=('custom:development-only')
+depends=('python' 'python-argon2-cffi' 'python-fastapi' 'python-pydantic' 'python-uvicorn' 'pyside6')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=('a9f429f9c219c54562a3f5f900bef16287c1cf98a70bb23b2964f81c2f2116b8')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  python -m build --wheel --no-isolation --outdir "$srcdir/dist"
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" --prefix=/usr "$srcdir"/dist/*.whl
+  for launcher in updatarr updatarr-tray updatarr-local-approval updatarr-open; do
+    sed -i '1c#!/usr/bin/python' "$pkgdir/usr/bin/$launcher"
+  done
+
+  install -Dm644 packaging/systemd/updatarr.service \
+    "$pkgdir/usr/lib/systemd/user/updatarr.service"
+  install -Dm644 packaging/systemd/updatarr-tray.service \
+    "$pkgdir/usr/lib/systemd/user/updatarr-tray.service"
+  install -Dm644 packaging/desktop/io.github.updatarr.Updatarr.desktop \
+    "$pkgdir/usr/share/applications/io.github.updatarr.Updatarr.desktop"
+  install -Dm644 packaging/config/updatarr.env.example \
+    "$pkgdir/usr/share/doc/updatarr/updatarr.env.example"
+  install -Dm644 web/src/assets/updatarr-loop.png \
+    "$pkgdir/usr/share/icons/hicolor/256x256/apps/updatarr.png"
+  install -d "$pkgdir/usr/share/updatarr/web"
+  cp -a web/dist/. "$pkgdir/usr/share/updatarr/web/"
+  install -Dm644 README.md PLAN.md MILESTONES.md ARCHITECTURE.md DATA_MODEL.md \
+    GLOSSARY.md CAPABILITY_MATRIX.md TEST_PLAN.md OPERATIONS.md SECURITY.md CHANGELOG.md \
+    -t "$pkgdir/usr/share/doc/updatarr"
+  install -d "$pkgdir/usr/share/doc/updatarr/docs"
+  cp -a docs/. "$pkgdir/usr/share/doc/updatarr/docs/"
+  install -d "$pkgdir/usr/share/doc/updatarr/prototypes"
+  cp -a prototypes/. "$pkgdir/usr/share/doc/updatarr/prototypes/"
+  install -Dm644 docs/PACKAGING_LICENSE_NOTICE.md \
+    "$pkgdir/usr/share/licenses/updatarr/PACKAGING_LICENSE_NOTICE.md"
+}

@@ -1,0 +1,36 @@
+[project]
+name = "updatarr"
+version = "0.6.0"
+requires-python = ">=3.12"
+dependencies = [
+  "argon2-cffi==25.1.0",
+  "fastapi==0.161.1",
+  "uvicorn==0.54.0",
+]
+
+[project.scripts]
+updatarr = "updatarr.main:main"
+updatarr-tray = "updatarr.tray:main"
+updatarr-local-approval = "updatarr.local_approval:main"
+updatarr-open = "updatarr.open_web:main"
+
+[project.optional-dependencies]
+test = [
+  "httpx==0.28.1",
+  "playwright==1.63.0",
+  "pytest==9.1.1",
+]
+package = [
+  "build>=1.2,<2",
+  "installer>=0.7,<1",
+  "setuptools>=77",
+  "wheel>=0.45,<1",
+]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["updatarr", "updatarr.providers", "scripts"]
+package-dir = {updatarr = "src/updatarr", "updatarr.providers" = "src/updatarr/providers", scripts = "scripts"}

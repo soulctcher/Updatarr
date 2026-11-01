@@ -1,0 +1,3 @@
+86box-appimage 6.0-1
+brotab-git r234.a51ecb9-1
+kgamma 6.7.5-1

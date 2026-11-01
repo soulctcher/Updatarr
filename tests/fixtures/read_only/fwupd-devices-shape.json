@@ -1,0 +1,20 @@
+{
+  "Devices": [
+    {
+      "DeviceId": "$DEVICE_ID",
+      "Guid": ["$GUID"],
+      "Name": "Sanitized firmware device",
+      "Plugin": "uefi_capsule",
+      "Flags": ["internal", "updatable"],
+      "Version": "1.0",
+      "VersionFormat": "plain"
+    },
+    {
+      "DeviceId": "$DEVICE_ID",
+      "Name": "Sanitized child device",
+      "ParentDeviceId": "$PARENT_DEVICE_ID",
+      "Plugin": "cpu",
+      "Problems": ["system-power-too-low"]
+    }
+  ]
+}

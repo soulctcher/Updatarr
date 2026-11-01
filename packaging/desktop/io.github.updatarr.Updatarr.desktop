@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Updatarr
+Comment=Review software and updates
+Icon=updatarr
+Exec=updatarr-open
+Terminal=false
+Categories=System;
+StartupNotify=true

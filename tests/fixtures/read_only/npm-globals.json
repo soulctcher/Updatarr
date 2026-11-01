@@ -1,0 +1,11 @@
+{
+  "name": "lib",
+  "dependencies": {
+    "acorn": {"version": "8.19.0", "overridden": false},
+    "eslint": {"version": "10.13.0", "overridden": false},
+    "node-gyp": {"version": "13.1.0", "overridden": false},
+    "nopt": {"version": "10.0.1", "overridden": false},
+    "npm": {"version": "12.2.1", "overridden": false},
+    "semver": {"version": "7.8.5", "overridden": false}
+  }
+}

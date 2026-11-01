@@ -1,0 +1,14 @@
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.egg-info/
+*.tsbuildinfo
+node_modules/
+web/dist/
+.state/
+.venv/
+build/
+packaging/arch/*.tar.gz
+packaging/arch/*.pkg.tar.*
+*.db-wal
+*.db-shm
