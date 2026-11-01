@@ -10,17 +10,12 @@ treated as working merely because its update source can be read.
 
 1. **Authenticated release provenance is incomplete.** A local Git baseline
    now exists, but there is no approved remote, signed release label or signed
-   artifact. Generated-browser-asset provenance is recorded with its remaining
-   limitation.
-2. **Generated-logo terms are not confirmed.** The asset, prompt description
-   and digest are recorded, but the exact image model/version and applicable
-   generated-output terms were not retained. Do not infer redistribution
-   permission from the image-generation documentation.
-3. **Live AUR builds remain blocked.** PKGBUILDs are arbitrary user-level code.
+   artifact.
+2. **Live AUR builds remain blocked.** PKGBUILDs are arbitrary user-level code.
    The bounded M7 prototype hides credentials, state and unrelated user files
    in fixture tests, but isolated source acquisition, a clean dependency root
-   and independent review are incomplete. There is no override.
-4. **Every first live software-changing path remains unapproved.** Repository,
+   and dependency preparation are incomplete. There is no override.
+3. **Every first live software-changing path remains unapproved.** Repository,
    Flatpak, firmware, startup-related, toolchain and portable-app changes have
    fixture or simulator coverage only. Each first live trial still needs the
    separate approval named in [MILESTONES.md](../MILESTONES.md).
@@ -31,6 +26,10 @@ computer and do not resolve the live AUR isolation blocker.
 
 ## Unsupported or deliberately limited behavior
 
+- Generated-browser-asset provenance is recorded, and the owner approved the
+  logo's inclusion under `AGPL-3.0-or-later`. The exact image model/version was
+  not retained, so bit-for-bit regeneration is unavailable. This is a
+  reproducibility limitation, not a release blocker.
 - Updatarr does not install unsigned local package bundles, add package-signing
   keys, weaken signature checks or enable untrusted repositories/remotes.
 - Package rename and replacement relationships are shown only when the update

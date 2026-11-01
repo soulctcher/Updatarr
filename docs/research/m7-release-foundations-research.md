@@ -207,8 +207,10 @@ claim that one particular argument list is already safe.
   that remains a later local visual credential flow.
 - Official OpenAI image-generation documentation explains how outputs are
   generated and saved but does not state the redistribution terms that applied
-  to the earlier in-product logo generation. The asset record therefore keeps
-  that permission question open instead of inferring rights.
+  to the earlier in-product logo generation. The owner subsequently approved
+  the recorded logo as an official Updatarr asset under the selected project
+  license; the provenance record presents that as an owner decision, not an
+  independent legal conclusion about provider terms.
 
 ## Recommended M7 Direction
 

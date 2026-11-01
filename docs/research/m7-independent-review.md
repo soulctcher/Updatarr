@@ -43,7 +43,6 @@ verification and the exact final disposable lifecycle also passed.
 
 The review treats these as intentional blockers, not implementation defects:
 
-- generated-logo redistribution terms remain unconfirmed;
 - no approved remote, signed release label or signed artifact exists;
 - AUR source acquisition, clean dependency root and dependency preparation are
   not implemented;

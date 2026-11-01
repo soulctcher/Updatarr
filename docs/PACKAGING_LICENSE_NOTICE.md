@@ -8,5 +8,5 @@ The exact copyright record is:
 
 `Copyright © 2026 Erik Winblad`
 
-This project is not ready for publication until generated-asset provenance,
-release proof and the remaining M7 gates are complete.
+This project is not ready for publication until release proof and the remaining
+M7 gates are complete.

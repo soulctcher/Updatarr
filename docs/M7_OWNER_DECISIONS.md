@@ -120,4 +120,6 @@ is to keep the managed-computer pilot unauthorized.
       passes** selected. This does not authorize a live AUR build.
 - [x] Managed-computer pilot remains unauthorized until its exact plan is
       reviewed separately.
+- [x] The owner approved the recorded AI-generated loop logo as an official
+      Updatarr asset distributed under `AGPL-3.0-or-later`.
 

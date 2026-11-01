@@ -97,13 +97,12 @@ inventory, not legal advice.
 ## Remaining Work
 
 - Repeat the clean build, normalized comparison, evidence generation and
-  lifecycle drill after the copyright notice, generated-logo decision and
-  release-proof records are final.
+  lifecycle drill after the release-proof records are final.
 - Keep live AUR disabled until isolated source acquisition, clean dependency-
   root preparation and dependency handling are implemented and separately
   accepted.
 - Keep release publication blocked until owner-controlled release proof is
-  available; generated-logo terms also remain unconfirmed.
+  available.
 
 ## Final Automated Verification
 

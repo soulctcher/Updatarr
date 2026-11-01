@@ -46,9 +46,20 @@ def test_recorded_logo_digest_matches_the_packaged_asset() -> None:
     asset = ROOT / "web/src/assets/updatarr-loop.png"
     digest = hashlib.sha256(asset.read_bytes()).hexdigest()
     provenance = (ROOT / "docs/release/ASSET_PROVENANCE.md").read_text()
+    decisions = (ROOT / "docs/M7_OWNER_DECISIONS.md").read_text()
+    limits = (ROOT / "docs/KNOWN_LIMITATIONS.md").read_text()
+    normalized_limits = " ".join(limits.split())
+    milestones = (ROOT / "MILESTONES.md").read_text()
 
     assert digest == "0abf402bdd51a9913b6116f4630bd245e76353db4836885aa0e2dacb66838a69"
     assert digest in provenance
+    assert "Owner approved inclusion" in provenance
+    assert "AGPL-3.0-or-later" in provenance
+    assert "owner approved the recorded AI-generated loop logo" in decisions
+    assert "Generated-logo terms are not confirmed" not in limits
+    assert "reproducibility limitation, not a release blocker" in limits
+    assert "reproducibility limitation, not a release blocker" in milestones
+    assert "The exact image model/version was not retained" in normalized_limits
 
 
 def test_locked_runtime_sboms_are_generated_without_release_actions(tmp_path: Path) -> None:

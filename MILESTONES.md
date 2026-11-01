@@ -307,6 +307,11 @@ separately prompted action.
 record `Copyright © 2026 Erik Winblad`. It is recorded separately from the
 unaltered official AGPL text and will ship in `NOTICE`.
 
+**M7 generated-asset decision (2026-11-01):** The owner approved the recorded
+AI-generated loop logo as an official Updatarr asset distributed under
+`AGPL-3.0-or-later`. The missing exact image model/version remains a
+reproducibility limitation, not a release blocker.
+
 **M7 implementation progress (2026-11-01):** Local Git provenance begins at
 commit `373cb91`; no remote or push exists. Project/package metadata now records
 the selected `AGPL-3.0-or-later` license. The closed AUR isolation Module hides
