@@ -8,22 +8,19 @@ treated as working merely because its update source can be read.
 
 ## Release blockers
 
-1. **Copyright-holder text is pending.** The owner selected
-   `AGPL-3.0-or-later` and the package now records it, but public release remains
-   blocked until the exact copyright-holder record is supplied and checked.
-2. **Authenticated release provenance is incomplete.** A local Git baseline
+1. **Authenticated release provenance is incomplete.** A local Git baseline
    now exists, but there is no approved remote, signed release label or signed
    artifact. Generated-browser-asset provenance is recorded with its remaining
    limitation.
-3. **Generated-logo terms are not confirmed.** The asset, prompt description
+2. **Generated-logo terms are not confirmed.** The asset, prompt description
    and digest are recorded, but the exact image model/version and applicable
    generated-output terms were not retained. Do not infer redistribution
    permission from the image-generation documentation.
-4. **Live AUR builds remain blocked.** PKGBUILDs are arbitrary user-level code.
+3. **Live AUR builds remain blocked.** PKGBUILDs are arbitrary user-level code.
    The bounded M7 prototype hides credentials, state and unrelated user files
    in fixture tests, but isolated source acquisition, a clean dependency root
    and independent review are incomplete. There is no override.
-5. **Every first live software-changing path remains unapproved.** Repository,
+4. **Every first live software-changing path remains unapproved.** Repository,
    Flatpak, firmware, startup-related, toolchain and portable-app changes have
    fixture or simulator coverage only. Each first live trial still needs the
    separate approval named in [MILESTONES.md](../MILESTONES.md).

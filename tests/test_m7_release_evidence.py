@@ -33,7 +33,13 @@ def test_selected_license_is_consistent_but_publication_is_still_blocked() -> No
     assert (ROOT / "LICENSE").read_text().startswith(
         "GNU AFFERO GENERAL PUBLIC LICENSE"
     )
-    assert "Copyright-holder text is pending" in limits
+    notice = (ROOT / "NOTICE").read_text()
+    assert "Copyright © 2026 Erik Winblad" in notice
+    assert "Copyright-holder text is pending" not in limits
+    assert '"$project_root/NOTICE"' in (
+        ROOT / "scripts/build_source_archive.sh"
+    ).read_text()
+    assert 'usr/share/licenses/updatarr/NOTICE' in package
 
 
 def test_recorded_logo_digest_matches_the_packaged_asset() -> None:

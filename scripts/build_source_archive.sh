@@ -30,7 +30,8 @@ cp -a "$project_root/pyproject.toml" "$project_root/uv.lock" \
   "$project_root/DATA_MODEL.md" "$project_root/GLOSSARY.md" \
   "$project_root/CAPABILITY_MATRIX.md" "$project_root/TEST_PLAN.md" \
   "$project_root/OPERATIONS.md" "$project_root/SECURITY.md" \
-  "$project_root/CHANGELOG.md" "$project_root/LICENSE" "$source_root/"
+  "$project_root/CHANGELOG.md" "$project_root/LICENSE" \
+  "$project_root/NOTICE" "$source_root/"
 
 tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
   -C "$stage_root" -cf - "updatarr-${version}" | gzip -n > "$output_path"

@@ -184,8 +184,8 @@ claim that one particular argument list is already safe.
 - The owner authorized a local Git baseline, which now exists without a remote
   or push. No signed release label exists yet.
 - The owner selected `AGPL-3.0-or-later`; the project and package metadata now
-  record it and include the official license text. Exact copyright-holder text
-  remains pending.
+  record it and include the official license text. The exact copyright record
+  is `Copyright © 2026 Erik Winblad`.
 - The M6 source archive is checksummed, but it predates the M7 working tree and
   is not tied to a signed release label.
 - `git`, `gpg`, `makepkg`, `npm`, `uv` and `bwrap` are present. The standard

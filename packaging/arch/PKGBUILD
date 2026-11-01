@@ -10,7 +10,7 @@ license=('AGPL-3.0-or-later')
 depends=('python' 'python-argon2-cffi' 'python-fastapi' 'python-pydantic' 'uvicorn' 'pyside6')
 makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 source=("$pkgname-$pkgver.tar.gz")
-sha256sums=('9833f98ee16c39a448fa61457f2f30a53b83041b1765679fd2953bbe95501d07')
+sha256sums=('7d03efadd2ba9cdc152b0870e4a78dfde9d4e959a8da849139daece916822050')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
@@ -45,4 +45,6 @@ package() {
   cp -a prototypes/. "$pkgdir/usr/share/doc/updatarr/prototypes/"
   install -Dm644 LICENSE \
     "$pkgdir/usr/share/licenses/updatarr/LICENSE"
+  install -Dm644 NOTICE \
+    "$pkgdir/usr/share/licenses/updatarr/NOTICE"
 }

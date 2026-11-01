@@ -301,7 +301,11 @@ point. No signing-key use or live AUR build occurred.
 **M7 release-proof decision (2026-11-01):** The owner selected one
 owner-controlled OpenPGP release key to prove both signed Git release labels
 and downloaded release files. Private-key creation or use remains a local,
-separately prompted action. The exact copyright-holder text is still pending.
+separately prompted action.
+
+**M7 copyright decision (2026-11-01):** The owner supplied the exact public
+record `Copyright © 2026 Erik Winblad`. It is recorded separately from the
+unaltered official AGPL text and will ship in `NOTICE`.
 
 **M7 implementation progress (2026-11-01):** Local Git provenance begins at
 commit `373cb91`; no remote or push exists. Project/package metadata now records

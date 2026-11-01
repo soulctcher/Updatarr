@@ -15,9 +15,9 @@ privileged-helper and first-live-mutation approval gate is explicitly granted.
 ## License
 
 The owner selected the GNU Affero General Public License version 3 or later
-(`AGPL-3.0-or-later`). See [LICENSE](LICENSE). The exact copyright-holder text
-and remaining M7 release gates are still pending, so no public release is
-authorized yet.
+(`AGPL-3.0-or-later`). See [LICENSE](LICENSE) and [NOTICE](NOTICE). The copyright
+record is `Copyright © 2026 Erik Winblad`. Remaining M7 release gates are still
+open, so no public release is authorized.
 
 ## Run the development application
 

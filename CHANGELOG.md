@@ -83,12 +83,13 @@ All notable project changes will be recorded here once implementation begins.
   release boundary was selected on the owner's behalf.
 - The owner selected `AGPL-3.0-or-later`, a local Git baseline with no remote
   push, and an AUR-isolation requirement before producing the release
-  candidate. Release proof and exact copyright-holder text remain pending.
+  candidate. Release proof remained pending.
 - The owner selected one owner-controlled OpenPGP release key for both signed
   Git release labels and downloaded release files. No private key has been
   created, inspected or used.
 - Recorded `AGPL-3.0-or-later` across project, browser and Arch package
-  metadata; exact copyright-holder text remains a publication blocker.
+  metadata; the exact copyright record is now
+  `Copyright © 2026 Erik Winblad`.
 - Added a closed, networkless AUR isolation prototype with fixed tools,
   private namespaces/cgroup, exact split-package identities and separately
   sandboxed output inspection. Live AUR remains disabled while source

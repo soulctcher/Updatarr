@@ -1,8 +1,8 @@
 # M7 Clean Build and Package Validation
 
 **Prepared:** 2026-11-01
-**Status:** clean-build comparison, disposable lifecycle and complete suite
-passed; release-candidate gates remain
+**Status:** implementation clean-build comparison, disposable lifecycle and
+complete suite passed; candidate rebuild is required after owner records close
 **Authorization:** disposable project-local environments only; no package was
 installed on the managed computer
 
@@ -37,7 +37,7 @@ Polkit rule, `/etc` payload or workspace path.
 
 Generated build evidence stays under ignored `build/` paths and is not a
 release artifact. Exact final source, package, builder and inventory digests
-for the reviewed freeze are:
+for implementation revision `497634e` are:
 
 | Evidence | SHA-256 |
 | --- | --- |
@@ -96,11 +96,14 @@ inventory, not legal advice.
 
 ## Remaining Work
 
-- Complete isolated AUR source acquisition, clean dependency-root preparation
-  and dependency handling required by the owner-selected 4B gate.
-- Keep release publication blocked until the exact copyright-holder text and
-  owner-controlled release proof are available; generated-logo terms also
-  remain unconfirmed.
+- Repeat the clean build, normalized comparison, evidence generation and
+  lifecycle drill after the copyright notice, generated-logo decision and
+  release-proof records are final.
+- Keep live AUR disabled until isolated source acquisition, clean dependency-
+  root preparation and dependency handling are implemented and separately
+  accepted.
+- Keep release publication blocked until owner-controlled release proof is
+  available; generated-logo terms also remain unconfirmed.
 
 ## Final Automated Verification
 

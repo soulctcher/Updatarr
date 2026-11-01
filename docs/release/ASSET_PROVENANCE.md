@@ -45,7 +45,6 @@ client system.
 
 ## Required Follow-Up
 
-- Record the selected copyright-holder name.
 - Record the exact generated-output terms relied on for the logo, or replace it
   with a newly documented reproducible vector asset if that cannot be
   established confidently.

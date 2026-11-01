@@ -1,8 +1,8 @@
 # M7 Owner Decisions
 
 **Prepared:** 2026-11-01  
-**Status:** license, Git authority, release proof and AUR boundary selected;
-copyright-holder text still required  
+**Status:** license, copyright holder, Git authority, release proof and AUR
+boundary selected
 **Effect:** selecting options authorizes documentation and project-local
 implementation only; retained M7 host and publication gates still apply
 
@@ -109,8 +109,8 @@ is to keep the managed-computer pilot unauthorized.
 
 ## Decision Record
 
-- [x] License option **1A: AGPL-3.0-or-later** selected. Exact
-      copyright-holder text remains pending.
+- [x] License option **1A: AGPL-3.0-or-later** selected. Exact copyright record:
+      `Copyright © 2026 Erik Winblad`.
 - [x] Git option **2A: initialize this workspace, then attach an
       owner-controlled remote later** selected. This does not authorize a push.
 - [x] Release proof option **3A: one owner-controlled OpenPGP key for signed
