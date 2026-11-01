@@ -55,6 +55,9 @@ Polkit/helper flow.
 
 Run the evidence suite with:
 
+The complete M7 release-evidence checks also require the GnuPG command-line
+tool (`gpg`) to inspect the bundled public release key.
+
 ```bash
 npm --prefix web run check
 npm --prefix web run build

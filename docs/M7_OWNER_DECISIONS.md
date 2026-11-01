@@ -114,8 +114,10 @@ is to keep the managed-computer pilot unauthorized.
 - [x] Git option **2A: initialize this workspace, then attach an
       owner-controlled remote later** selected. This does not authorize a push.
 - [x] Release proof option **3A: one owner-controlled OpenPGP key for signed
-      Git release labels and downloaded files** selected. This does not
-      authorize private-key use yet.
+      Git release labels and downloaded files** selected. The owner authorized
+      creation of the dedicated key on 2026-11-01. Its primary fingerprint is
+      `721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E`. No release label or
+      artifact has been signed, and publication remains separately gated.
 - [x] AUR option **4B: do not produce a release candidate until AUR isolation
       passes** selected. This does not authorize a live AUR build.
 - [x] Managed-computer pilot remains unauthorized until its exact plan is

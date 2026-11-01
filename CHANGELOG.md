@@ -85,8 +85,9 @@ All notable project changes will be recorded here once implementation begins.
   push, and an AUR-isolation requirement before producing the release
   candidate. Release proof remained pending.
 - The owner selected one owner-controlled OpenPGP release key for both signed
-  Git release labels and downloaded release files. No private key has been
-  created, inspected or used.
+  Git release labels and downloaded release files. The dedicated key now
+  exists with its public fingerprint and verification guide in the project;
+  no release label or artifact has been signed or published.
 - Recorded `AGPL-3.0-or-later` across project, browser and Arch package
   metadata; the exact copyright record is now
   `Copyright © 2026 Erik Winblad`.

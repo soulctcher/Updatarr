@@ -300,8 +300,11 @@ point. No signing-key use or live AUR build occurred.
 
 **M7 release-proof decision (2026-11-01):** The owner selected one
 owner-controlled OpenPGP release key to prove both signed Git release labels
-and downloaded release files. Private-key creation or use remains a local,
-separately prompted action.
+and downloaded release files. The owner later authorized creating the dedicated
+key through a local password prompt. Its primary fingerprint is
+`721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E`; only the public key is in
+the project. No release label or artifact has been signed, and release
+publication remains separately gated.
 
 **M7 copyright decision (2026-11-01):** The owner supplied the exact public
 record `Copyright © 2026 Erik Winblad`. It is recorded separately from the

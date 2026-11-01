@@ -203,8 +203,11 @@ claim that one particular argument list is already safe.
   generated from Updatarr's own interface and are documentation evidence, not
   third-party artwork.
 - The owner selected one OpenPGP identity for both signed Git release labels
-  and downloaded files. No private key or owner identity was inspected or used;
-  that remains a later local visual credential flow.
+  and downloaded files, then authorized creating a dedicated key through the
+  local graphical password flow. The primary fingerprint is
+  `721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E`. Only the public key and
+  fingerprint are recorded in the project; no release label or artifact has
+  been signed or published.
 - Official OpenAI image-generation documentation explains how outputs are
   generated and saved but does not state the redistribution terms that applied
   to the earlier in-product logo generation. The owner subsequently approved

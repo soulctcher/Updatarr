@@ -17,6 +17,10 @@ mutating executor is exercised against fakes or a disposable sandbox before a
 tightly scoped live trial. Implementers do not perform the final acceptance
 review of their own significant task.
 
+The complete M7 release-evidence tests require the GnuPG command-line tool
+(`gpg`) so they can inspect the bundled public release key without importing
+it. This is a test/release prerequisite, not an Updatarr runtime dependency.
+
 ## Test layers
 
 | Layer | Scope | Required evidence |

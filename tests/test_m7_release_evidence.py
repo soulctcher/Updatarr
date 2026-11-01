@@ -62,6 +62,69 @@ def test_recorded_logo_digest_matches_the_packaged_asset() -> None:
     assert "The exact image model/version was not retained" in normalized_limits
 
 
+def test_release_public_key_matches_the_recorded_fingerprint() -> None:
+    public_key = ROOT / "docs/release/UPDATARR_RELEASE_KEY.asc"
+    public_key_text = public_key.read_text()
+    result = subprocess.run(
+        ["gpg", "--batch", "--with-colons", "--show-keys", str(public_key)],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=10,
+    )
+
+    assert result.returncode == 0, result.stderr
+    records = [row.split(":") for row in result.stdout.splitlines()]
+    assert [row[0] for row in records] == ["pub", "fpr", "uid", "sub", "fpr"]
+    primary, signing_subkey = records[0], records[3]
+    assert primary[1] == "u" and primary[3] == "22"
+    assert "c" in primary[11]
+    assert signing_subkey[1] == "u" and signing_subkey[3] == "22"
+    assert signing_subkey[11] == "s"
+    assert not {"sec", "ssb", "rvk"}.intersection(row[0] for row in records)
+
+    fingerprints = [
+        row.split(":")[9]
+        for row in result.stdout.splitlines()
+        if row.startswith("fpr:")
+    ]
+    assert fingerprints == [
+        "721EED2D67ADEE74D26E75C57DAF7D1402C8082E",
+        "5BD6C0A8D98B655AEAF05EC2E689CC8D9BBB0AA4",
+    ]
+
+    assert "BEGIN PGP PUBLIC KEY BLOCK" in public_key_text
+    assert "PRIVATE KEY" not in public_key_text
+    assert "SECRET KEY" not in public_key_text
+    release_files = [
+        path for path in (ROOT / "docs/release").rglob("*") if path.is_file()
+    ]
+    assert not any(path.suffix == ".rev" for path in release_files)
+    assert not any(
+        b"This is a revocation certificate" in path.read_bytes()
+        for path in release_files
+    )
+
+    signing = (ROOT / "docs/release/RELEASE_SIGNING.md").read_text()
+    normalized_signing = " ".join(signing.split())
+    assert (
+        "no release label or file has been signed or published"
+        in normalized_signing
+    )
+    assert "721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E" in signing
+    assert "5BD6 C0A8 D98B 655A EAF0 5EC2 E689 CC8D 9BBB 0AA4" in signing
+
+    milestones = " ".join((ROOT / "MILESTONES.md").read_text().split())
+    assert (
+        "release publication, signing-key use and every live software mutation "
+        "remain separately gated and unauthorized"
+        in milestones
+    )
+    test_plan = (ROOT / "TEST_PLAN.md").read_text()
+    assert "GnuPG command-line tool" in test_plan
+
+
 def test_locked_runtime_sboms_are_generated_without_release_actions(tmp_path: Path) -> None:
     output = tmp_path / "evidence"
     result = subprocess.run(
