@@ -262,15 +262,16 @@ changes, software removal or any live software mutation.
 - [ ] Record the owner-selected redistribution license, authenticated source
       provenance, release-tag policy, signing policy and generated-asset
       provenance.
-- [ ] Produce and compare clean, disposable Arch builds with checksums, a
+- [x] Produce and compare clean, disposable Arch builds with checksums, a
       dependency/license inventory and a software bill of materials.
-- [ ] Test AUR build isolation against hostile inputs, or keep live AUR
+- [x] Test AUR build isolation against hostile inputs, or keep live AUR
       execution visibly disabled with no override.
 - [x] Prove package install, startup, backup, restore, upgrade and uninstall in
       a disposable system before requesting any managed-computer pilot.
-- [ ] Prepare a separately approved, loopback-only, read-only host pilot that
-      preserves existing services, notifier and user state.
-- [ ] Complete the release-candidate test matrix and independent review.
+- [x] Prepare the separately gated, loopback-only, read-only host pilot plan
+      that preserves existing services, notifier and user state. Execution is
+      not authorized.
+- [x] Complete the release-candidate test matrix and independent review.
 
 **Proposed gate:** M7 acceptance creates a reviewed release candidate only.
 Public release publication, managed-computer package or service changes,
@@ -285,18 +286,17 @@ explicit decision points; no host installation or public release is implied.
 
 **M7 decision-gate evidence (2026-11-01):** Primary-source research now
 separates license, tag, signature, checksum, clean-build, SBOM and AUR-isolation
-claims. The owner decision sheet and initial generated-asset provenance record
-are ready. A project-local tool generated locked CycloneDX runtime inventories
-for 18 Python and 3 browser components plus reviewed-input hashes; its three
-focused tests passed. Work is paused at the owner license, Git authority,
-signing and initial AUR-boundary decisions. No Git repository, key, release
-artifact, package installation or host change was created.
+claims. At that initial decision gate, the owner decision sheet and generated-
+asset provenance record were ready, and a project-local tool had generated
+locked CycloneDX runtime inventories for 18 Python and 3 browser components.
+No Git repository, key, release artifact, package installation or host change
+had been created at that point.
 
 **M7 partial owner decisions (2026-11-01):** The owner selected
 `AGPL-3.0-or-later`, authorized a local Git baseline with no remote push, and
 chose to withhold the release candidate until AUR isolation passes. The exact
-copyright-holder text and release-proof method remain undecided. No repository
-initialization, signing-key use or live AUR build has occurred yet.
+copyright-holder text and release-proof method were still undecided at that
+point. No signing-key use or live AUR build occurred.
 
 **M7 release-proof decision (2026-11-01):** The owner selected one
 owner-controlled OpenPGP release key to prove both signed Git release labels
@@ -309,16 +309,28 @@ the selected `AGPL-3.0-or-later` license. The closed AUR isolation Module hides
 commands, mounts and environments behind one reviewed-tree interface and passes
 bounded safe, hostile and split-package fixture checks under a 512 MiB test
 ceiling. Live AUR remains blocked by isolated source acquisition, a clean
-dependency root and independent review. Deliberate memory/process pressure
+dependency root and dependency preparation. Deliberate memory/process pressure
 tests were removed after the first cgroup check caused an unacceptable desktop
 notification; no such test may be run again.
 
 The digest-pinned disposable Arch builder completed two networkless package
-builds under a 2 GiB ceiling. Their 205-file normalized payload manifests and
+builds under a 2 GiB ceiling. Their 208-file normalized payload manifests and
 builder-package inventories match; only generated package build-time metadata
 differs. A separate networkless disposable system passed package install,
 disabled-by-default startup checks, loopback startup, SQLite backup and offline
 restore, package upgrade, downgrade recovery, uninstall and user-state
 preservation. The drill corrected the Arch runtime dependency name to
 `uvicorn`. The managed computer was not changed. Final evidence generation and
-independent review remain open.
+independent review later completed as recorded below.
+
+**M7 security and build evidence (2026-11-01):** The reviewed-tree AUR
+isolation seam now uses bounded streaming logs, a verified memory-backed build
+tree under cgroup limits, no-follow input copying, aggregate artifact limits
+and exact package identity checks. Its 21 focused tests and independent
+re-review passed with no remaining critical, high or medium implementation
+findings. This accepts the isolation boundary selected in owner choice 4B; it
+does not enable live AUR. Source acquisition, a clean dependency root and
+dependency preparation remain unavailable with no override. Two final clean
+builds had identical 208-file normalized payload manifests, the disposable
+package lifecycle passed, and the complete suite passed 321 tests. Exact
+evidence is recorded in the M7 validation documents.

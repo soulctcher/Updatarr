@@ -114,6 +114,8 @@ supported initial model.
 - [M7 release-foundations research](docs/research/m7-release-foundations-research.md)
 - [M7 AUR isolation validation](docs/research/m7-aur-isolation-validation.md)
 - [M7 clean build and package validation](docs/research/m7-clean-build-validation.md)
+- [M7 independent review](docs/research/m7-independent-review.md)
+- [M7 managed-computer pilot plan](docs/M7_HOST_PILOT_PLAN.md)
 - [Release asset provenance](docs/release/ASSET_PROVENANCE.md)
 - [M6 acceptance matrix](docs/research/m6-acceptance-matrix.md)
 - [M6 security review](docs/research/m6-security-review.md)
