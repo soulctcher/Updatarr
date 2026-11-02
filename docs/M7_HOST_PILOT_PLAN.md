@@ -1,8 +1,9 @@
 # M7 Managed-Computer Pilot Plan
 
 **Prepared:** 2026-11-01
-**Status:** in progress; package installation passed, packaged user-unit live
-provider discovery failed, and a non-enabled transient test is active
+**Status:** in progress; package installation passed, packaged core user-unit
+live-provider discovery failed, and a transient core plus manually started tray
+are active for testing
 **Purpose:** prove the reviewed package can run read-only on the managed
 computer without replacing, disabling or changing an existing updater
 
@@ -114,3 +115,10 @@ testing. Octopi, notifier/autostart, Flatpak, firmware and toolchain state are
 unchanged. The pilot cannot close until that test is stopped and the final
 after-state is recorded. Complete evidence is in
 [the host-pilot record](research/m7-host-pilot-2026-11-02.md).
+
+The user separately requested the tray on 2026-11-02. The packaged tray unit
+was started manually without enabling it. One unprivileged process, one
+owner-only instance lock and one Plasma StatusNotifier item were observed. Its
+tooltip matched the shared status file at 10 updates ready to review. A second
+launch exited without creating a duplicate. The existing Octopi notifier
+remains active and unchanged.

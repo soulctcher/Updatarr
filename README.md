@@ -123,6 +123,8 @@ supported initial model.
 - [M7 clean build and package validation](docs/research/m7-clean-build-validation.md)
 - [M7 independent review](docs/research/m7-independent-review.md)
 - [M7 managed-computer pilot plan](docs/M7_HOST_PILOT_PLAN.md)
+- [M7 local test checklist](docs/M7_LOCAL_TEST_CHECKLIST.md)
+- [M7 managed-computer pilot evidence](docs/research/m7-host-pilot-2026-11-02.md)
 - [Release asset provenance](docs/release/ASSET_PROVENANCE.md)
 - [M6 acceptance matrix](docs/research/m6-acceptance-matrix.md)
 - [M6 security review](docs/research/m6-security-review.md)
@@ -143,7 +145,9 @@ Corrected local M7 candidate RC2 is built, signed, verified and independently
 reviewed. A bounded local installation pilot was authorized on 2026-11-02.
 That pilot found a packaged-user-unit live-provider blocker. The package is
 installed for testing through a non-enabled transient loopback-only unit; RC2
-must not be published or enabled as the normal service.
+must not be published or enabled as the normal core service. The tray is
+manually active for testing but remains disabled at login. Use the
+[local test checklist](docs/M7_LOCAL_TEST_CHECKLIST.md).
 Retained publication and live-action gates are listed in
 [MILESTONES.md](MILESTONES.md). Commands shown in research sources remain
 evidence, not setup instructions. System

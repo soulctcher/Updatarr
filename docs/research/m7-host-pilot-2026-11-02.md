@@ -106,7 +106,21 @@ loopback configuration, but without `PrivateTmp`. Its read-only check passed:
 
 The transient unit is active for owner testing at
 `http://127.0.0.1:8788`. It is not enabled and will not start at login or boot.
-The packaged tray was not started.
+
+## Manual Tray Test
+
+The user separately requested a tray test. `updatarr-tray.service` was started
+manually and remains disabled at login. Verification found:
+
+- one unprivileged `updatarr-tray` process;
+- one owner-only mode-0600 instance lock containing that process identity;
+- one registered Plasma StatusNotifier item with icon name `updatarr`;
+- an active tooltip reporting **10 ready to review** from the shared core
+  status file; and
+- a second tray launch exited successfully without creating another process.
+
+The existing Octopi notifier remains active. The tray can open the canonical
+loopback page but owns no credentials, update policy or execution authority.
 
 ## Required Follow-Up
 
@@ -117,6 +131,6 @@ root ownership, complete package rebuild and lifecycle evidence, and an
 independent review. Removing `PrivateTmp` from the permanent packaged unit is
 not the accepted fix.
 
-Service enablement, tray startup, notifier migration, Octopi/Pamac removal,
-LAN access, live AUR execution and every software-changing action through
-Updatarr remain unauthorized.
+Enabling either service at login, notifier migration, Octopi/Pamac removal, LAN
+access, live AUR execution and every software-changing action through Updatarr
+remain unauthorized.

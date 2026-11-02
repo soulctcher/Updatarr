@@ -128,6 +128,11 @@ All notable project changes will be recorded here once implementation begins.
   trusted root-owned executables to UID 65534 and made every command-backed
   live provider appear unsupported. The packaged unit remains disabled; a
   non-enabled loopback-only transient unit is active for local testing.
+- The user requested a tray test. The manually started, still-disabled tray
+  registered one Plasma status item, reported the shared update count and
+  refused a duplicate instance without changing the Octopi notifier.
+- Added a plain-language local checklist for browser, inventory, safety,
+  contextual help, themes, responsive layout, tray and temporary-pilot tests.
 - M0 decisions accepted by the user on 2026-10-24; project advanced to the M1
   safe-foundation and read-only-product scope without authorizing host mutation.
 - M1 accepted by the user on 2026-10-24; project advanced to the M2 catalog,

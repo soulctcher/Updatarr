@@ -2,11 +2,12 @@
 
 **Current phase:** M7 accepted; managed-computer read-only pilot
 **Current authorization:** the exact signed RC2 package, its missing declared
-runtime dependencies, owner-only pilot configuration and a manual loopback-only
-read-only test were authorized by the user on 2026-11-02. Enabling either user
-service, changing autostart or the existing notifier, removing Octopi or Pamac,
-release publication, remote push and every software update or other live
-software mutation remain separately gated and unauthorized.
+runtime dependencies, owner-only pilot configuration, a manual loopback-only
+read-only core and a manual tray test were authorized by the user on
+2026-11-02. Enabling either user service at login, changing autostart or the
+existing notifier, removing Octopi or Pamac, release publication, remote push
+and every software update or other live software mutation remain separately
+gated and unauthorized.
 
 ## Gate rules
 
@@ -386,6 +387,8 @@ packaged user unit failed live-provider discovery because `PrivateTmp` maps
 host root ownership to UID 65534 while the trusted-executable check requires
 UID 0. The packaged unit remains disabled and inactive. A non-enabled transient
 pilot unit provides the local test at `127.0.0.1:8788` without weakening any
-packaged file. RC2 must not be published or enabled; a corrected candidate and
-independent review are required. Exact evidence:
+packaged file. The separately requested packaged tray is manually active but
+remains disabled at login; it registered one Plasma status item and refused a
+duplicate instance. RC2 must not be published or enabled; a corrected candidate
+and independent review are required. Exact evidence:
 [M7 host pilot](docs/research/m7-host-pilot-2026-11-02.md).
