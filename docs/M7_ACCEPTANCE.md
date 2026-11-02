@@ -1,8 +1,9 @@
 # M7 Acceptance Packet
 
 **Prepared:** 2026-11-01  
-**Status:** corrected RC2 is ready for owner acceptance
-**Candidate:** `v0.6.0-rc.2`
+**Status:** M7 accepted on 2026-11-02; RC2 later rejected for a packaged-unit
+live-provider defect found by the managed-computer pilot
+**Candidate:** `v0.6.0-rc.2` — installed for bounded testing; do not publish
 
 ## RC1 Rejection
 
@@ -107,8 +108,8 @@ Final RC2 evidence hashes:
 ## Retained Gates
 
 - Public release, remote creation, push and upload remain unauthorized.
-- The managed-computer pilot remains unauthorized. Its plan does not install
-  or start anything by itself.
+- The bounded managed-computer pilot was authorized and started on 2026-11-02.
+  Its packaged-unit defect and transient test boundary are recorded separately.
 - Package/service installation, startup changes, notifier migration and
   Octopi/Pamac removal remain separate approvals.
 - Every first live software-changing path remains separately gated.
@@ -129,3 +130,13 @@ Final RC2 evidence hashes:
 **Accepted:** 2026-11-02. In the same instruction, the user separately
 authorized installing the exact signed RC2 package locally for testing. The
 bounded pilot authority is recorded in the managed-computer pilot plan.
+
+## Post-Acceptance Pilot Finding
+
+The managed-computer pilot installed the exact package and two missing declared
+dependencies without removal or unrelated upgrade, but found a release-blocking
+interaction between the packaged user unit's `PrivateTmp=true` and trusted
+executable ownership checks. RC2's normal unit cannot discover live providers
+on this host and must not be published or enabled. The working non-enabled
+transient pilot remains loopback-only for owner testing. See the
+[exact pilot evidence](research/m7-host-pilot-2026-11-02.md).

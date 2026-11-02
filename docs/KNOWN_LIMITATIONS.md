@@ -8,11 +8,13 @@ treated as working merely because its update source can be read.
 
 ## Release blockers
 
-1. **Public release remains unauthorized.** RC1 is rejected because its package
-   contained a built-in demonstration password. Corrected RC2 clean-build,
-   lifecycle, signature, package-inspection and independent-review evidence
-   passes locally, but owner acceptance is still required. There is no approved
-   remote, push or public upload.
+1. **RC2 must not be published.** RC1 is rejected because its package contained
+   a built-in demonstration password. RC2 passed its project-local evidence and
+   was accepted for a host pilot, but that pilot found that the packaged user
+   unit's `PrivateTmp` namespace causes every root-owned trusted executable to
+   be rejected. The normal service cannot provide truthful live inventory on
+   this host. A corrected candidate, repeated evidence and independent review
+   are required. There is no approved remote, push or public upload.
 2. **Live AUR builds remain blocked.** PKGBUILDs are arbitrary user-level code.
    The bounded M7 prototype hides credentials, state and unrelated user files
    in fixture tests, but isolated source acquisition, a clean dependency root

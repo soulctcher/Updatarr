@@ -21,6 +21,10 @@ def test_m7_scope_is_accepted_without_expanding_host_authority() -> None:
     assert "release publication" in milestones
     assert "every software update or other live" in milestones
     assert "service enablement" in milestones
+    assert "RC2 must not be published or enabled" in milestones
+    pilot = (ROOT / "docs/research/m7-host-pilot-2026-11-02.md").read_text()
+    assert "PrivateTmp=true" in pilot
+    assert "non-enabled transient" in pilot
 
 
 def test_selected_license_is_consistent_but_publication_is_still_blocked() -> None:

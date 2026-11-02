@@ -5,6 +5,12 @@ local installation and bounded manual read-only pilot on 2026-11-02. Service
 enablement remains a separate approval decision in
 [MILESTONES.md](../../MILESTONES.md).
 
+> **RC2 host-pilot blocker:** Do not enable `updatarr.service`. The 2026-11-02
+> managed-computer pilot found that its `PrivateTmp` namespace makes trusted
+> host executables appear non-root-owned and disables live provider discovery.
+> The installed package is retained only for the bounded transient local test
+> described in the [pilot evidence](../research/m7-host-pilot-2026-11-02.md).
+
 ## Before installation
 
 1. Build the browser with the locked npm inputs, run

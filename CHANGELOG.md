@@ -121,6 +121,13 @@ All notable project changes will be recorded here once implementation begins.
   exact signed RC2 package, its missing declared runtime dependencies and a
   manual loopback-only read-only pilot. Service enablement, notifier changes,
   publication and live software updates remain unauthorized.
+- The managed-computer pilot installed exactly Updatarr and its two missing
+  Argon2 dependencies with no removals. It preserved Octopi, notifier,
+  Flatpak, firmware, toolchain and autostart state.
+- The pilot rejected RC2 for normal service use after `PrivateTmp` mapped
+  trusted root-owned executables to UID 65534 and made every command-backed
+  live provider appear unsupported. The packaged unit remains disabled; a
+  non-enabled loopback-only transient unit is active for local testing.
 - M0 decisions accepted by the user on 2026-10-24; project advanced to the M1
   safe-foundation and read-only-product scope without authorizing host mutation.
 - M1 accepted by the user on 2026-10-24; project advanced to the M2 catalog,

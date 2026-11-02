@@ -16,8 +16,8 @@ privileged-helper and first-live-mutation approval gate is explicitly granted.
 
 The owner selected the GNU Affero General Public License version 3 or later
 (`AGPL-3.0-or-later`). See [LICENSE](LICENSE) and [NOTICE](NOTICE). The copyright
-record is `Copyright © 2026 Erik Winblad`. Remaining M7 release gates are still
-open, so no public release is authorized.
+record is `Copyright © 2026 Erik Winblad`. RC2 is retained for a bounded local
+test but has a packaged-user-unit blocker, so no public release is authorized.
 
 ## Run the development application
 
@@ -141,6 +141,9 @@ supported initial model.
 M0 through M7 are accepted. RC1 was rejected during final package inspection.
 Corrected local M7 candidate RC2 is built, signed, verified and independently
 reviewed. A bounded local installation pilot was authorized on 2026-11-02.
+That pilot found a packaged-user-unit live-provider blocker. The package is
+installed for testing through a non-enabled transient loopback-only unit; RC2
+must not be published or enabled as the normal service.
 Retained publication and live-action gates are listed in
 [MILESTONES.md](MILESTONES.md). Commands shown in research sources remain
 evidence, not setup instructions. System

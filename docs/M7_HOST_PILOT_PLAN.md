@@ -1,9 +1,8 @@
 # M7 Managed-Computer Pilot Plan
 
 **Prepared:** 2026-11-01
-**Status:** package installation, required declared dependencies, owner-only
-pilot configuration and manual loopback-only read-only testing authorized by
-the user on 2026-11-02
+**Status:** in progress; package installation passed, packaged user-unit live
+provider discovery failed, and a non-enabled transient test is active
 **Purpose:** prove the reviewed package can run read-only on the managed
 computer without replacing, disabling or changing an existing updater
 
@@ -98,3 +97,20 @@ backup and recheck permissions and SQLite integrity.
 
 A passed read-only pilot would not authorize service enablement, tray
 migration, notifier replacement or the first live software mutation.
+
+## 2026-11-02 Execution Record
+
+The exact signed package and its two missing declared dependencies installed as
+authorized. The permanent package units remained disabled. The normal core unit
+served loopback health and browser responses but reported every installed
+command-backed provider as **Not supported** because its `PrivateTmp` namespace
+changes visible root ownership to UID 65534. It was stopped and remains
+inactive.
+
+A non-enabled transient pilot unit using the same installed binary,
+configuration and state passed authentication and the read-only inventory when
+run without `PrivateTmp`. It remains active at `127.0.0.1:8788` for owner
+testing. Octopi, notifier/autostart, Flatpak, firmware and toolchain state are
+unchanged. The pilot cannot close until that test is stopped and the final
+after-state is recorded. Complete evidence is in
+[the host-pilot record](research/m7-host-pilot-2026-11-02.md).

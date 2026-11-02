@@ -376,3 +376,16 @@ includes its missing declared runtime dependencies, owner-only pilot
 configuration and a manual loopback-only read-only run. It does not authorize
 service enablement, tray autostart, notifier migration, Octopi/Pamac removal,
 LAN access, publication, live AUR or any software update through Updatarr.
+
+**M7 managed-computer pilot result (2026-11-02):** The exact RC2 package and
+its two missing declared dependencies installed without removal or unrelated
+upgrade. Package integrity, owner-only configuration, backup, authentication,
+loopback serving and a transient read-only inventory passed; Octopi, Flatpak,
+firmware, toolchain, notifier and autostart state remained unchanged. The
+packaged user unit failed live-provider discovery because `PrivateTmp` maps
+host root ownership to UID 65534 while the trusted-executable check requires
+UID 0. The packaged unit remains disabled and inactive. A non-enabled transient
+pilot unit provides the local test at `127.0.0.1:8788` without weakening any
+packaged file. RC2 must not be published or enabled; a corrected candidate and
+independent review are required. Exact evidence:
+[M7 host pilot](docs/research/m7-host-pilot-2026-11-02.md).
