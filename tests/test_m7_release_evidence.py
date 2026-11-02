@@ -109,18 +109,23 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
     signing = (ROOT / "docs/release/RELEASE_SIGNING.md").read_text()
     normalized_signing = " ".join(signing.split())
     assert (
-        "no release label or file has been signed or published"
+        "nothing has been signed or published yet"
         in normalized_signing
     )
     assert "721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E" in signing
     assert "5BD6 C0A8 D98B 655A EAF0 5EC2 E689 CC8D 9BBB 0AA4" in signing
+    assert (
+        "The first local M7 candidate label is `v0.6.0-rc.1`"
+        in normalized_signing
+    )
 
     milestones = " ".join((ROOT / "MILESTONES.md").read_text().split())
     assert (
-        "release publication, signing-key use and every live software mutation "
-        "remain separately gated and unauthorized"
+        "Signing-key use is authorized only for the final local M7 release "
+        "label and release files"
         in milestones
     )
+    assert "it does not authorize publication or a push" in milestones
     test_plan = (ROOT / "TEST_PLAN.md").read_text()
     assert "GnuPG command-line tool" in test_plan
 

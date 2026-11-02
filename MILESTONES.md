@@ -5,8 +5,9 @@
 build/test environments, simulators, fixtures, documentation and read-only
 inspection. Package installation on the managed computer,
 service/autostart changes, notifier changes, Octopi or Pamac removal, release
-publication, signing-key use and every live software mutation remain
-separately gated and unauthorized.
+publication and every live software mutation remain separately gated and
+unauthorized. Signing-key use is authorized only for the final local M7 release
+label and release files; it does not authorize publication or a push.
 
 ## Gate rules
 
@@ -304,7 +305,11 @@ and downloaded release files. The owner later authorized creating the dedicated
 key through a local password prompt. Its primary fingerprint is
 `721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E`; only the public key is in
 the project. No release label or artifact has been signed, and release
-publication remains separately gated.
+publication remains separately gated. On 2026-11-01, the owner authorized
+using this key through a local password prompt to sign the final local M7
+release label and files. Candidate labels use signed annotated
+`v<version>-rc.<number>` names and are never moved or reused; the first is
+`v0.6.0-rc.1`.
 
 **M7 copyright decision (2026-11-01):** The owner supplied the exact public
 record `Copyright © 2026 Erik Winblad`. It is recorded separately from the

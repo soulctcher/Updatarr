@@ -87,7 +87,8 @@ All notable project changes will be recorded here once implementation begins.
 - The owner selected one owner-controlled OpenPGP release key for both signed
   Git release labels and downloaded release files. The dedicated key now
   exists with its public fingerprint and verification guide in the project;
-  no release label or artifact has been signed or published.
+  the owner authorized its use for the final local M7 label and files, while
+  publication and pushing remain separately gated.
 - Recorded `AGPL-3.0-or-later` across project, browser and Arch package
   metadata; the exact copyright record is now
   `Copyright © 2026 Erik Winblad`.

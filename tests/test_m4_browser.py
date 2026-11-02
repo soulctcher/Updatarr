@@ -163,7 +163,7 @@ def test_rail_shows_faint_version_and_build_below_preview_box() -> None:
         browser = runtime.chromium.launch(headless=True)
         page = _signed_in_page(browser, base_url, {"width": 1280, "height": 900})
         safe_box = page.locator(".safe-mode").bounding_box()
-        stamp = page.get_by_text("Version 0.6.0 · Build M6", exact=True)
+        stamp = page.get_by_text("Version 0.6.0 · Build M7", exact=True)
         stamp_box = stamp.bounding_box()
         assert safe_box is not None and stamp_box is not None
         assert stamp_box["y"] >= safe_box["y"] + safe_box["height"]

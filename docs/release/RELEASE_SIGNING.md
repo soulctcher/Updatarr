@@ -1,8 +1,8 @@
 # Release Signing
 
 **Prepared:** 2026-11-01  
-**Status:** owner-controlled release key created; no release label or file has
-been signed or published
+**Status:** owner-controlled release key created; use authorized for the final
+local M7 release label and files; nothing has been signed or published yet
 
 ## Official Public Identity
 
@@ -30,7 +30,17 @@ Signing happens only after the reviewed source revision and release files are
 frozen and their checksums are recorded. The private key is not copied into a
 build container, package, repository or evidence bundle. Creating the key did
 not authorize publishing a release, pushing a Git label or changing the
-managed computer.
+managed computer. The owner separately authorized signing the final local M7
+release label and release files on 2026-11-01; that authorization still does
+not permit publication or a push.
+
+## Release Label Policy
+
+Release candidates use signed, annotated Git labels in the form
+`v<version>-rc.<number>`. A final release uses `v<version>`. A label is never
+moved or reused after it identifies reviewed files; a correction receives a
+new candidate number. The first local M7 candidate label is
+`v0.6.0-rc.1`.
 
 ## Verify the Public Key
 

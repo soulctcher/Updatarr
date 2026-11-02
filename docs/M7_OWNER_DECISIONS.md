@@ -117,11 +117,16 @@ is to keep the managed-computer pilot unauthorized.
       Git release labels and downloaded files** selected. The owner authorized
       creation of the dedicated key on 2026-11-01. Its primary fingerprint is
       `721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E`. No release label or
-      artifact has been signed, and publication remains separately gated.
+      artifact has been signed yet. The owner authorized its use for the final
+      local M7 label and files; publication and pushing remain separately
+      gated.
 - [x] AUR option **4B: do not produce a release candidate until AUR isolation
       passes** selected. This does not authorize a live AUR build.
 - [x] Managed-computer pilot remains unauthorized until its exact plan is
       reviewed separately.
 - [x] The owner approved the recorded AI-generated loop logo as an official
       Updatarr asset distributed under `AGPL-3.0-or-later`.
+- [x] Release labels use signed annotated `v<version>-rc.<number>` names for
+      candidates and `v<version>` for final releases. Labels are never moved or
+      reused; the first local M7 candidate is `v0.6.0-rc.1`.
 
