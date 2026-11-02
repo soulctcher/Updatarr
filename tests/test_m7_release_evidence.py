@@ -109,15 +109,12 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
     signing = (ROOT / "docs/release/RELEASE_SIGNING.md").read_text()
     normalized_signing = " ".join(signing.split())
     assert (
-        "RC1 signatures verify, but RC1 is rejected"
+        "corrected RC2 label and release-file signatures verify"
         in normalized_signing
     )
     assert "721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E" in signing
     assert "5BD6 C0A8 D98B 655A EAF0 5EC2 E689 CC8D 9BBB 0AA4" in signing
-    assert (
-        "The first local M7 candidate label is `v0.6.0-rc.1`"
-        in normalized_signing
-    )
+    assert "The corrected candidate is `v0.6.0-rc.2`" in normalized_signing
 
     milestones = " ".join((ROOT / "MILESTONES.md").read_text().split())
     assert (
@@ -126,7 +123,7 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
         in milestones
     )
     assert "it does not authorize publication or a push" in milestones
-    tag = subprocess.run(
+    rejected_tag = subprocess.run(
         ["git", "cat-file", "tag", "v0.6.0-rc.1"],
         cwd=ROOT,
         text=True,
@@ -134,9 +131,27 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
         check=False,
         timeout=10,
     )
-    assert tag.returncode == 0, tag.stderr
-    assert "object ee18e9a7f789404ece81488f150fd02e33837a42" in tag.stdout
-    assert "-----BEGIN PGP SIGNATURE-----" in tag.stdout
+    assert rejected_tag.returncode == 0, rejected_tag.stderr
+    assert (
+        "object ee18e9a7f789404ece81488f150fd02e33837a42"
+        in rejected_tag.stdout
+    )
+    assert "-----BEGIN PGP SIGNATURE-----" in rejected_tag.stdout
+
+    corrected_tag = subprocess.run(
+        ["git", "cat-file", "tag", "v0.6.0-rc.2"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=10,
+    )
+    assert corrected_tag.returncode == 0, corrected_tag.stderr
+    assert (
+        "object 660f4918ebc612e63953a0014199dfe481c100ef"
+        in corrected_tag.stdout
+    )
+    assert "-----BEGIN PGP SIGNATURE-----" in corrected_tag.stdout
     test_plan = (ROOT / "TEST_PLAN.md").read_text()
     assert "GnuPG command-line tool" in test_plan
 

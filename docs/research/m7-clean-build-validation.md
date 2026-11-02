@@ -1,8 +1,8 @@
 # M7 Clean Build and Package Validation
 
 **Prepared:** 2026-11-01
-**Status:** RC1 build and lifecycle evidence passed, but final package
-inspection rejected RC1; corrected RC2 rebuild is required
+**Status:** corrected RC2 build, package inspection, lifecycle, signatures and
+independent review passed; ready for owner acceptance
 **Authorization:** disposable project-local environments only; no package was
 installed on the managed computer
 
@@ -22,9 +22,9 @@ on the managed computer.
 
 ## Repeated Build Result
 
-Two builds used the same builder image and produced the same 212-file payload
+Two builds used the same builder image and produced the same 213-file payload
 manifest. The package archives differed only in generated package metadata:
-`.PKGINFO` recorded build timestamps 19 seconds apart, which also changes
+`.PKGINFO` recorded build timestamps 13 seconds apart, which also changes
 `.BUILDINFO`, `.MTREE` and the compressed archive bytes. After excluding those
 three generated metadata files, every installed payload path and SHA-256
 digest matched.
@@ -38,20 +38,21 @@ Polkit rule, `/etc` payload or workspace path.
 Generated build evidence stays under ignored `build/` paths. The reviewed
 release files are assembled separately under the ignored local release
 directory. Exact final source, package, builder and inventory digests for
-candidate revision `ee18e9a7f789404ece81488f150fd02e33837a42` are:
+candidate revision `660f4918ebc612e63953a0014199dfe481c100ef` are:
 
 | Evidence | SHA-256 |
 | --- | --- |
-| Source archive | `b8dbeb571e99d8248b30b9571b3f289ec22749a0d117496f3103f35337c4a794` |
-| First package archive | `47266c88b5029e5cb25a7bb91437fdfa5d3f95b160855b922cc06609f7238837` |
-| Repeated package archive | `1bf8c185be95d78f35c9d3661a4eb9a79de0c1b5ea36c3f7fda0a8ec364740fb` |
-| Normalized payload manifest | `6e2d5e2e80bad6af87478c857e89312a673441553f77a7062e9c02ad17b09e2f` |
+| Source archive | `3f00d78bb7784487daaa8f687006404de30620e9486ff67bbd78aa8681af3eb9` |
+| First package archive | `59a95be67a26776da10a365e7088cb16c3f3dd09fbca0141308411a3cc2ad666` |
+| Repeated package archive | `429f94ce834a6317d1f44ac4437ad21cbc5d7913f322253a0702d4a35fe66696` |
+| Normalized payload manifest | `221413a2d48695d63472aab34d767982dd8ae6562a7630bfb1d8ebaa58f11f92` |
 | Builder package inventory | `a2cb2bf8ca6db33e144040b4e3a6fc74219f2bad6e9d68671b34362e03b682d0` |
 | Builder image record | `032c8bfc0ea173ed6f12b349780d767321de8c44af7f19dd25b46e77131d0744` |
 
-The normalized comparison contains 212 ordinary payload files; the package
-archive contains 253 entries including directories and Arch metadata. The only
-`.PKGINFO` difference is `builddate` (`1793578191` versus `1793578199`).
+The normalized comparison contains 213 ordinary payload files; the package
+archive contains 254 entries including directories and Arch metadata. The only
+`.PKGINFO` difference is `builddate` (`1793578902` versus `1793578915`). Neither
+extracted package contains either `updatarr-demo` or `test-only-password`.
 
 ## Disposable Lifecycle Result
 
@@ -77,9 +78,9 @@ Final lifecycle evidence hashes:
 
 | Evidence | SHA-256 |
 | --- | --- |
-| Lifecycle log | `64e299002a332fca34dc0b1747ccffcfc73d7d46c3d53b984faa25c33920930c` |
-| Lifecycle package checksums | `2c1fd4334e5be66a55be8110796def046859b343cae19bcafaf2c5ba5749743e` |
-| Lifecycle image records | `e25305435b9a41925e3b63acd944ddcc720d2d44e375ae2b5702778c556a47d2` |
+| Lifecycle log | `591feb125de313f4bcffcfa6f98630d0325494d1afd3afc244f9c172d12152f0` |
+| Lifecycle package checksums | `9ba5f67f89b69202dfd15711594c26c135015aff2c675fd56d07ddd7236247dc` |
+| Lifecycle image records | `4ea6c66d99434c2fbfa21d0932d287c3f15f9139dee833d27556eb95aabaace2` |
 
 ## Runtime Inventory Evidence
 
@@ -91,15 +92,14 @@ inventory, not legal advice.
 | Evidence | SHA-256 |
 | --- | --- |
 | Declared dependency-license inventory | `51dec1f0a350a06981ef48bc00dc170f52ebb923f3299609b579c26ed7025bb5` |
-| Reviewed-input hash manifest | `dd99263ac4254de5c47ddc5d54b7883835b7b1cd68a950da9e3403157b69dc98` |
-| SBOM hash manifest | `7880247e77e68b5a0227ef1446553634924d25e6f7dfda4dd46503a031565216` |
-| Python CycloneDX SBOM | `0b8b8532faf9b4a419ed345c3990ff1e4fbce893bc8cf21b525610f642e257d5` |
-| Browser CycloneDX SBOM | `66fc012c188c4b4df8ba5ec732e0688b58e250a6c77b858df5a419e84d96fa63` |
+| Reviewed-input hash manifest | `9836b3c3800bb9489c8f9c14e40641da8269e337bbf2fe396fd565e97d9a1898` |
+| SBOM hash manifest | `1a421ce70c6a5defc05950358d059527ed864cf25668d5becb1dad0f0a9f13d1` |
+| Python CycloneDX SBOM | `e57fede6276abf10bc7e9a3d0a6f35f80e0f637cb00db320fe348dc8c659e1aa` |
+| Browser CycloneDX SBOM | `5fb573d78bee04861d1b718c22babb0cfeba52eaf97653f99d8c819bfbf3585b` |
 
 ## Remaining Gates
 
-- Repeat the clean builds, package inspection, lifecycle, evidence generation
-  and signatures for RC2 after removing the built-in development password.
+- Obtain owner acceptance of the reviewed local RC2 candidate.
 - Keep live AUR disabled until isolated source acquisition, clean dependency-
   root preparation and dependency handling are implemented and separately
   accepted.
@@ -110,12 +110,12 @@ inventory, not legal advice.
 
 ## Final Automated Verification
 
-- Complete Python suite: **322 passed in 194.85 seconds**, with one known
+- Complete Python suite: **324 passed in 195.73 seconds**, with one known
   Starlette test-client deprecation warning.
-- Focused M7 AUR and release-evidence suite: **22 passed**.
+- Focused M7 AUR and release-evidence suite: **23 passed in 13.79 seconds**.
 - TypeScript checking and the Vite production build passed.
 - Python compilation, shell parsing, Git whitespace checks and
   `makepkg --verifysource` passed.
-- Independent implementation re-review found no remaining critical, high or
-  medium findings. Final candidate re-review is recorded in the M7 acceptance
-  packet.
+- Independent final RC2 review found no remaining critical, high or medium
+  findings. Its two low wording/status findings were corrected before owner
+  acceptance was requested.

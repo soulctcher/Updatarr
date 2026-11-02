@@ -258,21 +258,21 @@ release provenance/tag/signing or live AUR isolation blockers, and does not
 authorize release publication, package installation, service or notifier
 changes, software removal or any live software mutation.
 
-## M7 — release candidate and controlled deployment (proposed)
+## M7 — release candidate and controlled deployment
 
 - [x] Record the owner-selected redistribution license, authenticated source
       provenance, release-tag policy, signing policy and generated-asset
       provenance.
-- [ ] Produce and compare clean, disposable Arch builds with checksums, a
+- [x] Produce and compare clean, disposable Arch builds with checksums, a
       dependency/license inventory and a software bill of materials.
 - [x] Test AUR build isolation against hostile inputs, or keep live AUR
       execution visibly disabled with no override.
-- [ ] Prove package install, startup, backup, restore, upgrade and uninstall in
+- [x] Prove package install, startup, backup, restore, upgrade and uninstall in
       a disposable system before requesting any managed-computer pilot.
 - [x] Prepare the separately gated, loopback-only, read-only host pilot plan
       that preserves existing services, notifier and user state. Execution is
       not authorized.
-- [ ] Complete the release-candidate test matrix and independent review.
+- [x] Complete the release-candidate test matrix and independent review.
 
 **Proposed gate:** M7 acceptance creates a reviewed release candidate only.
 Public release publication, managed-computer package or service changes,
@@ -344,13 +344,13 @@ independent review later completed as recorded below.
 **M7 security and build evidence (2026-11-01):** The reviewed-tree AUR
 isolation seam now uses bounded streaming logs, a verified memory-backed build
 tree under cgroup limits, no-follow input copying, aggregate artifact limits
-and exact package identity checks. Its final 22 focused tests and independent
+and exact package identity checks. Its final 23 focused tests and independent
 re-review passed with no remaining critical, high or medium implementation
 findings. This accepts the isolation boundary selected in owner choice 4B; it
 does not enable live AUR. Source acquisition, a clean dependency root and
-dependency preparation remain unavailable with no override. Two final clean
-builds had identical 212-file normalized payload manifests, the disposable
-package lifecycle passed, and the complete suite passed 322 tests. Exact
+dependency preparation remain unavailable with no override. The corrected RC2
+clean builds have identical 213-file normalized payload manifests, the
+disposable package lifecycle passed, and the complete suite passed 324 tests. Exact
 evidence is recorded in the M7 validation documents.
 
 **M7 RC1 rejection (2026-11-01):** The signed local label `v0.6.0-rc.1` remains
@@ -358,6 +358,15 @@ immutable at commit `ee18e9a7f789404ece81488f150fd02e33837a42`, but that candida
 is rejected and must not be published. Final package inspection found the old
 demonstration password in the installed runtime, browser and packaged README.
 The replacement removes every built-in development password, requires an
-explicit password even in development mode and is protected by package-input
-regression checks. A new `v0.6.0-rc.2` candidate requires complete rebuild,
-lifecycle, signing and independent review evidence.
+explicit password even in development mode and is protected by shipped-input
+and package-level regression checks.
+
+**M7 RC2 evidence (2026-11-01):** The corrected signed local label
+`v0.6.0-rc.2` identifies commit `660f4918ebc612e63953a0014199dfe481c100ef`.
+Two networkless clean builds have identical 213-file normalized payloads and
+183-package builder inventories. Neither extracted package contains either
+known development-password string. The disposable lifecycle, fresh SBOM/license
+evidence, detached file signatures and signed-label verification all pass.
+The full suite passed 324 tests. Final independent candidate review found no
+critical, high or medium findings; publication and every host/live-action gate
+remain unchanged.

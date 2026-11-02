@@ -117,9 +117,9 @@ is to keep the managed-computer pilot unauthorized.
       Git release labels and downloaded files** selected. The owner authorized
       creation of the dedicated key on 2026-11-01. Its primary fingerprint is
       `721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E`. The rejected local
-      RC1 label and files verify with this key, but must not be published. A
-      corrected RC2 requires new signatures. Publication and pushing remain
-      separately gated.
+      RC1 and corrected RC2 labels and files verify with this key. RC1 must not
+      be published; RC2 remains local pending owner acceptance. Publication
+      and pushing remain separately gated.
 - [x] AUR option **4B: do not produce a release candidate until AUR isolation
       passes** selected. This does not authorize a live AUR build.
 - [x] Managed-computer pilot remains unauthorized until its exact plan is
@@ -128,5 +128,6 @@ is to keep the managed-computer pilot unauthorized.
       Updatarr asset distributed under `AGPL-3.0-or-later`.
 - [x] Release labels use signed annotated `v<version>-rc.<number>` names for
       candidates and `v<version>` for final releases. Labels are never moved or
-      reused; the first local M7 candidate is `v0.6.0-rc.1`.
+      reused. Rejected RC1 remains immutable; the corrected local candidate is
+      `v0.6.0-rc.2`.
 

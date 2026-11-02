@@ -138,8 +138,9 @@ supported initial model.
 
 ## Development status
 
-M0 through M6 are accepted. RC1 was rejected during final package inspection,
-and corrected M7 candidate RC2 is being prepared. Retained publication and
+M0 through M6 are accepted. RC1 was rejected during final package inspection.
+Corrected local M7 candidate RC2 is built, signed, verified and independently
+reviewed. It is ready for owner acceptance. Retained publication and
 live-action gates are listed in
 [MILESTONES.md](MILESTONES.md). Commands shown in research sources remain
 evidence, not setup instructions. System

@@ -8,6 +8,7 @@ The exact copyright record is:
 
 `Copyright © 2026 Erik Winblad`
 
-Rejected RC1 has valid local signatures, but corrected RC2 proof remains
-pending. Public release remains separately unauthorized until the owner accepts
-M7 and later approves a remote and publication.
+Rejected RC1 has valid local signatures. Corrected RC2 clean-build, lifecycle,
+package-inspection, signature and independent-review proof passes locally;
+owner acceptance remains pending. Public release remains separately
+unauthorized until the owner later approves a remote and publication.

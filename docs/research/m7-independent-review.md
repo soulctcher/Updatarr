@@ -1,8 +1,8 @@
 # M7 Independent Review
 
 **Reviewed:** 2026-11-01
-**Result:** implementation re-review passed; RC1 candidate review aborted after
-package inspection found a built-in demonstration password; RC2 review pending
+**Result:** corrected RC2 passed final independent review with no critical,
+high or medium findings
 **Scope:** current M7 changes since baseline commit `373cb91`
 
 ## Initial Findings
@@ -35,10 +35,32 @@ Focused regression evidence passed 21 tests without resource-pressure
 fixtures. The independent re-review found no remaining critical, high or
 medium implementation issue in the reviewed fixes.
 
-The RC1 application suite subsequently passed **322 tests in
-194.85 seconds** with one known third-party deprecation warning. TypeScript
-checking, the Vite production build, Python compilation, package-source
-verification and the exact final disposable lifecycle also passed.
+The corrected RC2 application suite passed **324 tests in 195.73 seconds** with
+one known third-party deprecation warning. TypeScript checking, the Vite
+production build, Python compilation, package-source verification and the exact
+final disposable lifecycle also passed. Two extracted RC2 packages contain
+neither known development-password string. The focused M7 AUR and release-
+evidence suite passed 23 tests in 13.79 seconds after the evidence records were
+updated.
+
+## Final RC2 Review
+
+The independent reviewer verified the signed `v0.6.0-rc.2` label and all three
+detached signatures from the public-only keyring. The label points to commit
+`660f4918ebc612e63953a0014199dfe481c100ef`; no secret or revocation material
+is present. Every acceptance hash matched, the release package equals the first
+clean build, the source checksum matches the frozen PKGBUILD and the reviewed-
+input hashes match the candidate.
+
+The reviewer independently confirmed identical 213-file normalized payloads
+and 183-package builder inventories. Only build-time package metadata differs.
+Neither extracted package nor either archive contains a known development
+password. The lifecycle terminal result, SBOM manifests, retained AUR block and
+all publication, host and live-mutation gates also matched the records.
+
+No critical, high or medium finding remains. Two low documentation findings—an
+awkward double negative and the stale word “proposed” in the M7 heading—were
+corrected before presentation for owner acceptance.
 
 ## Retained Gates
 
@@ -52,6 +74,7 @@ The review treats these as intentional blockers, not implementation defects:
 
 Rejected RC1's signed local label and detached release-file signatures verify
 with the owner-controlled key, but valid signatures do not make the defective
-package acceptable. The accepted bounded AUR prototype satisfies the owner's
-M7 candidate gate, but it does not enable live AUR. Corrected RC2 requires a
-complete new candidate review before owner acceptance.
+package acceptable. Corrected RC2's label and detached signatures also verify
+from a fresh public-only keyring. The accepted bounded AUR prototype satisfies
+the owner's M7 candidate gate, but it does not enable live AUR. RC2 is now ready
+for owner acceptance.

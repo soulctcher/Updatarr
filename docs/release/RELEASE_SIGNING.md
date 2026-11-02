@@ -1,8 +1,8 @@
 # Release Signing
 
 **Prepared:** 2026-11-01  
-**Status:** RC1 signatures verify, but RC1 is rejected; corrected RC2 signing
-and verification remain pending; nothing has been pushed or published
+**Status:** corrected RC2 label and release-file signatures verify locally;
+nothing has been pushed or published
 
 ## Official Public Identity
 
@@ -39,8 +39,9 @@ not permit publication or a push.
 Release candidates use signed, annotated Git labels in the form
 `v<version>-rc.<number>`. A final release uses `v<version>`. A label is never
 moved or reused after it identifies reviewed files; a correction receives a
-new candidate number. The first local M7 candidate label is
-`v0.6.0-rc.1`.
+new candidate number. The first local M7 candidate label is `v0.6.0-rc.1`; it
+was rejected without moving or deleting it. The corrected candidate is
+`v0.6.0-rc.2`.
 
 ## Rejected Local RC1
 
@@ -59,6 +60,19 @@ moved or deleted; the corrected candidate receives the new label
 The fresh keyring reports the public key as untrusted until the verifier
 independently compares the complete fingerprint. That trust warning is
 expected and is separate from the successful cryptographic signature check.
+
+## Corrected Local RC2
+
+- **Label:** `v0.6.0-rc.2`
+- **Commit:** `660f4918ebc612e63953a0014199dfe481c100ef`
+- **Label object:** `d46c9f88dc87b9f67d371351a899cc4767bbd63c`
+- **Signed files:** `updatarr-0.6.0.tar.gz`,
+  `updatarr-0.6.0-1-any.pkg.tar.zst` and `SHA256SUMS`
+- **Verification:** the label and all three detached signatures passed from a
+  fresh keyring containing only the bundled public key
+
+RC2 remains a local candidate pending owner acceptance. These signatures do
+not authorize a push, upload or publication.
 
 ## Verify the Public Key
 

@@ -111,6 +111,12 @@ All notable project changes will be recorded here once implementation begins.
 - Removed the built-in development password and browser prefill. Development
   mode now requires an explicit password, with shipped-input and package-level
   regression checks before RC2.
+- Built corrected RC2 twice in the networkless disposable builder, verified
+  identical normalized payloads, passed the disposable package lifecycle and
+  confirmed both extracted packages contain no known development password.
+- Created and verified the signed local `v0.6.0-rc.2` label, source archive,
+  Arch package and checksum list. Nothing was pushed, uploaded or installed on
+  the managed computer.
 - M0 decisions accepted by the user on 2026-10-24; project advanced to the M1
   safe-foundation and read-only-product scope without authorizing host mutation.
 - M1 accepted by the user on 2026-10-24; project advanced to the M2 catalog,
