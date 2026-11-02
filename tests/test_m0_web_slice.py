@@ -58,6 +58,7 @@ def _server(url_base: str = "", event_history_limit: int = 100, seed=None):  # t
         "PYTHONPATH": str(ROOT / "src"), "UPDATARR_PORT": str(port), "UPDATARR_URL_BASE": url_base,
             "UPDATARR_PROVIDER_MODE": "simulator",
             "UPDATARR_DEVELOPMENT_MODE": "1",
+        "UPDATARR_PASSWORD": "test-only-password",
         "UPDATARR_STATE_PATH": str(state_path),
         "UPDATARR_EVENT_HISTORY_LIMIT": str(event_history_limit),
     })
@@ -148,7 +149,7 @@ def _login(port: int, base: str = "") -> tuple[str, str]:
     status, headers, body = _request(
         port, "POST", f"{base}/api/v1/session",
         headers={"Origin": f"http://127.0.0.1:{port}"},
-        body={"password": "updatarr-demo"},
+        body={"password": "test-only-password"},
     )
     assert status == 200
     cookie = headers["set-cookie"].split(";", 1)[0]
@@ -173,8 +174,8 @@ def test_auth_host_origin_csrf_and_duplicate_task_boundaries(server) -> None:
     _, port = server
     status, _, _ = _request(port, "GET", "/api/v1/overview")
     assert status == 401
-    assert _request(port, "POST", "/api/v1/session", body={"password": "updatarr-demo"})[0] == 403
-    assert _request(port, "POST", "/api/v1/session", headers={"Origin": "https://attacker.invalid"}, body={"password": "updatarr-demo"})[0] == 403
+    assert _request(port, "POST", "/api/v1/session", body={"password": "test-only-password"})[0] == 403
+    assert _request(port, "POST", "/api/v1/session", headers={"Origin": "https://attacker.invalid"}, body={"password": "test-only-password"})[0] == 403
     assert _request(port, "POST", "/api/v1/session", headers={"Origin": f"http://127.0.0.1:{port}"}, body={"password": "x" * 9000})[0] == 413
     assert _chunked_request(port, "/api/v1/session", [b'{"password":"', b"x" * 5000, b"x" * 5000, b'"}']) == 413
     assert _request(port, "GET", "/api/v1/not-a-route")[0] == 404
@@ -229,7 +230,8 @@ def test_browser_layout_has_no_horizontal_overflow(server, viewport) -> None:
         browser = runtime.chromium.launch(headless=True)
         page = browser.new_page(viewport=viewport)
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         page.get_by_role("heading", name="Software Overview").wait_for()
         assert page.get_by_role("button", name="Check software").is_visible()
         page.get_by_role("button", name="Check software").click()
@@ -248,7 +250,8 @@ def test_m1_browser_flow_filters_software_and_persists_theme(server) -> None:
         browser = runtime.chromium.launch(headless=True)
         page = browser.new_page(viewport={"width": 1280, "height": 800})
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         page.get_by_role("button", name="Check software").click()
         page.locator(".metrics strong", has_text="5").first.wait_for(timeout=4000)
         page.get_by_role("button", name="Software", exact=True).click()
@@ -273,7 +276,8 @@ def test_sse_history_reset_preserves_active_software_filter() -> None:
             browser = runtime.chromium.launch(headless=True)
             context = browser.new_context(viewport={"width": 1280, "height": 800})
             page = context.new_page(); page.goto(base_url)
-            page.get_by_role("button", name="Sign in").click()
+            page.get_by_label("Password").fill("test-only-password")
+            page.get_by_role("button", name="Sign in", exact=True).click()
             page.get_by_role("button", name="Check software").click()
             page.get_by_text("Read-only inventory check complete").wait_for(timeout=8000)
             page.get_by_role("button", name="Software", exact=True).click()
@@ -308,7 +312,8 @@ def test_all_themes_are_in_settings_and_not_the_top_bar(server) -> None:
         browser = runtime.chromium.launch(headless=True)
         page = browser.new_page(viewport={"width": 1280, "height": 800})
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         assert page.locator(".topbar select").count() == 0
         page.get_by_role("button", name="Settings", exact=True).click()
         selector = page.get_by_label("Theme")
@@ -359,7 +364,8 @@ def test_system_theme_keyboard_reduced_motion_and_200_percent_zoom(server) -> No
         browser = runtime.chromium.launch(headless=True)
         page = browser.new_page(viewport={"width": 1440, "height": 900}, reduced_motion="reduce")
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         page.get_by_role("button", name="Settings", exact=True).click()
         selector = page.get_by_label("Theme")
         selector.focus(); selector.press("Home"); selector.press("ArrowDown")
@@ -396,7 +402,8 @@ def test_m6_high_density_400_percent_zoom_and_accessible_controls(server) -> Non
         )
         page = context.new_page()
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         page.get_by_role("button", name="Check software").click()
         page.locator(".metrics strong", has_text="5").first.wait_for(timeout=4000)
         # A 360 CSS-pixel viewport represents a 1440-pixel desktop at 400%
@@ -444,7 +451,8 @@ def test_m6_browser_rejects_an_incompatible_service_version(server) -> None:
 
         page.route("**/api/v1/session", change_version)
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         page.get_by_role("alert").get_by_text(
             "This page and the Updatarr service use different versions.", exact=False
         ).wait_for()
@@ -475,7 +483,8 @@ def test_m6_large_inventory_pager_keeps_unsubmitted_search_separate() -> None:
         browser = runtime.chromium.launch(headless=True)
         page = browser.new_page(viewport={"width": 1280, "height": 800})
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         page.get_by_role("button", name="Software", exact=True).click()
         pager = page.get_by_role("navigation", name="Installed software pages")
         pager.get_by_text("1–100 of 205 recorded", exact=True).wait_for()
@@ -499,7 +508,8 @@ def test_navigation_and_live_progress_have_accessible_state(server) -> None:
         browser = runtime.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         page.get_by_role("heading", name="Software Overview").wait_for()
         assert page.locator('[aria-current="page"]').count() == 2
         assert page.get_by_role("status").count() == 1
@@ -517,7 +527,8 @@ def test_production_copy_avoids_internal_jargon(server) -> None:
         browser = runtime.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto(base_url)
-        page.get_by_role("button", name="Sign in").click()
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
         collected = []
         for view in ("Overview", "Software", "Updates", "History", "Settings"):
             page.get_by_role("button", name=view, exact=True).click()

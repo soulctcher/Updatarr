@@ -8,5 +8,6 @@ The exact copyright record is:
 
 `Copyright © 2026 Erik Winblad`
 
-This project is not ready for publication until release proof and the remaining
-M7 gates are complete.
+Rejected RC1 has valid local signatures, but corrected RC2 proof remains
+pending. Public release remains separately unauthorized until the owner accepts
+M7 and later approves a remote and publication.

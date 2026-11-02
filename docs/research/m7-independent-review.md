@@ -1,7 +1,8 @@
 # M7 Independent Review
 
 **Reviewed:** 2026-11-01
-**Result:** implementation re-review passed; retained release gates remain
+**Result:** implementation re-review passed; RC1 candidate review aborted after
+package inspection found a built-in demonstration password; RC2 review pending
 **Scope:** current M7 changes since baseline commit `373cb91`
 
 ## Initial Findings
@@ -34,8 +35,8 @@ Focused regression evidence passed 21 tests without resource-pressure
 fixtures. The independent re-review found no remaining critical, high or
 medium implementation issue in the reviewed fixes.
 
-The final complete application suite subsequently passed **321 tests in
-193.39 seconds** with one known third-party deprecation warning. TypeScript
+The RC1 application suite subsequently passed **322 tests in
+194.85 seconds** with one known third-party deprecation warning. TypeScript
 checking, the Vite production build, Python compilation, package-source
 verification and the exact final disposable lifecycle also passed.
 
@@ -43,9 +44,14 @@ verification and the exact final disposable lifecycle also passed.
 
 The review treats these as intentional blockers, not implementation defects:
 
-- no approved remote, signed release label or signed artifact exists;
+- no approved remote, push or public release exists;
 - AUR source acquisition, clean dependency root and dependency preparation are
   not implemented;
 - the managed-computer pilot remains unauthorized; and
-- a release candidate cannot be declared while the owner-selected 4B AUR gate
-  remains open.
+- every first live software-changing path remains separately gated.
+
+Rejected RC1's signed local label and detached release-file signatures verify
+with the owner-controlled key, but valid signatures do not make the defective
+package acceptable. The accepted bounded AUR prototype satisfies the owner's
+M7 candidate gate, but it does not enable live AUR. Corrected RC2 requires a
+complete new candidate review before owner acceptance.

@@ -8,9 +8,10 @@ treated as working merely because its update source can be read.
 
 ## Release blockers
 
-1. **Authenticated release provenance is incomplete.** A local Git baseline
-   now exists, but there is no approved remote, signed release label or signed
-   artifact.
+1. **Public release remains unauthorized.** RC1's local signed label and files
+   verify, but RC1 is rejected because its package contained a built-in
+   demonstration password. Corrected RC2 evidence is pending, and there is no
+   approved remote, push or public upload.
 2. **Live AUR builds remain blocked.** PKGBUILDs are arbitrary user-level code.
    The bounded M7 prototype hides credentials, state and unrelated user files
    in fixture tests, but isolated source acquisition, a clean dependency root
@@ -20,9 +21,10 @@ treated as working merely because its update source can be read.
    fixture or simulator coverage only. Each first live trial still needs the
    separate approval named in [MILESTONES.md](../MILESTONES.md).
 
-The clean-container package build and disposable package lifecycle drill have
-passed. Those results do not install or authorize Updatarr on the managed
-computer and do not resolve the live AUR isolation blocker.
+RC1's clean-container builds, signatures and disposable package lifecycle drill
+passed before package inspection rejected it. Corrected RC2 must repeat those
+checks. None of this work installs or authorizes Updatarr on the managed
+computer or enables live AUR.
 
 ## Unsupported or deliberately limited behavior
 

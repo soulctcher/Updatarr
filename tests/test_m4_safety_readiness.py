@@ -221,12 +221,12 @@ def test_m4_simulator_plans_use_typed_operations_without_command_surface() -> No
 
 def _login(client: TestClient) -> None:
     response = client.post("/api/v1/session", headers={"Origin": "http://testserver"},
-                           json={"password": "updatarr-demo"})
+                           json={"password": "test-only-password"})
     assert response.status_code == 200
 
 
 def test_m4_api_is_authenticated_truthful_and_reports_no_mutation(tmp_path: Path) -> None:
-    simulator = create_app(AppConfig(public_origin="http://testserver", storage_path=tmp_path / "sim.db"))
+    simulator = create_app(AppConfig(password="test-only-password", public_origin="http://testserver", storage_path=tmp_path / "sim.db"))
     with TestClient(simulator) as client:
         assert client.get("/api/v1/safety-readiness").status_code == 401
         _login(client)
@@ -244,7 +244,7 @@ def test_m4_api_is_authenticated_truthful_and_reports_no_mutation(tmp_path: Path
         assert len(preview["details"]["preview"]["candidates"]) == 3
         assert preview["details"]["preview"]["removal_performed"] is False
 
-    live = create_app(AppConfig(public_origin="http://testserver", storage_path=tmp_path / "live.db",
+    live = create_app(AppConfig(password="test-only-password", public_origin="http://testserver", storage_path=tmp_path / "live.db",
                                 provider_mode="live"))
     with TestClient(live) as client:
         _login(client)

@@ -109,7 +109,7 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
     signing = (ROOT / "docs/release/RELEASE_SIGNING.md").read_text()
     normalized_signing = " ".join(signing.split())
     assert (
-        "nothing has been signed or published yet"
+        "RC1 signatures verify, but RC1 is rejected"
         in normalized_signing
     )
     assert "721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E" in signing
@@ -126,8 +126,33 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
         in milestones
     )
     assert "it does not authorize publication or a push" in milestones
+    tag = subprocess.run(
+        ["git", "cat-file", "tag", "v0.6.0-rc.1"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=10,
+    )
+    assert tag.returncode == 0, tag.stderr
+    assert "object ee18e9a7f789404ece81488f150fd02e33837a42" in tag.stdout
+    assert "-----BEGIN PGP SIGNATURE-----" in tag.stdout
     test_plan = (ROOT / "TEST_PLAN.md").read_text()
     assert "GnuPG command-line tool" in test_plan
+
+
+def test_shipped_application_inputs_contain_no_known_demo_password() -> None:
+    shipped_inputs = (
+        ROOT / "README.md",
+        ROOT / "src/updatarr/app.py",
+        ROOT / "src/updatarr/deployment.py",
+        ROOT / "web/src/App.tsx",
+    )
+
+    for path in shipped_inputs:
+        content = path.read_text()
+        assert "updatarr-demo" not in content, path
+        assert "test-only-password" not in content, path
 
 
 def test_locked_runtime_sboms_are_generated_without_release_actions(tmp_path: Path) -> None:

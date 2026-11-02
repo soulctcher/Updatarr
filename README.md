@@ -31,15 +31,18 @@ npm install
 npm run build
 cd ..
 uv sync --extra test
+read -rsp "Development password: " UPDATARR_PASSWORD
+export UPDATARR_PASSWORD
 UPDATARR_DEVELOPMENT_MODE=1 UPDATARR_PROVIDER_MODE=simulator \
   .venv/bin/python -m updatarr.main
 ```
 
-Open `http://127.0.0.1:8788` and use the clearly labeled development password
-`updatarr-demo`. To exercise a URL base, set `UPDATARR_URL_BASE=/updatarr` and
-open `http://127.0.0.1:8788/updatarr/`. The server defaults to loopback unless
-a validated HTTPS deployment explicitly selects a specific
-non-loopback address. The theme selector is under **Settings → Appearance**.
+Choose a development password of at least eight characters in the local prompt,
+then open `http://127.0.0.1:8788`. To exercise a URL base, set
+`UPDATARR_URL_BASE=/updatarr` and open
+`http://127.0.0.1:8788/updatarr/`. The server defaults to loopback unless a
+validated HTTPS deployment explicitly selects a specific non-loopback address.
+The theme selector is under **Settings → Appearance**.
 
 When a reviewed simulator plan is waiting for confirmation, its exact plan ID
 can be reviewed from an interactive terminal on the managed computer:
@@ -114,6 +117,7 @@ supported initial model.
 - [M6 acceptance packet](docs/M6_ACCEPTANCE.md)
 - [Proposed M7 scope and acceptance gate](docs/M7_PROPOSAL.md)
 - [M7 owner decisions](docs/M7_OWNER_DECISIONS.md)
+- [M7 acceptance packet](docs/M7_ACCEPTANCE.md)
 - [M7 release-foundations research](docs/research/m7-release-foundations-research.md)
 - [M7 AUR isolation validation](docs/research/m7-aur-isolation-validation.md)
 - [M7 clean build and package validation](docs/research/m7-clean-build-validation.md)
@@ -134,8 +138,9 @@ supported initial model.
 
 ## Development status
 
-M0 through M6 are accepted, and project-local M7 implementation is authorized.
-Its scope and retained publication and live-action gates are listed in
+M0 through M6 are accepted. RC1 was rejected during final package inspection,
+and corrected M7 candidate RC2 is being prepared. Retained publication and
+live-action gates are listed in
 [MILESTONES.md](MILESTONES.md). Commands shown in research sources remain
 evidence, not setup instructions. System
 dependencies outside the project environment, services, autostart, package

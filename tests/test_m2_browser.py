@@ -32,6 +32,7 @@ def _server():
         "PYTHONPATH": str(ROOT / "src"), "UPDATARR_PORT": str(port),
         "UPDATARR_PROVIDER_MODE": "simulator",
         "UPDATARR_DEVELOPMENT_MODE": "1",
+        "UPDATARR_PASSWORD": "test-only-password",
         "UPDATARR_STATE_PATH": str(Path(state_directory.name) / "state.db"),
     })
     process = subprocess.Popen(
@@ -59,7 +60,8 @@ def _server():
 def _signed_in_page(browser, base_url: str, viewport: dict[str, int]):  # type: ignore[no-untyped-def]
     page = browser.new_page(viewport=viewport)
     page.goto(base_url)
-    page.get_by_role("button", name="Sign in").click()
+    page.get_by_label("Password").fill("test-only-password")
+    page.get_by_role("button", name="Sign in", exact=True).click()
     page.get_by_role("heading", name="Software Overview").wait_for()
     return page
 

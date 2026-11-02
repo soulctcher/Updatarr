@@ -260,19 +260,19 @@ changes, software removal or any live software mutation.
 
 ## M7 — release candidate and controlled deployment (proposed)
 
-- [ ] Record the owner-selected redistribution license, authenticated source
+- [x] Record the owner-selected redistribution license, authenticated source
       provenance, release-tag policy, signing policy and generated-asset
       provenance.
-- [x] Produce and compare clean, disposable Arch builds with checksums, a
+- [ ] Produce and compare clean, disposable Arch builds with checksums, a
       dependency/license inventory and a software bill of materials.
 - [x] Test AUR build isolation against hostile inputs, or keep live AUR
       execution visibly disabled with no override.
-- [x] Prove package install, startup, backup, restore, upgrade and uninstall in
+- [ ] Prove package install, startup, backup, restore, upgrade and uninstall in
       a disposable system before requesting any managed-computer pilot.
 - [x] Prepare the separately gated, loopback-only, read-only host pilot plan
       that preserves existing services, notifier and user state. Execution is
       not authorized.
-- [x] Complete the release-candidate test matrix and independent review.
+- [ ] Complete the release-candidate test matrix and independent review.
 
 **Proposed gate:** M7 acceptance creates a reviewed release candidate only.
 Public release publication, managed-computer package or service changes,
@@ -304,10 +304,10 @@ owner-controlled OpenPGP release key to prove both signed Git release labels
 and downloaded release files. The owner later authorized creating the dedicated
 key through a local password prompt. Its primary fingerprint is
 `721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E`; only the public key is in
-the project. No release label or artifact has been signed, and release
-publication remains separately gated. On 2026-11-01, the owner authorized
-using this key through a local password prompt to sign the final local M7
-release label and files. Candidate labels use signed annotated
+the project. On 2026-11-01, the owner authorized using this key through a local
+password prompt to sign the final local M7 release label and files. The label
+and detached file signatures now verify; publication remains separately gated.
+Candidate labels use signed annotated
 `v<version>-rc.<number>` names and are never moved or reused; the first is
 `v0.6.0-rc.1`.
 
@@ -330,10 +330,11 @@ dependency root and dependency preparation. Deliberate memory/process pressure
 tests were removed after the first cgroup check caused an unacceptable desktop
 notification; no such test may be run again.
 
-The digest-pinned disposable Arch builder completed two networkless package
-builds under a 2 GiB ceiling. Their 208-file normalized payload manifests and
-builder-package inventories match; only generated package build-time metadata
-differs. A separate networkless disposable system passed package install,
+The digest-pinned disposable Arch builder completed two initial networkless
+package builds under a 2 GiB ceiling. Their 208-file normalized payload
+manifests and builder-package inventories match; only generated package
+build-time metadata differs. A separate networkless disposable system passed
+package install,
 disabled-by-default startup checks, loopback startup, SQLite backup and offline
 restore, package upgrade, downgrade recovery, uninstall and user-state
 preservation. The drill corrected the Arch runtime dependency name to
@@ -343,11 +344,20 @@ independent review later completed as recorded below.
 **M7 security and build evidence (2026-11-01):** The reviewed-tree AUR
 isolation seam now uses bounded streaming logs, a verified memory-backed build
 tree under cgroup limits, no-follow input copying, aggregate artifact limits
-and exact package identity checks. Its 21 focused tests and independent
+and exact package identity checks. Its final 22 focused tests and independent
 re-review passed with no remaining critical, high or medium implementation
 findings. This accepts the isolation boundary selected in owner choice 4B; it
 does not enable live AUR. Source acquisition, a clean dependency root and
 dependency preparation remain unavailable with no override. Two final clean
-builds had identical 208-file normalized payload manifests, the disposable
-package lifecycle passed, and the complete suite passed 321 tests. Exact
+builds had identical 212-file normalized payload manifests, the disposable
+package lifecycle passed, and the complete suite passed 322 tests. Exact
 evidence is recorded in the M7 validation documents.
+
+**M7 RC1 rejection (2026-11-01):** The signed local label `v0.6.0-rc.1` remains
+immutable at commit `ee18e9a7f789404ece81488f150fd02e33837a42`, but that candidate
+is rejected and must not be published. Final package inspection found the old
+demonstration password in the installed runtime, browser and packaged README.
+The replacement removes every built-in development password, requires an
+explicit password even in development mode and is protected by package-input
+regression checks. A new `v0.6.0-rc.2` candidate requires complete rebuild,
+lifecycle, signing and independent review evidence.

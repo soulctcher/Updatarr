@@ -505,7 +505,7 @@ function focusDetectedUpdateSource(sourceId: string) {
 
 export function App() {
   const [csrf, setCsrf] = useState<string | null>(null);
-  const [password, setPassword] = useState("updatarr-demo");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [view, setView] = useState<View>("overview");
   const [overview, setOverview] = useState<Overview | null>(null);
@@ -906,13 +906,13 @@ export function App() {
           </div>
           <div className="heading-with-help">
             <h1>Sign In</h1>
-            <HelpButton title="About This Demonstration">
+            <HelpButton title="About Sign In">
               <p>
                 This build can prepare and safely demonstrate reviewed update
                 plans. It cannot install or remove software.
               </p>
               <p>
-                The demonstration password is <code>updatarr-demo</code>.
+                Use the password set for this Updatarr installation.
               </p>
             </HelpButton>
           </div>

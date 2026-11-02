@@ -17,6 +17,7 @@ from updatarr.domain import SYSTEM_UPDATE_GROUP_ID  # noqa: E402
 
 def _client(tmp_path: Path) -> TestClient:
     return TestClient(create_app(AppConfig(
+        password="test-only-password",
         public_origin="http://testserver",
         storage_path=tmp_path / "state.db",
         provider_mode="simulator",
@@ -26,7 +27,7 @@ def _client(tmp_path: Path) -> TestClient:
 def _login(client: TestClient) -> dict[str, str]:
     response = client.post(
         "/api/v1/session", headers={"Origin": "http://testserver"},
-        json={"password": "updatarr-demo"},
+        json={"password": "test-only-password"},
     )
     assert response.status_code == 200
     return {"Origin": "http://testserver", "X-CSRF-Token": response.json()["csrf_token"]}
@@ -84,6 +85,7 @@ def test_saved_choices_persist_apply_and_are_audited(tmp_path: Path) -> None:
         policy_id = policy.json()["policy"]["policy_id"]
 
     with TestClient(create_app(AppConfig(
+        password="test-only-password",
         public_origin="http://testserver", storage_path=state_path, provider_mode="simulator",
     ))) as client:
         headers = _login(client)

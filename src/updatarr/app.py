@@ -99,7 +99,7 @@ class BoundedRequestBodyMiddleware:
 
 @dataclass(frozen=True)
 class AppConfig:
-    password: str = "updatarr-demo"
+    password: str
     allowed_hosts: tuple[str, ...] = ("127.0.0.1", "localhost", "testserver")
     public_origin: str = "http://127.0.0.1:8788"
     url_base: str = ""
@@ -167,8 +167,7 @@ THEME_IDS = {
 }
 
 
-def create_app(config: AppConfig | None = None) -> FastAPI:
-    config = config or AppConfig()
+def create_app(config: AppConfig) -> FastAPI:
     base = config.normalized_base()
     storage_path = config.storage_path or Path(tempfile.mkdtemp(prefix="updatarr-m2-")) / "state.db"
     store = StateStore(storage_path)

@@ -104,10 +104,13 @@ This prototype is not yet sufficient for live AUR builds:
    scripts remain the result of untrusted reviewed build code. Final
    installation still needs exact local confirmation and the separate
    privileged path.
-5. **Independent security review is pending.** Live execution remains blocked
-   even after the remaining engineering work until that review accepts the
-   source, dependency, build and output handoff together.
+5. **The production path needs another review.** Independent review accepted
+   the bounded M7 prototype and its output handoff. Live execution remains
+   blocked until the missing source and dependency stages are implemented and
+   the complete production path is reviewed separately.
 
-The owner's M7 option 4B remains enforced: no release candidate is produced
-until these blockers are resolved and the complete isolation gate passes.
+The owner's M7 option 4B candidate gate is satisfied by the accepted bounded
+prototype and independent review. This does not enable live AUR: source
+acquisition, a clean dependency root and dependency preparation remain absent,
+and there is no override.
 

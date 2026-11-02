@@ -31,6 +31,7 @@ def _server(state_path: Path):
     env = os.environ.copy()
     env.update({"PYTHONPATH": str(ROOT / "src"), "UPDATARR_PORT": str(port),
                 "UPDATARR_PROVIDER_MODE": "simulator", "UPDATARR_DEVELOPMENT_MODE": "1",
+                "UPDATARR_PASSWORD": "test-only-password",
                 "UPDATARR_STATE_PATH": str(state_path)})
     process = subprocess.Popen([sys.executable, "-m", "updatarr.main"], cwd=ROOT, env=env,
                                stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
@@ -60,7 +61,7 @@ def _request(port: int, method: str, path: str, headers: dict[str, str] | None =
 
 def _login(port: int) -> tuple[str, str, dict]:
     status, headers, data = _request(port, "POST", "/api/v1/session",
-        {"Origin": f"http://127.0.0.1:{port}"}, {"password": "updatarr-demo"})
+        {"Origin": f"http://127.0.0.1:{port}"}, {"password": "test-only-password"})
     assert status == 200
     body = json.loads(data)
     return headers["set-cookie"].split(";", 1)[0], body["csrf_token"], body

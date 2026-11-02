@@ -49,6 +49,15 @@ def test_default_deployment_is_loopback_and_uses_xdg_paths(tmp_path: Path) -> No
     assert config.development_mode is False
 
 
+def test_development_mode_still_requires_an_explicit_password(tmp_path: Path) -> None:
+    with pytest.raises(DeploymentError, match="UPDATARR_PASSWORD"):
+        DeploymentConfig.from_environment(environment(
+            tmp_path,
+            UPDATARR_PASSWORD="",
+            UPDATARR_DEVELOPMENT_MODE="1",
+        ))
+
+
 @pytest.mark.parametrize(
     ("changes", "message"),
     [
@@ -306,6 +315,7 @@ def test_settings_export_excludes_credentials_inventory_and_plans(tmp_path: Path
 
 def test_forwarding_headers_are_ignored_only_for_configured_proxy_peer(tmp_path: Path) -> None:
     trusted = create_app(AppConfig(
+        password="test-only-password",
         public_origin="https://updates.example.test",
         allowed_hosts=("updates.example.test",),
         secure_cookie=True,
@@ -322,6 +332,7 @@ def test_forwarding_headers_are_ignored_only_for_configured_proxy_peer(tmp_path:
         assert response.json() == {"status": "ok"}
 
     untrusted = create_app(AppConfig(
+        password="test-only-password",
         public_origin="https://updates.example.test",
         allowed_hosts=("updates.example.test",),
         secure_cookie=True,

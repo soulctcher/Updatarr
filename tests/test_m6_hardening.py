@@ -306,6 +306,7 @@ def test_production_result_checker_matches_mismatch_and_unavailable() -> None:
 def test_application_startup_uses_fresh_provider_result_for_recovery(tmp_path: Path) -> None:
     store, plan_id = _interrupted_store(tmp_path / "state.db")
     create_app(AppConfig(
+        password="test-only-password",
         storage_path=store.path,
         adapters=(_RecoveryAdapter("2"),),
         provider_mode="simulator",

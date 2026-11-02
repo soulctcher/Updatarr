@@ -1,8 +1,8 @@
 # Release Signing
 
 **Prepared:** 2026-11-01  
-**Status:** owner-controlled release key created; use authorized for the final
-local M7 release label and files; nothing has been signed or published yet
+**Status:** RC1 signatures verify, but RC1 is rejected; corrected RC2 signing
+and verification remain pending; nothing has been pushed or published
 
 ## Official Public Identity
 
@@ -41,6 +41,24 @@ Release candidates use signed, annotated Git labels in the form
 moved or reused after it identifies reviewed files; a correction receives a
 new candidate number. The first local M7 candidate label is
 `v0.6.0-rc.1`.
+
+## Rejected Local RC1
+
+- **Label:** `v0.6.0-rc.1`
+- **Commit:** `ee18e9a7f789404ece81488f150fd02e33837a42`
+- **Signed files:** `updatarr-0.6.0.tar.gz`,
+  `updatarr-0.6.0-1-any.pkg.tar.zst` and `SHA256SUMS`
+- **Verification:** the label and all three detached signatures passed from a
+  fresh keyring containing only the bundled public key
+
+RC1 must not be published. Package inspection found a built-in demonstration
+password in its installed runtime, browser and README. The signed label is not
+moved or deleted; the corrected candidate receives the new label
+`v0.6.0-rc.2` and new detached signatures.
+
+The fresh keyring reports the public key as untrusted until the verifier
+independently compares the complete fingerprint. That trust warning is
+expected and is separate from the successful cryptographic signature check.
 
 ## Verify the Public Key
 

@@ -46,13 +46,8 @@ class DeploymentConfig:
         env = os.environ if environ is None else environ
         development = env.get("UPDATARR_DEVELOPMENT_MODE", "").lower() in {"1", "true", "yes"}
         password = env.get("UPDATARR_PASSWORD", "")
-        if not password and development:
-            password = "updatarr-demo"
         if len(password) < 8:
-            raise DeploymentError(
-                "Set UPDATARR_PASSWORD to at least 8 characters. "
-                "The demo password is available only with UPDATARR_DEVELOPMENT_MODE=1."
-            )
+            raise DeploymentError("Set UPDATARR_PASSWORD to at least 8 characters.")
 
         bind_host = env.get("UPDATARR_BIND_HOST", "127.0.0.1").strip()
         if bind_host.lower() in {"0.0.0.0", "::", "[::]"}:

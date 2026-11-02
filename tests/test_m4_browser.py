@@ -275,7 +275,7 @@ def test_help_is_available_on_hover_and_focus_on_every_page() -> None:
         opened_help.update(_open_visible_help(page))
         assert len(opened_help) == 20
         for expected_name in (
-            "Information: About This Demonstration",
+            "Information: About Sign In",
             "Information: About Search Results",
             "Information: About This Preview",
             "Information: About This Update Plan",

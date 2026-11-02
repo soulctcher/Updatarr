@@ -257,7 +257,7 @@ def test_pkcheck_prototype_has_fixed_executable_action_environment_and_arguments
 
 
 def _login(client: TestClient) -> dict[str, str]:
-    response = client.post("/api/v1/session", headers={"Origin": "http://testserver"}, json={"password": "updatarr-demo"})
+    response = client.post("/api/v1/session", headers={"Origin": "http://testserver"}, json={"password": "test-only-password"})
     return {"Origin": "http://testserver", "X-CSRF-Token": response.json()["csrf_token"]}
 
 
@@ -272,7 +272,7 @@ def _check(client: TestClient, headers: dict[str, str]) -> dict:
 
 
 def test_remote_review_cannot_replace_local_confirmation_and_simulator_is_single_use(tmp_path: Path) -> None:
-    app = create_app(AppConfig(public_origin="http://testserver", storage_path=tmp_path / "state.db",
+    app = create_app(AppConfig(password="test-only-password", public_origin="http://testserver", storage_path=tmp_path / "state.db",
                                provider_mode="simulator", local_agent_token="local-secret"))
     with TestClient(app) as client:
         headers = _login(client); overview = _check(client, headers)
@@ -308,7 +308,7 @@ def test_remote_review_cannot_replace_local_confirmation_and_simulator_is_single
 
 
 def test_managed_computer_can_reject_without_execution(tmp_path: Path) -> None:
-    app = create_app(AppConfig(public_origin="http://testserver", storage_path=tmp_path / "state.db",
+    app = create_app(AppConfig(password="test-only-password", public_origin="http://testserver", storage_path=tmp_path / "state.db",
                                provider_mode="simulator", local_agent_token="local-secret"))
     with TestClient(app) as client:
         headers = _login(client); overview = _check(client, headers)
@@ -324,7 +324,7 @@ def test_managed_computer_can_reject_without_execution(tmp_path: Path) -> None:
 
 
 def test_application_cancellation_stops_at_next_safe_point(tmp_path: Path) -> None:
-    app = create_app(AppConfig(public_origin="http://testserver", storage_path=tmp_path / "state.db",
+    app = create_app(AppConfig(password="test-only-password", public_origin="http://testserver", storage_path=tmp_path / "state.db",
                                provider_mode="simulator", local_agent_token="local-secret"))
     with TestClient(app) as client:
         headers = _login(client); overview = _check(client, headers)
@@ -348,7 +348,7 @@ def test_application_cancellation_stops_at_next_safe_point(tmp_path: Path) -> No
 
 
 def test_all_plan_browser_mutations_require_csrf_and_live_execution_is_disabled(tmp_path: Path) -> None:
-    with TestClient(create_app(AppConfig(public_origin="http://testserver", storage_path=tmp_path / "state.db",
+    with TestClient(create_app(AppConfig(password="test-only-password", public_origin="http://testserver", storage_path=tmp_path / "state.db",
                                          provider_mode="simulator", local_agent_token="token"))) as client:
         _login(client)
         response = client.post("/api/v1/plans", headers={"Origin": "http://testserver"},
@@ -359,7 +359,7 @@ def test_all_plan_browser_mutations_require_csrf_and_live_execution_is_disabled(
 
 
 def test_latest_plan_read_marks_expired_authority_truthfully(tmp_path: Path) -> None:
-    with TestClient(create_app(AppConfig(public_origin="http://testserver", storage_path=tmp_path / "state.db",
+    with TestClient(create_app(AppConfig(password="test-only-password", public_origin="http://testserver", storage_path=tmp_path / "state.db",
                                          provider_mode="simulator"))) as client:
         _login(client)
         snapshot = _snapshot(); client.app.state.store.save_snapshot(snapshot)

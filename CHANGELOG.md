@@ -100,6 +100,17 @@ All notable project changes will be recorded here once implementation begins.
   sandboxed output inspection. Live AUR remains disabled while source
   acquisition, a clean dependency root and dependency preparation are
   incomplete.
+- Froze M7 candidate inputs at `ee18e9a`, updated the visible browser stamp to
+  Build M7, and created the signed local label `v0.6.0-rc.1`.
+- Signed and independently verified the final source archive, clean-build Arch
+  package and checksum list. No remote, push, upload or managed-computer change
+  occurred.
+- Rejected local RC1 after final package inspection found the demonstration
+  password in the installed runtime, browser and README. The immutable RC1
+  label remains local and must not be published.
+- Removed the built-in development password and browser prefill. Development
+  mode now requires an explicit password, with shipped-input and package-level
+  regression checks before RC2.
 - M0 decisions accepted by the user on 2026-10-24; project advanced to the M1
   safe-foundation and read-only-product scope without authorizing host mutation.
 - M1 accepted by the user on 2026-10-24; project advanced to the M2 catalog,

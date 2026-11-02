@@ -131,19 +131,23 @@ the relevant point for the owner to decide:
 
 M7 would be ready for acceptance only when:
 
-- [ ] the owner-selected license, Git provenance and signing policy are
+- [x] the owner-selected license, Git provenance and signing policy are
       recorded and reflected in the package;
 - [ ] two clean builds and a disposable install/upgrade/recovery/uninstall
       drill pass with exact evidence;
 - [ ] checksums, the asset-provenance manifest, dependency/license inventory
       and software bill of materials match the reviewed revision;
-- [ ] AUR execution either passes the isolation/security gate or remains
+- [x] AUR execution either passes the isolation/security gate or remains
       clearly disabled in the release candidate;
-- [ ] any approved read-only host pilot passes without enabling software
+- [x] any approved read-only host pilot passes without enabling software
       mutation or changing the existing notifier;
 - [ ] the complete suites and independent review have no unresolved critical,
       high or medium findings; and
 - [ ] the user accepts the M7 release candidate.
+
+No managed-computer pilot was approved during M7, so the conditional pilot
+item required no host action. The exact plan remains available for a later,
+separate approval.
 
 M7 acceptance would establish a release candidate. Public publication, host
 service changes and every first live software mutation would still require

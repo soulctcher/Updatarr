@@ -1,8 +1,8 @@
 # M7 Clean Build and Package Validation
 
 **Prepared:** 2026-11-01
-**Status:** implementation clean-build comparison, disposable lifecycle and
-complete suite passed; candidate rebuild is required after owner records close
+**Status:** RC1 build and lifecycle evidence passed, but final package
+inspection rejected RC1; corrected RC2 rebuild is required
 **Authorization:** disposable project-local environments only; no package was
 installed on the managed computer
 
@@ -22,7 +22,7 @@ on the managed computer.
 
 ## Repeated Build Result
 
-Two builds used the same builder image and produced the same 205-file payload
+Two builds used the same builder image and produced the same 212-file payload
 manifest. The package archives differed only in generated package metadata:
 `.PKGINFO` recorded build timestamps 19 seconds apart, which also changes
 `.BUILDINFO`, `.MTREE` and the compressed archive bytes. After excluding those
@@ -35,21 +35,23 @@ Module, the browser application, user service files and desktop launcher. It
 contains no service-enable link, XDG autostart entry, package install script,
 Polkit rule, `/etc` payload or workspace path.
 
-Generated build evidence stays under ignored `build/` paths and is not a
-release artifact. Exact final source, package, builder and inventory digests
-for implementation revision `497634e` are:
+Generated build evidence stays under ignored `build/` paths. The reviewed
+release files are assembled separately under the ignored local release
+directory. Exact final source, package, builder and inventory digests for
+candidate revision `ee18e9a7f789404ece81488f150fd02e33837a42` are:
 
 | Evidence | SHA-256 |
 | --- | --- |
-| Source archive | `9833f98ee16c39a448fa61457f2f30a53b83041b1765679fd2953bbe95501d07` |
-| First package archive | `8957c7109b6ddfb3bca9b2cc267dd650cca9352e8c4e0a4ff498a4b0d602fd94` |
-| Repeated package archive | `60ed0ca8046c5960bc5fd7a79be5b6ac83d3f0e35361fecbce79fa7f31a9c076` |
+| Source archive | `b8dbeb571e99d8248b30b9571b3f289ec22749a0d117496f3103f35337c4a794` |
+| First package archive | `47266c88b5029e5cb25a7bb91437fdfa5d3f95b160855b922cc06609f7238837` |
+| Repeated package archive | `1bf8c185be95d78f35c9d3661a4eb9a79de0c1b5ea36c3f7fda0a8ec364740fb` |
+| Normalized payload manifest | `6e2d5e2e80bad6af87478c857e89312a673441553f77a7062e9c02ad17b09e2f` |
 | Builder package inventory | `a2cb2bf8ca6db33e144040b4e3a6fc74219f2bad6e9d68671b34362e03b682d0` |
 | Builder image record | `032c8bfc0ea173ed6f12b349780d767321de8c44af7f19dd25b46e77131d0744` |
 
-The normalized comparison contains 208 ordinary payload files; the package
-archive contains 249 entries including directories and Arch metadata. The only
-`.PKGINFO` difference is `builddate` (`1793560408` versus `1793560413`).
+The normalized comparison contains 212 ordinary payload files; the package
+archive contains 253 entries including directories and Arch metadata. The only
+`.PKGINFO` difference is `builddate` (`1793578191` versus `1793578199`).
 
 ## Disposable Lifecycle Result
 
@@ -75,9 +77,9 @@ Final lifecycle evidence hashes:
 
 | Evidence | SHA-256 |
 | --- | --- |
-| Lifecycle log | `bc7180ec8928be7942534aa95324e367a98cf96a60acbe2b86fda6b5bb89e031` |
-| Lifecycle package checksums | `31d45da3654b2689e279dbb3cb146a7926d7938ed9de7dc89a3e87b8ac0b4f00` |
-| Lifecycle image records | `ff4bb96bd38a14091d03fb550e8c2ec55de1ef2b51d19b23ccf78d4382a33865` |
+| Lifecycle log | `64e299002a332fca34dc0b1747ccffcfc73d7d46c3d53b984faa25c33920930c` |
+| Lifecycle package checksums | `2c1fd4334e5be66a55be8110796def046859b343cae19bcafaf2c5ba5749743e` |
+| Lifecycle image records | `e25305435b9a41925e3b63acd944ddcc720d2d44e375ae2b5702778c556a47d2` |
 
 ## Runtime Inventory Evidence
 
@@ -89,28 +91,31 @@ inventory, not legal advice.
 | Evidence | SHA-256 |
 | --- | --- |
 | Declared dependency-license inventory | `51dec1f0a350a06981ef48bc00dc170f52ebb923f3299609b579c26ed7025bb5` |
-| Reviewed-input hash manifest | `35757bce71fe097d5fd4177ce2acb879da614d88753f48486507ba5ba0997b72` |
-| SBOM hash manifest | `24ee86b8cee550fdae3c3ba4aebec82a56dcca750ee9f314d44435a8c08c7969` |
-| Python CycloneDX SBOM | `249b3279bd0e7c7267561f3715d93f808b2d31cb3b743f8dfc12e283a9063c35` |
-| Browser CycloneDX SBOM | `2f9bd95b6ad9e7934d68ab67a2724efb64520f3d28cb19abe2b7934d11402060` |
+| Reviewed-input hash manifest | `dd99263ac4254de5c47ddc5d54b7883835b7b1cd68a950da9e3403157b69dc98` |
+| SBOM hash manifest | `7880247e77e68b5a0227ef1446553634924d25e6f7dfda4dd46503a031565216` |
+| Python CycloneDX SBOM | `0b8b8532faf9b4a419ed345c3990ff1e4fbce893bc8cf21b525610f642e257d5` |
+| Browser CycloneDX SBOM | `66fc012c188c4b4df8ba5ec732e0688b58e250a6c77b858df5a419e84d96fa63` |
 
-## Remaining Work
+## Remaining Gates
 
-- Repeat the clean build, normalized comparison, evidence generation and
-  lifecycle drill after the release-proof records are final.
+- Repeat the clean builds, package inspection, lifecycle, evidence generation
+  and signatures for RC2 after removing the built-in development password.
 - Keep live AUR disabled until isolated source acquisition, clean dependency-
   root preparation and dependency handling are implemented and separately
   accepted.
-- Keep release publication blocked until owner-controlled release proof is
-  available.
+- Keep release publication blocked until the owner accepts M7 and separately
+  authorizes a remote, push and upload.
+- Keep the managed-computer pilot unauthorized until its exact plan and host
+  changes receive their separate approvals.
 
 ## Final Automated Verification
 
-- Complete Python suite: **321 passed in 193.39 seconds**, with one known
+- Complete Python suite: **322 passed in 194.85 seconds**, with one known
   Starlette test-client deprecation warning.
-- Focused M7 AUR and release-evidence suite: **21 passed**.
+- Focused M7 AUR and release-evidence suite: **22 passed**.
 - TypeScript checking and the Vite production build passed.
 - Python compilation, shell parsing, Git whitespace checks and
   `makepkg --verifysource` passed.
-- Independent re-review found no remaining critical, high or medium
-  implementation findings.
+- Independent implementation re-review found no remaining critical, high or
+  medium findings. Final candidate re-review is recorded in the M7 acceptance
+  packet.

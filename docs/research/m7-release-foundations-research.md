@@ -206,8 +206,9 @@ claim that one particular argument list is already safe.
   and downloaded files, then authorized creating a dedicated key through the
   local graphical password flow. The primary fingerprint is
   `721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E`. Only the public key and
-  fingerprint are recorded in the project; no release label or artifact has
-  been signed or published.
+  fingerprint are recorded in the project. Rejected RC1's local label and
+  detached file signatures verify; corrected RC2 evidence remains pending and
+  nothing has been pushed or published.
 - Official OpenAI image-generation documentation explains how outputs are
   generated and saved but does not state the redistribution terms that applied
   to the earlier in-product logo generation. The owner subsequently approved
