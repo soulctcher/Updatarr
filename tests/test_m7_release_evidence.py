@@ -12,11 +12,15 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_m7_scope_is_accepted_without_expanding_host_authority() -> None:
     proposal = (ROOT / "docs/M7_PROPOSAL.md").read_text()
     milestones = (ROOT / "MILESTONES.md").read_text()
+    acceptance = (ROOT / "docs/M7_ACCEPTANCE.md").read_text()
 
     assert "[x] User accepts this proposed M7 scope" in proposal
-    assert "project-local M7 implementation" in milestones
+    assert "[x] User accepts M7" in acceptance
+    assert "exact signed RC2 package" in milestones
+    assert "manual loopback-only" in milestones
     assert "release publication" in milestones
-    assert "every live software mutation remain" in milestones
+    assert "every software update or other live" in milestones
+    assert "service enablement" in milestones
 
 
 def test_selected_license_is_consistent_but_publication_is_still_blocked() -> None:
@@ -117,12 +121,8 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
     assert "The corrected candidate is `v0.6.0-rc.2`" in normalized_signing
 
     milestones = " ".join((ROOT / "MILESTONES.md").read_text().split())
-    assert (
-        "Signing-key use is authorized only for the final local M7 release "
-        "label and release files"
-        in milestones
-    )
-    assert "it does not authorize publication or a push" in milestones
+    assert "release publication, remote push" in milestones
+    assert "remain separately gated and unauthorized" in milestones
     rejected_tag = subprocess.run(
         ["git", "cat-file", "tag", "v0.6.0-rc.1"],
         cwd=ROOT,

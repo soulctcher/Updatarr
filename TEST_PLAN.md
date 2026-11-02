@@ -1,6 +1,6 @@
 # Updatarr test plan
 
-**Status:** executable strategy; M0 through M6 accepted
+**Status:** executable strategy; M0 through M7 accepted
 
 ## Test strategy
 
@@ -261,7 +261,7 @@ The 22 scenarios and explicit release blockers are mapped in the
 Final M6 verification passed **300 tests**; the independent re-review found no
 remaining critical, high, medium or low findings.
 
-## M7 Evidence in Progress
+## M7 Evidence
 
 M7 adds locked runtime SBOM/input-hash checks and a closed AUR isolation Module.
 The isolation fixture matrix covers a normal package, split packages, hidden
@@ -271,6 +271,8 @@ termination. Test builds use a 512 MiB/32-task ceiling, one compression thread
 and two build jobs. Deliberate memory/process pressure is prohibited after the
 initial resource-limit check triggered a desktop low-memory notification.
 
-Live AUR execution remains blocked until isolated source acquisition, a clean
-dependency root, complete output handoff evidence and independent security
-review pass together.
+The corrected signed RC2 completed two clean builds, package inspection,
+disposable lifecycle testing, 324 complete-suite tests and independent review
+with no critical, high or medium findings. Live AUR execution remains blocked
+until isolated source acquisition, a clean dependency root and dependency
+preparation pass their separate gate.

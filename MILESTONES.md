@@ -1,13 +1,12 @@
 # Updatarr milestones
 
-**Current phase:** M7 release candidate and controlled deployment  
-**Current authorization:** project-local M7 implementation, clean disposable
-build/test environments, simulators, fixtures, documentation and read-only
-inspection. Package installation on the managed computer,
-service/autostart changes, notifier changes, Octopi or Pamac removal, release
-publication and every live software mutation remain separately gated and
-unauthorized. Signing-key use is authorized only for the final local M7 release
-label and release files; it does not authorize publication or a push.
+**Current phase:** M7 accepted; managed-computer read-only pilot
+**Current authorization:** the exact signed RC2 package, its missing declared
+runtime dependencies, owner-only pilot configuration and a manual loopback-only
+read-only test were authorized by the user on 2026-11-02. Enabling either user
+service, changing autostart or the existing notifier, removing Octopi or Pamac,
+release publication, remote push and every software update or other live
+software mutation remain separately gated and unauthorized.
 
 ## Gate rules
 
@@ -370,3 +369,10 @@ evidence, detached file signatures and signed-label verification all pass.
 The full suite passed 324 tests. Final independent candidate review found no
 critical, high or medium findings; publication and every host/live-action gate
 remain unchanged.
+
+**M7 closure and pilot authorization (2026-11-02):** The user accepted M7 and
+authorized installing the exact signed RC2 package locally for testing. This
+includes its missing declared runtime dependencies, owner-only pilot
+configuration and a manual loopback-only read-only run. It does not authorize
+service enablement, tray autostart, notifier migration, Octopi/Pamac removal,
+LAN access, publication, live AUR or any software update through Updatarr.

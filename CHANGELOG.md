@@ -117,6 +117,10 @@ All notable project changes will be recorded here once implementation begins.
 - Created and verified the signed local `v0.6.0-rc.2` label, source archive,
   Arch package and checksum list. Nothing was pushed, uploaded or installed on
   the managed computer.
+- The user accepted M7 on 2026-11-02 and separately authorized installing the
+  exact signed RC2 package, its missing declared runtime dependencies and a
+  manual loopback-only read-only pilot. Service enablement, notifier changes,
+  publication and live software updates remain unauthorized.
 - M0 decisions accepted by the user on 2026-10-24; project advanced to the M1
   safe-foundation and read-only-product scope without authorizing host mutation.
 - M1 accepted by the user on 2026-10-24; project advanced to the M2 catalog,

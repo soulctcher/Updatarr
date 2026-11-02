@@ -5,9 +5,9 @@ Arch Linux. It combines package and update visibility in one responsive
 *arr-style web interface while preserving the real ownership and safety rules
 of pacman, AUR helpers, Flatpak, fwupd and supported user toolchains.
 
-The user has accepted **M0 through M6** and authorized project-local work on
-**M7: release candidate and controlled deployment**. Release publication and
-live actions remain under their separate gates.
+The user has accepted **M0 through M7** and authorized a bounded local RC2
+installation pilot. Release publication, service enablement, notifier changes
+and live software updates remain under their separate gates.
 The current loopback-only application can use a safe simulator or live
 read-only inventory. Live execution remains disabled until each separate
 privileged-helper and first-live-mutation approval gate is explicitly granted.
@@ -138,10 +138,10 @@ supported initial model.
 
 ## Development status
 
-M0 through M6 are accepted. RC1 was rejected during final package inspection.
+M0 through M7 are accepted. RC1 was rejected during final package inspection.
 Corrected local M7 candidate RC2 is built, signed, verified and independently
-reviewed. It is ready for owner acceptance. Retained publication and
-live-action gates are listed in
+reviewed. A bounded local installation pilot was authorized on 2026-11-02.
+Retained publication and live-action gates are listed in
 [MILESTONES.md](MILESTONES.md). Commands shown in research sources remain
 evidence, not setup instructions. System
 dependencies outside the project environment, services, autostart, package

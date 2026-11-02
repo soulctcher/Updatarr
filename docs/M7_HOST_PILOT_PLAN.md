@@ -1,23 +1,25 @@
 # M7 Managed-Computer Pilot Plan
 
 **Prepared:** 2026-11-01
-**Status:** plan only; the pilot is not authorized
+**Status:** package installation, required declared dependencies, owner-only
+pilot configuration and manual loopback-only read-only testing authorized by
+the user on 2026-11-02
 **Purpose:** prove the reviewed package can run read-only on the managed
 computer without replacing, disabling or changing an existing updater
 
 ## Separate Approvals
 
-The pilot must not begin until the owner separately approves all actions that
-are actually needed. Approval of this document alone does not authorize them.
+The user authorized the following bounded actions on 2026-11-02 when accepting
+M7 and requesting a local test installation:
 
 1. Install the exact reviewed Updatarr package and any missing declared
    dependencies through pacman.
 2. Create the owner-only Updatarr configuration and pilot state directories.
 3. Start the core manually for this pilot, bound only to loopback.
 
-The pilot does not request permission to enable either user service, start the
-tray at login, change the Octopi notifier, remove Octopi or Pamac, enable LAN
-access, publish a release or perform any software update.
+The authorization does not include enabling either user service, starting the
+tray at login, changing the Octopi notifier, removing Octopi or Pamac, enabling
+LAN access, publishing a release or performing any software update.
 
 ## Exact Inputs
 

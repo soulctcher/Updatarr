@@ -1,8 +1,9 @@
 # Arch installation and recovery
 
-These instructions describe the M6 evaluation package. They do not authorize installation
-on this computer. Package installation and service enablement are separate
-approval decisions in [MILESTONES.md](../../MILESTONES.md).
+These instructions describe the signed M7 RC2 package. The user authorized its
+local installation and bounded manual read-only pilot on 2026-11-02. Service
+enablement remains a separate approval decision in
+[MILESTONES.md](../../MILESTONES.md).
 
 ## Before installation
 
@@ -17,7 +18,7 @@ approval decisions in [MILESTONES.md](../../MILESTONES.md).
    `~/.config/updatarr/updatarr.env`, set a unique password and make the file
    readable only by your user.
 
-The local M6 PKGBUILD builds from a deterministic, checksummed source archive.
+The local M7 PKGBUILD builds from a deterministic, checksummed source archive.
 The archive contains the browser files produced by the already-verified locked
 frontend build. A published release still needs an authenticated release source
 and a selected redistribution license.

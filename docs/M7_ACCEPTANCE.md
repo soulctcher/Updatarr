@@ -122,6 +122,10 @@ Final RC2 evidence hashes:
 
 - [x] Final independent candidate review has no unresolved critical, high or
       medium findings.
-- [ ] User accepts M7. Acceptance creates a reviewed local release candidate;
+- [x] User accepts M7. Acceptance creates a reviewed local release candidate;
       it does not authorize publication, host installation, service/notifier
       changes or live software mutation.
+
+**Accepted:** 2026-11-02. In the same instruction, the user separately
+authorized installing the exact signed RC2 package locally for testing. The
+bounded pilot authority is recorded in the managed-computer pilot plan.

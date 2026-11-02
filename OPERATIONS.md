@@ -1,7 +1,8 @@
 # Updatarr operations and recovery
 
-**Status:** M6 operator runbook; host installation, startup and migration
-commands remain separately approval-gated
+**Status:** M7 operator runbook; exact RC2 package installation and a manual
+loopback-only read-only pilot were authorized on 2026-11-02. Service enablement
+and migration remain separately approval-gated.
 
 ## Supported deployment posture
 
