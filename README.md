@@ -5,9 +5,10 @@ Arch Linux. It combines package and update visibility in one responsive
 *arr-style web interface while preserving the real ownership and safety rules
 of pacman, AUR helpers, Flatpak, fwupd and supported user toolchains.
 
-The user has accepted **M0 through M7** and authorized a bounded local RC2
-installation pilot. Release publication, service enablement, notifier changes
-and live software updates remain under their separate gates.
+The user has accepted **M0 through M7** and authorized a bounded local M7.1
+corrective build, signing and installation. Release publication, service
+enablement, notifier migration and live software updates remain under their
+separate gates.
 The current loopback-only application can use a safe simulator or live
 read-only inventory. Live execution remains disabled until each separate
 privileged-helper and first-live-mutation approval gate is explicitly granted.
@@ -16,8 +17,7 @@ privileged-helper and first-live-mutation approval gate is explicitly granted.
 
 The owner selected the GNU Affero General Public License version 3 or later
 (`AGPL-3.0-or-later`). See [LICENSE](LICENSE) and [NOTICE](NOTICE). The copyright
-record is `Copyright © 2026 Erik Winblad`. RC2 is retained for a bounded local
-test but has a packaged-user-unit blocker, so no public release is authorized.
+record is `Copyright © 2026 Erik Winblad`. No public release is authorized.
 
 ## Run the development application
 
@@ -140,14 +140,11 @@ supported initial model.
 
 ## Development status
 
-M0 through M7 are accepted. RC1 was rejected during final package inspection.
-Corrected local M7 candidate RC2 is built, signed, verified and independently
-reviewed. A bounded local installation pilot was authorized on 2026-11-02.
-That pilot found a packaged-user-unit live-provider blocker. The package is
-installed for testing through a non-enabled transient loopback-only unit; RC2
-must not be published or enabled as the normal core service. The tray is
-manually active for testing but remains disabled at login. Use the
-[local test checklist](docs/M7_LOCAL_TEST_CHECKLIST.md).
+M0 through M7 are accepted. The 0.6.0 RC3 correction is installed for bounded
+local testing. The owner authorized building, signing and locally installing
+the 0.6.1 M7.1 workflow correction on 2026-11-03. Public release and live
+software mutation remain blocked. Use the [local test
+checklist](docs/M7_LOCAL_TEST_CHECKLIST.md).
 Retained publication and live-action gates are listed in
 [MILESTONES.md](MILESTONES.md). Commands shown in research sources remain
 evidence, not setup instructions. System

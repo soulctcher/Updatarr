@@ -7,6 +7,7 @@ from pathlib import Path
 import sqlite3
 import sys
 import tarfile
+import tomllib
 
 import pytest
 
@@ -316,12 +317,13 @@ def test_application_startup_uses_fresh_provider_result_for_recovery(tmp_path: P
     assert recovered is not None and recovered.state is UpdateRunState.SUCCEEDED
 
 
-def test_m6_source_archive_is_clean_and_contains_operator_evidence() -> None:
-    archive = ROOT / "packaging" / "arch" / "updatarr-0.6.0.tar.gz"
+def test_current_source_archive_is_clean_and_contains_operator_evidence() -> None:
+    version = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["version"]
+    archive = ROOT / "packaging" / "arch" / f"updatarr-{version}.tar.gz"
     workspace_marker = b"/home/soul" + b"/codex/Updatarr"
     with tarfile.open(archive, "r:gz") as source:
         names = set(source.getnames())
-        prefix = "updatarr-0.6.0/"
+        prefix = f"updatarr-{version}/"
         assert prefix + "docs/KNOWN_LIMITATIONS.md" in names
         assert prefix + "docs/operations/UPGRADE_RECOVERY.md" in names
         assert prefix + "scripts/read_only_capability_probe.py" in names

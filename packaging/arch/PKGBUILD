@@ -10,7 +10,7 @@ license=('AGPL-3.0-or-later')
 depends=('python' 'python-argon2-cffi' 'python-fastapi' 'python-pydantic' 'uvicorn' 'pyside6')
 makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 source=("$pkgname-$pkgver.tar.gz")
-sha256sums=('2151272894b265b73efd2cd58201f805c8f9d7e8428038f764afd108a2300694')
+sha256sums=('7cd201142b60253af6f6f4379d05d7727b67a6830749dd58285de2efb1fb044d')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"

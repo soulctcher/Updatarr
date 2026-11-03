@@ -15,16 +15,18 @@ for command in docker sha256sum; do
     exit 2
   fi
 done
-package_one=$(find "$release_one" -maxdepth 1 -type f -name 'updatarr-*.pkg.tar.zst' -print -quit)
-package_two=$(find "$release_two" -maxdepth 1 -type f -name 'updatarr-*.pkg.tar.zst' -print -quit)
-for package in "$package_one" "$package_two"; do
-  if [[ -z "$package" || ! -f "$package" ]]; then
-    printf 'Required lifecycle package is missing.\n' >&2
+mapfile -t packages_one < <(find "$release_one" -maxdepth 1 -type f -name 'updatarr-*.pkg.tar.zst' -print)
+mapfile -t packages_two < <(find "$release_two" -maxdepth 1 -type f -name 'updatarr-*.pkg.tar.zst' -print)
+for package_count in "${#packages_one[@]}" "${#packages_two[@]}"; do
+  if [[ "$package_count" -ne 1 ]]; then
+    printf 'Each lifecycle input directory must contain exactly one package; found %s.\n' "$package_count" >&2
     exit 2
   fi
 done
-version_one=$(pacman -Qp --print-format '%v' "$package_one")
-version_two=$(pacman -Qp --print-format '%v' "$package_two")
+package_one=${packages_one[0]}
+package_two=${packages_two[0]}
+version_one=$(pacman -Qp "$package_one" | awk '{print $2}')
+version_two=$(pacman -Qp "$package_two" | awk '{print $2}')
 if [[ -e "$evidence_root" ]] && find "$evidence_root" -mindepth 1 -print -quit | grep -q .; then
   printf 'Evidence directory is not empty: %s\n' "$evidence_root" >&2
   exit 2

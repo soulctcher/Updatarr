@@ -237,6 +237,9 @@ def test_disposable_build_and_lifecycle_scripts_keep_hard_limits() -> None:
     assert "--network=none" in lifecycle
     assert "--read-only" in build
     assert "--cap-drop=ALL" in build
+    assert "mapfile -t packages_one" in lifecycle
+    assert "mapfile -t packages_two" in lifecycle
+    assert "must contain exactly one package" in lifecycle
     assert "UPDATARR_PROVIDER_MODE=simulator" in lifecycle_container
     assert "pacman -R --noconfirm updatarr" in lifecycle_container
     assert "test -f /home/updatarr-test/.local/state/updatarr/updatarr.db" in lifecycle_container
