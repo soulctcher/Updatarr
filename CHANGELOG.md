@@ -93,6 +93,13 @@ All notable project changes will be recorded here once implementation begins.
   refresh timing, notification behavior, optional reminder frequency and
   notification display time. These choices do not run checks or change update
   policy.
+- Froze the reviewed follow-up at `v0.6.0-rc.3`, reproduced its normalized
+  package payload in two networkless clean builds, passed the disposable
+  lifecycle, verified its signatures from a public-only keyring and installed
+  exactly `updatarr 0.6.0-2` for bounded local testing.
+- The packaged core now passes trusted provider discovery with
+  `PrivateTmp=true`; the core and tray are manually active but remain disabled
+  at login. Octopi, its notifier and all non-Updatarr host state remain intact.
 
 - The user accepted the proposed M7 scope on 2026-10-30 and authorized
   project-local release-candidate work. Host installation, service/notifier

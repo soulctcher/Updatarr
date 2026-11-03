@@ -420,3 +420,17 @@ separately approved for installation. Project-local tests, exact source-archive
 inspection and independent review passed with no significant findings; clean
 Arch packaging, signing and installation remain separate gates. Evidence:
 [M7 local-test follow-up](docs/research/m7-local-test-follow-up-2026-11-03.md).
+
+**M7 RC3 signing and installation (2026-11-03):** The owner authorized all
+remaining local follow-up steps. The exact reviewed source was committed at
+`1e734f9a7028e89774a9b8bf1ca025ed6eb09f8f`, signed with the immutable local
+label `v0.6.0-rc.3`, built twice without network and verified from a fresh
+public-only keyring. The disposable lifecycle and independent payload
+comparison passed. Pacman upgraded only Updatarr from `0.6.0-1` to `0.6.0-2`;
+configuration and database integrity were preserved. The packaged core now
+passes read-only provider discovery with `PrivateTmp=true`, and the tray
+registers with Plasma. Both units are manually active for testing but remain
+disabled at login. Octopi and its notifier are unchanged. Publication, remote
+push, startup enablement, notifier migration and every software update remain
+unauthorized. Evidence:
+[M7 RC3 signing and installation](docs/research/m7-rc3-signing-installation-2026-11-03.md).

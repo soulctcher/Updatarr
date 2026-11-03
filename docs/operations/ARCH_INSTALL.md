@@ -8,8 +8,9 @@ separate approval decision in
 
 > **RC2 is rejected:** Do not reinstall or enable RC2. The reviewed RC3
 > follow-up preserves `PrivateTmp=true` and corrects its trusted executable
-> check. Keep both RC3 user units disabled at login until the manual packaged
-> service and tray checks pass and the owner separately approves enablement.
+> check. The manual packaged service and tray checks passed on 2026-11-03.
+> Keep both RC3 user units disabled at login until the owner separately approves
+> enablement.
 
 ## Before installation
 

@@ -81,11 +81,17 @@ not authorize a push, upload or publication.
 ## Local RC3 Follow-Up
 
 - **Label:** `v0.6.0-rc.3`
+- **Commit:** `1e734f9a7028e89774a9b8bf1ca025ed6eb09f8f`
+- **Label object:** `39269ff4c47f4e88a8f5168eca1173cafd755889`
 - **Package release:** `updatarr 0.6.0-2`
+- **Signed files:** `updatarr-0.6.0.tar.gz`,
+  `updatarr-0.6.0-2-any.pkg.tar.zst` and `SHA256SUMS`
 - **Purpose:** replace the rejected RC2 service behavior and include the
   accepted local-test interface and tray follow-ups
 - **Authorization:** owner authorized clean packaging, local signing and local
   installation on 2026-11-03
+- **Verification:** the label, all three detached signatures and every checksum
+  passed from a fresh keyring containing only the bundled public key
 
 The label and release files must be verified before installation. Publication,
 remote push, service enablement at login, notifier migration and live software

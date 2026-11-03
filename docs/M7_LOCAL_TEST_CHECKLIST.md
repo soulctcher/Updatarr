@@ -1,7 +1,8 @@
 # Updatarr Local Test Checklist
 
-**Test address:** `http://127.0.0.1:8788`  
-**Build:** signed M7 RC2 local pilot  
+**Test address:** `http://127.0.0.1:8788`
+**Build:** signed M7 RC3 local pilot (`updatarr 0.6.0-2`)
+
 **Safety boundary:** read-only inventory only; do not expect Updatarr to install
 or remove software
 
