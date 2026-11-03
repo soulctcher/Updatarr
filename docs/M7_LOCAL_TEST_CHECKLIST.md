@@ -52,22 +52,24 @@ installed software but did not ask those sources for newer versions.
 
 Expected: system, AUR, Flatpak, firmware and tool ownership remain distinct.
 
-## 4. Updates and Safety Information
+## 4. Ready Updates
 
-- [X] Open Updates and confirm system-package updates that belong together are
-      presented as one group.
-- [X] Select and clear updates without attempting to install them.
-- [X] Use **Check Whether Selection Is Safe** and confirm the explanation is in
-      plain language.
-- [X] Review **Postpone for 24 Hours**, **Skip This Version** and **Pause Until
-      Resumed** help without saving a choice unless you intend to test that
-      setting.
-- [X] Confirm any saved choice offers **Remove Saved Choice** to return to the
-      source-reported state.
-- [X] Confirm there is no working live install or update action in this pilot.
+- [ ] Open Updates and confirm **Ready Updates** shows a short summary of the
+      most recent check.
+- [ ] Confirm **Check Again** checks every enabled source without opening the
+      technical details first.
+- [ ] Confirm problems show a short result and reveal instructions only when
+      opened.
+- [ ] Confirm **Update Ready Software** opens exact-plan review rather than
+      immediately installing anything.
+- [ ] Expand **Safety and technical details** and confirm the complete evidence
+      remains available without crowding the ordinary workflow.
+- [ ] Confirm system-package updates that must stay together are treated as one
+      group.
 
-Expected: Updatarr may prepare or review information, but live execution stays
-disabled.
+Expected: Updatarr may check, summarize and prepare a plan. The current AUR
+updates remain blocked until the separate clean-build pipeline is available;
+this test must not install or update software.
 
 ## 5. Safety Checklist
 
@@ -129,8 +131,8 @@ disabled.
 - [X] Confirm the existing Octopi notifier is still present; there should be
       one Updatarr tray and one Octopi notifier, not duplicate Updatarr trays.
 
-If **Quit Tray** is tested, the core remains running. The tray is not enabled at
-login, so restart it for this session with:
+If **Quit Tray** is tested, the core remains running. Restart the tray for this
+session with:
 
 ```bash
 systemctl --user start updatarr-tray.service
@@ -140,13 +142,13 @@ systemctl --user start updatarr-tray.service
 
 - [X] Closing the browser does not stop the read-only core.
 - [X] Quitting the tray does not stop the core.
-- [X] Neither Updatarr unit is enabled at login.
-- [X] After a logout or reboot, this temporary pilot is not expected to start
-      automatically.
+- [ ] Confirm the core remains disabled at login and the tray remains enabled,
+      matching the state recorded before the M7.1 upgrade.
+- [ ] After a logout or reboot, confirm the tray starts. The core still needs to
+      be started manually while its login enablement remains separately gated.
 
-Do not enable `updatarr.service`. RC2's normal packaged core unit has a known
-live-provider defect. The current test core is a non-enabled transient pilot
-unit.
+Do not enable `updatarr.service` yet. The packaged core is healthy for this
+read-only test, but changing its login policy remains a separate approval.
 
 ## 10. About Information
 
@@ -165,10 +167,10 @@ To stop only the tray:
 systemctl --user stop updatarr-tray.service
 ```
 
-To stop the temporary read-only core:
+To stop the read-only core:
 
 ```bash
-systemctl --user stop updatarr-pilot.service
+systemctl --user stop updatarr.service
 ```
 
 Neither command uninstalls Updatarr or removes its database, configuration or

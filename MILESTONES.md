@@ -1,13 +1,13 @@
 # Updatarr milestones
 
-**Current phase:** M7 accepted; managed-computer read-only pilot
+**Current phase:** M7 accepted; M7.1 managed-computer read-only testing
 **Current authorization:** on 2026-11-03 the user authorized the M7.1 workflow
 correction to be versioned, packaged, signed, installed locally and restarted.
 This does not authorize publication, a remote push, live AUR, or any software
 update through Updatarr. Earlier on 2026-11-03 the user authorized the remaining RC3
 follow-up steps, including clean packaging, signing, local installation and
-bounded manual read-only core/tray verification. Enabling either user service
-at login, changing autostart or the existing notifier, removing Octopi or
+bounded manual read-only core/tray verification. Changing either user service's
+login enablement, changing autostart or the existing notifier, removing Octopi or
 Pamac, release publication, remote push and every software update or other live
 software mutation remain separately gated and unauthorized.
 
@@ -437,3 +437,18 @@ disabled at login. Octopi and its notifier are unchanged. Publication, remote
 push, startup enablement, notifier migration and every software update remain
 unauthorized. Evidence:
 [M7 RC3 signing and installation](docs/research/m7-rc3-signing-installation-2026-11-03.md).
+
+**M7.1 RC2 signing and installation (2026-11-03):** The owner authorized the
+workflow correction to be versioned, packaged, signed, installed and restarted.
+Independent review stopped RC1 before installation because its lifecycle script
+used an unavailable pacman option and its evidence accepted ambiguous or stale
+inputs. RC2 corrected all findings, passed 347 tests plus static checks, matched
+payloads across two isolated builds and passed the complete disposable package
+lifecycle. The signed `0.6.1-1` package upgraded only Updatarr. Database and
+configuration integrity were preserved. The installed core and tray are active,
+with their original disabled/enabled login states unchanged. Live desktop and
+mobile browser checks confirmed the Ready Updates deep link and Version 0.6.1 /
+Build M7.1. Live AUR building remains fail-closed; publication, remote push,
+service-policy changes, notifier migration and live software mutation remain
+unauthorized. Evidence: [M7.1 RC2 signing and local
+installation](docs/research/m7-1-rc2-signing-installation-2026-11-03.md).
