@@ -1,6 +1,6 @@
 # Known limitations and release blockers
 
-**Reviewed:** 2026-11-01
+**Reviewed:** 2026-11-03
 **Applies to:** Updatarr M7 work in progress
 
 These limits are intentional and visible. A blocked capability must not be
@@ -17,10 +17,13 @@ treated as working merely because its update source can be read.
    fixed read-only system path and expected package owner without removing
    `PrivateTmp`; a corrected package, repeated evidence and independent review
    are still required. There is no approved remote, push or public upload.
-2. **Live AUR builds remain blocked.** PKGBUILDs are arbitrary user-level code.
-   The bounded M7 prototype hides credentials, state and unrelated user files
-   in fixture tests, but isolated source acquisition, a clean dependency root
-   and dependency preparation are incomplete. There is no override.
+2. **The installed host is not ready for live AUR builds.** The planner now has
+   a fail-closed readiness seam instead of only a permanent prohibition, and
+   deterministic simulator AUR plans can reach review. The production
+   attestation provider is not implemented. Production still requires isolated
+   source acquisition, dependency preparation and an official `devtools` clean
+   root. This host does not currently have `devtools`, `pkgctl`,
+   `makechrootpkg` or `mkarchroot`; there is no unsafe fallback or override.
 3. **Every first live software-changing path remains unapproved.** Repository,
    Flatpak, firmware, startup-related, toolchain and portable-app changes have
    fixture or simulator coverage only. Each first live trial still needs the

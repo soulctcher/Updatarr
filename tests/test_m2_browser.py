@@ -72,6 +72,12 @@ def _run_check(page) -> None:  # type: ignore[no-untyped-def]
     page.locator(".metrics strong", has_text="5").first.wait_for(timeout=4000)
 
 
+def _open_update_details(page) -> None:  # type: ignore[no-untyped-def]
+    details = page.locator(".workflow-details")
+    if not details.evaluate("node => node.open"):
+        page.get_by_text("Safety and technical details", exact=True).click()
+
+
 def _assert_update_header_geometry(page, viewport_width: int) -> None:  # type: ignore[no-untyped-def]
     panel_box = page.locator(".table-panel").bounding_box()
     group = page.locator(".group-title")
@@ -155,6 +161,7 @@ def test_detected_updates_header_selects_and_clears_every_update() -> None:
         page = _signed_in_page(browser, base_url, {"width": 1280, "height": 800})
         _run_check(page)
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         select_all = page.get_by_role("checkbox", name="Select all detected updates")
         update_boxes = page.locator('.detected-updates tbody input[type="checkbox"]')
         select_all.check()
@@ -176,8 +183,9 @@ def test_partial_system_selection_is_blocked_and_group_choice_persists() -> None
         page = _signed_in_page(browser, base_url, {"width": 1280, "height": 800})
         _run_check(page)
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         _assert_update_header_geometry(page, 1280)
-        help_button = page.get_by_role("button", name="Information: How Review Updates Works")
+        help_button = page.get_by_role("button", name="Information: How Ready Updates Work")
         help_button.hover()
         help_id = help_button.get_attribute("aria-describedby")
         assert help_id
@@ -211,6 +219,7 @@ def test_partial_system_selection_is_blocked_and_group_choice_persists() -> None
         assert second == 201
         page.reload()
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         page.get_by_text("Paused", exact=True).first.wait_for()
         page.get_by_role("button", name="Remove saved choice").first.click()
         page.get_by_label("Saved choice for Firefox").wait_for()
@@ -279,7 +288,8 @@ def test_m2_flows_have_no_document_overflow(viewport: dict[str, int]) -> None:
         for destination in ("Software", "Updates", "History", "Settings"):
             page.get_by_role("button", name=destination, exact=True).click()
             if destination == "Updates":
-                page.get_by_role("heading", name="Detected Updates").wait_for()
+                page.get_by_role("heading", name="Ready Updates").wait_for()
+                _open_update_details(page)
                 _assert_update_header_geometry(page, viewport["width"])
             dimensions = page.evaluate("() => ({scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth})")
             assert dimensions["scroll"] <= dimensions["client"], (viewport, destination)

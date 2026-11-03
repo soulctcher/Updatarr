@@ -244,6 +244,13 @@ summary counts, spacing between major sections, information controls on every
 page, modal and pop-up behavior, keyboard dismissal, and a rendered-copy audit
 that includes opened help and server-provided explanations.
 
+Post-M7 local-test refinement additionally makes **Ready Updates** the primary
+guided workflow. Browser tests require a concise list, one **Check Again**
+action, one **Update Ready Software** action, gated issue instructions, a
+collapsed safety/technical area, and consistent 18 px separation between a
+rendered plan (including an expired plan) and following detail. The complete
+table and checklist remain tested after explicitly expanding the detail.
+
 ## M6 evidence
 
 M6 adds restart reconciliation drills that require positive expected-version

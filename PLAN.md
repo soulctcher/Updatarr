@@ -174,10 +174,21 @@ Responsive, information-dense, readable, and visually related to the *arr family
 
 ### 5.2 Updates
 
+- Make the ordinary path one short guided flow: notification opens **Ready
+  Updates**; the page shows the summarized results of the latest check; one
+  **Check Again** action checks every enabled source; known problems appear as
+  short items with instructions gated behind a click; and **Update Ready
+  Software** begins exact-plan review. Do not require a person to run a second
+  safety check that Updatarr can run automatically.
+- Keep the full safety checklist, identifiers, exact versions, selection tools
+  and other technical evidence in an expandable area. Show a blocker, required
+  choice or consequence in the main flow, but gate its explanation and
+  evidence until requested.
 - Filter and sort by name, installed version, new version, source, size, type,
   risk, notes, date, selected, postponed or paused.
-- Bulk selection and preference editing; clearly distinguish updates that can
-  run separately from the system update group.
+- Bulk selection and preference editing remain available as advanced controls;
+  clearly distinguish updates that can run separately from the system update
+  group.
 - Detail drawer: description, changelog, package web links, dependency plan, related conflicts, permission changes, cached download state, exact action, ownership; AUR review includes PKGBUILD/source/diff and explicit trust acknowledgment.
 - Per-software actions: Skip This Version, Postpone Until, Pause Updates,
   Resume Updates, Show Notes and Show Requirements. All actions enter history.

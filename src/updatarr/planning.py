@@ -49,6 +49,9 @@ def policy_digest(policies: list[SelectionPolicy]) -> str:
 class Planner:
     """Turns a specific inventory generation into a sealed, typed plan."""
 
+    def __init__(self, *, aur_pipeline_ready: bool = False) -> None:
+        self._aur_pipeline_ready = aur_pipeline_ready
+
     def prepare(
         self,
         snapshot: InventorySnapshot,
@@ -98,16 +101,18 @@ class Planner:
                 expected_changes=((item.stable_id, item.installed_version, item.available_version),),
             ))
         for item in sorted((item for item in selected if item.source_id == "aur"), key=lambda x: x.software_id):
-            blocker = ("Live AUR builds are not available yet. Updatarr must first prove that builds cannot read "
-                       "its private service data or change unrelated files.")
-            blockers.append(blocker)
+            blocker = None
+            if not self._aur_pipeline_ready:
+                blocker = ("AUR updates need the isolated build pipeline. This installation has not yet "
+                           "proved that the complete pipeline is ready.")
+                blockers.append(blocker)
             steps.append(UpdatePlanStep(
                 step_id=f"aur-{len(steps) + 1}", operation=OperationKind.AUR_BUILD_INSTALL,
                 source_id=item.source_id, scope=item.scope,
                 target_stable_ids=(item.stable_id,), package_ids=(item.software_id,),
                 permission=PermissionKind.CURRENT_USER, summary=f"Review and build {item.name} as the current user.",
                 expected_changes=((item.stable_id, item.installed_version, item.available_version),),
-                live_enabled=False, blocker=blocker,
+                live_enabled=self._aur_pipeline_ready, blocker=blocker,
             ))
         operation_details = {
             "firmware": (OperationKind.FIRMWARE_UPDATE, PermissionKind.ADMINISTRATOR,

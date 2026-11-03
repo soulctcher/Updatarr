@@ -1,7 +1,10 @@
 # Updatarr milestones
 
 **Current phase:** M7 accepted; managed-computer read-only pilot
-**Current authorization:** on 2026-11-03 the user authorized the remaining RC3
+**Current authorization:** on 2026-11-03 the user authorized the M7.1 workflow
+correction to be versioned, packaged, signed, installed locally and restarted.
+This does not authorize publication, a remote push, live AUR, or any software
+update through Updatarr. Earlier on 2026-11-03 the user authorized the remaining RC3
 follow-up steps, including clean packaging, signing, local installation and
 bounded manual read-only core/tray verification. Enabling either user service
 at login, changing autostart or the existing notifier, removing Octopi or

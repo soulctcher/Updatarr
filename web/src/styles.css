@@ -1,4 +1,5 @@
 :root {
+  --workflow-section-gap: 18px;
   font-family:
     Inter,
     ui-sans-serif,
@@ -1001,7 +1002,111 @@ td small {
 .plan-review {
   display: grid;
   gap: 18px;
+  margin-bottom: var(--workflow-section-gap);
   border-top: 3px solid var(--brand);
+}
+
+.ready-updates-heading {
+  align-items: center;
+}
+.ready-update-worklist {
+  margin-bottom: var(--workflow-section-gap);
+  padding: 0;
+  overflow: hidden;
+  border-top: 3px solid var(--brand);
+}
+.ready-update-worklist .section-heading {
+  padding: 18px 20px;
+}
+.ready-update-list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+.ready-update-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.ready-update-list li > div,
+.ready-update-list li b,
+.ready-update-list li span {
+  display: block;
+}
+.ready-update-list li.needs-attention {
+  background: var(--warning-bg);
+}
+.ready-update-list li > .status {
+  display: inline-flex;
+  margin-top: 0;
+}
+.ready-update-list li span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.ready-update-list select {
+  min-width: 155px;
+}
+.ready-update-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 20px;
+  background: var(--canvas);
+}
+.ready-issues {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--warning-bg);
+}
+.ready-issues > div {
+  margin-bottom: 10px;
+}
+.ready-issues h3 {
+  color: var(--warning);
+}
+.ready-issues details {
+  padding: 10px 0;
+  border-top: 1px solid color-mix(in srgb, var(--warning) 24%, transparent);
+}
+.ready-issues summary {
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 800;
+}
+.ready-issues details p {
+  margin-top: 8px;
+}
+.ready-issues details .quiet {
+  margin-top: 10px;
+}
+.workflow-details {
+  margin-top: var(--workflow-section-gap);
+}
+.workflow-details > summary {
+  cursor: pointer;
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 800;
+}
+.workflow-details[open] > summary {
+  margin-bottom: var(--workflow-section-gap);
+}
+.technical-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: var(--workflow-section-gap);
+  padding: 12px 14px;
+  border-left: 3px solid var(--brand);
+  background: var(--surface);
 }
 .plan-facts {
   display: grid;
@@ -1703,6 +1808,17 @@ td small {
   }
 }
 @media (max-width: 760px) {
+  .ready-update-list li,
+  .ready-update-actions,
+  .technical-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .ready-update-list select,
+  .ready-update-actions .primary,
+  .technical-actions .quiet {
+    width: 100%;
+  }
   .shell {
     display: block;
   }

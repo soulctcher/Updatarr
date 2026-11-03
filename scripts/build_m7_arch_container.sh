@@ -5,10 +5,15 @@ project_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 output_root=${1:-"$project_root/build/m7-container-package"}
 output_root=$(realpath -m "$output_root")
 package_release=${2:-$(sed -n 's/^pkgrel=//p' "$project_root/packaging/arch/PKGBUILD")}
+package_version=$(sed -n 's/^pkgver=//p' "$project_root/packaging/arch/PKGBUILD")
 image_name=updatarr-m7-arch-builder:local
 
 if [[ ! "$package_release" =~ ^[1-9][0-9]*$ ]]; then
   printf 'Package release must be a positive whole number.\n' >&2
+  exit 2
+fi
+if [[ ! "$package_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  printf 'Package version must use X.Y.Z form.\n' >&2
   exit 2
 fi
 
@@ -43,10 +48,11 @@ docker run --rm \
   --mount="type=bind,src=$project_root/packaging/arch,dst=/input,readonly" \
   --mount="type=bind,src=$output_root,dst=/output" \
   --env="UPDATARR_PACKAGE_RELEASE=$package_release" \
+  --env="UPDATARR_PACKAGE_VERSION=$package_version" \
   "$image_name" \
   /usr/bin/bash -euo pipefail -c '
     mkdir -p /tmp/build
-    cp /input/PKGBUILD /input/updatarr-0.6.0.tar.gz /tmp/build/
+    cp /input/PKGBUILD "/input/updatarr-$UPDATARR_PACKAGE_VERSION.tar.gz" /tmp/build/
     cd /tmp/build
     sed -i "s/^pkgrel=.*/pkgrel=$UPDATARR_PACKAGE_RELEASE/" PKGBUILD
     makepkg --nodeps --noconfirm --cleanbuild

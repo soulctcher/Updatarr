@@ -18,10 +18,12 @@ risk, readiness and irreversible steps legible.
 
 ## Principles
 
-1. **Show the update plan.** System update groups, separately managed updates,
-   blockers and approval state should be more prominent than decorative totals.
-2. **Dense, not cramped.** Tables are the default for comparison; summary cards
-   appear only when they encode a genuinely different level of information.
+1. **Lead with the next decision.** The ordinary Updates screen shows a concise
+   ready list, unresolved choices and one primary action. Exact plan evidence
+   appears when the user starts that action.
+2. **Dense on demand.** Short rows are the default for the ordinary workflow.
+   Comparison tables, full checklists and diagnostic evidence remain available
+   in clearly named expandable detail.
 3. **Color has one job at a time.** Brand, update-source identity, health, severity
    and selection cannot all reuse the same hue.
 4. **Consequences precede confirmation.** Dependency, permission, reboot and
@@ -39,9 +41,10 @@ risk, readiness and irreversible steps legible.
    moves into it. Prefer a width and height that show the complete explanation,
    with reachable scrolling only when the viewport genuinely requires it. Keep
    current status, consequences and required next steps visible.
-8. **Checklist before risk.** Present automated update-safety results as one
-   issue-first checklist: what passed, what needs attention, what was not
-   checked and what is unavailable. Technical detail is expandable. A status
+8. **Issues before the full checklist.** Surface only checks that need a person
+   in the primary flow, with instructions gated per issue. Keep the complete
+   automated checklist expandable: what passed, what needs attention, what was
+   not checked and what is unavailable. A status
    becomes a link only when Updatarr has a real in-app place where the user can
    take the action; informational statuses remain non-interactive badges.
 

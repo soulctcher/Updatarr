@@ -37,6 +37,13 @@ clear heading, status or action.
     titles. Keep buttons, status labels, instructions and body copy in sentence
     case. Preserve official casing such as **AUR**, **KDE**, **AMOLED**,
     **GitHub**, **Node.js**, **npm**, **fnm**, **fwupd** and **uv**.
+12. Make the common task understandable before showing diagnostic evidence.
+    Put the short result, choices that need a decision and one primary next
+    action first. Gate checklists, exact identifiers, raw versions and
+    implementation evidence behind a clearly named expandable area.
+13. Never make a user click **check safety** after Updatarr has enough current
+    information to run that check itself. Present the result. Ask only for a
+    decision that the software cannot make safely.
 
 ## Help pattern
 
@@ -92,6 +99,9 @@ support this review but do not replace it.
 - Is instructional material behind the correct compact or wide hover panel?
 - Are blockers, consequences and next steps still visible without opening
   help?
+- Does the first screen show only the result, unresolved choices and the next
+  useful action?
+- Are diagnostic tables and technical evidence gated until requested?
 - Has every page, including opened help and server-provided text, received a
   plain-language reading pass?
 

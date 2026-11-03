@@ -1,16 +1,14 @@
 # Arch installation and recovery
 
 These instructions describe the M7 local candidates. The user authorized the
-reviewed RC3 follow-up (`updatarr 0.6.0-2`) for signing, local installation and
-bounded manual read-only testing on 2026-11-03. Service enablement remains a
-separate approval decision in
+reviewed M7.1 workflow correction (`updatarr 0.6.1-1`) for signing, local
+installation and bounded manual read-only testing on 2026-11-03. Service
+enablement remains a separate approval decision in
 [MILESTONES.md](../../MILESTONES.md).
 
-> **RC2 is rejected:** Do not reinstall or enable RC2. The reviewed RC3
-> follow-up preserves `PrivateTmp=true` and corrects its trusted executable
-> check. The manual packaged service and tray checks passed on 2026-11-03.
-> Keep both RC3 user units disabled at login until the owner separately approves
-> enablement.
+> **RC2 is rejected:** Do not reinstall or enable RC2. RC3 remains the tested
+> rollback package. The M7.1 correction preserves `PrivateTmp=true` and the
+> accepted trusted-executable check while replacing the browser/tray workflow.
 
 ## Before installation
 
@@ -18,7 +16,7 @@ separate approval decision in
    `scripts/build_source_archive.sh`, and confirm its checksum matches the
    PKGBUILD. The archive is the only application source consumed by makepkg.
 2. Build and inspect the package in a clean Arch build environment.
-3. Review the file list with `pacman -Qlp updatarr-0.6.0-2-any.pkg.tar.zst`.
+3. Review the file list with `pacman -Qlp updatarr-0.6.1-1-any.pkg.tar.zst`.
 4. Confirm that it contains two user units and no enabled-service links, XDG
    autostart entry, privileged helper or Polkit rule.
 5. Copy `/usr/share/doc/updatarr/updatarr.env.example` to

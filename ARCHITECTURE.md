@@ -110,8 +110,10 @@ expiry and handoff to Polkit when privilege is required.
 
 Every software mutation crosses this module, including AUR builds and other
 user-level provider actions. Polkit is a subsequent step only for root-required
-plans. Until a tested isolation design exists, an AUR build is treated as
-arbitrary code with the user's access and remains disabled for live execution.
+plans. An AUR build is treated as arbitrary code. The planner enables it only
+from current immutable readiness evidence for the complete acquisition,
+dependency, clean-root, confinement and artifact-handoff pipeline; a simulator
+boolean never becomes production evidence.
 
 ## Web interface
 
@@ -237,8 +239,9 @@ positive expected-version check can turn an interrupted run into success.
   than commands, executable paths, environments or argument lists.
 - Native repository updates become one full-system step. User and system
   Flatpak items remain separate typed steps with explicit permission needs.
-  AUR steps carry a visible blocker and cannot pass validation until build
-  isolation and service-secret separation are independently proven.
+  AUR steps carry a visible blocker unless current pipeline-readiness evidence
+  proves acquisition, dependency preparation, clean-root isolation,
+  service-secret separation and artifact handoff.
 - Browser review advances only to **Waiting for confirmation on this
   computer**. A separate interactive managed-computer surface displays the
   exact plan and records the Unix identity and kernel session. A loopback-only
@@ -309,6 +312,9 @@ networkless empty-root namespace, wrapped in a collected transient user cgroup.
 It copies input into one private writable tree, clears the environment and
 parses output in a second sandbox before retaining private hashed artifacts.
 Live AUR execution remains disabled because isolated source acquisition and a
-clean dependency/tool root are not implemented and independent review is
-pending. See the
-[M7 isolation validation](docs/research/m7-aur-isolation-validation.md).
+clean dependency/tool root are not installed or implemented. The production
+direction uses fixed AUR HTTPS Git commits, a secret-free verified-source
+stage, official Arch `devtools` clean roots and verified AUR dependency
+artifacts while preserving the accepted hostile-code confinement. See the
+[M7 isolation validation](docs/research/m7-aur-isolation-validation.md) and
+[production-pipeline research](docs/research/aur-production-pipeline-research.md).

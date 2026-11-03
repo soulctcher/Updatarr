@@ -1,13 +1,15 @@
 FROM updatarr-m7-runtime-base:local
 
 ARG EVIDENCE_RUN
-COPY updatarr-0.6.0-1-any.pkg.tar.zst /tmp/release-1.pkg.tar.zst
-COPY updatarr-0.6.0-2-any.pkg.tar.zst /tmp/release-2.pkg.tar.zst
+ARG VERSION_ONE
+ARG VERSION_TWO
+COPY release-1.pkg.tar.zst /tmp/release-1.pkg.tar.zst
+COPY release-2.pkg.tar.zst /tmp/release-2.pkg.tar.zst
 COPY m7_lifecycle_state.py /tmp/m7_lifecycle_state.py
 
 RUN test -n "$EVIDENCE_RUN" \
     && pacman -U --noconfirm /tmp/release-1.pkg.tar.zst \
-    && test "$(pacman -Q updatarr)" = "updatarr 0.6.0-1" \
+    && test "$(pacman -Q updatarr)" = "updatarr $VERSION_ONE" \
     && ! find /etc/systemd /usr/lib/systemd -path '*wants/updatarr*.service' -print -quit | grep -q . \
     && ! find /etc/xdg/autostart /usr/share/autostart -name '*updatarr*' -print -quit 2>/dev/null | grep -q . \
     && install -d -m 0700 -o updatarr-test -g updatarr-test \
@@ -45,10 +47,10 @@ RUN set -eu; \
 
 USER root
 RUN pacman -U --noconfirm /tmp/release-2.pkg.tar.zst \
-    && test "$(pacman -Q updatarr)" = "updatarr 0.6.0-2" \
+    && test "$(pacman -Q updatarr)" = "updatarr $VERSION_TWO" \
     && runuser -u updatarr-test -- python /tmp/m7_lifecycle_state.py restore \
     && pacman -U --noconfirm /tmp/release-1.pkg.tar.zst \
-    && test "$(pacman -Q updatarr)" = "updatarr 0.6.0-1" \
+    && test "$(pacman -Q updatarr)" = "updatarr $VERSION_ONE" \
     && runuser -u updatarr-test -- python /tmp/m7_lifecycle_state.py verify \
     && pacman -R --noconfirm updatarr \
     && ! pacman -Q updatarr \

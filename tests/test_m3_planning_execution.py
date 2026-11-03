@@ -84,6 +84,47 @@ def test_plan_fails_closed_on_drift_expiry_policy_change_and_aur() -> None:
     assert not planner.validate(policy_plan, snapshot, [replace(policy, reason="changed")], now=now).valid
 
 
+def test_aur_plan_is_executable_only_after_pipeline_readiness_is_proven() -> None:
+    snapshot = _snapshot()
+    aur = next(item for item in snapshot.updates if item.source_id == "aur")
+
+    blocked = Planner().prepare(snapshot, snapshot.updates, [aur.stable_id], [])
+    assert blocked.blockers
+
+    ready = Planner(aur_pipeline_ready=True).prepare(
+        snapshot, snapshot.updates, [aur.stable_id], []
+    )
+    assert ready.blockers == ()
+    assert ready.steps[0].live_enabled is True
+    assert ready.steps[0].operation is OperationKind.AUR_BUILD_INSTALL
+
+
+def test_live_updates_api_keeps_aur_out_of_the_ready_set(tmp_path: Path) -> None:
+    app = create_app(AppConfig(
+        password="test-only-password",
+        public_origin="http://testserver",
+        storage_path=tmp_path / "state.db",
+        provider_mode="live",
+        adapters=(),
+        catalog_adapters=(),
+        advisory_adapters=(),
+    ))
+    with TestClient(app) as client:
+        _login(client)
+        snapshot = _snapshot()
+        client.app.state.store.save_snapshot(snapshot)
+        body = client.get("/api/v1/updates").json()
+        aur = next(item for item in body["items"] if item["source_id"] == "aur")
+
+        assert aur["stable_id"] not in body["readiness"]["ready_stable_ids"]
+        issue = next(
+            issue for issue in body["readiness"]["issues"]
+            if issue["source_id"] == "aur"
+        )
+        assert issue["stable_ids"] == [aur["stable_id"]]
+        assert "isolated build pipeline" in issue["message"]
+
+
 @pytest.mark.parametrize("hostile", [
     "pkg;id", "pkg id", "$(touch /tmp/no)", "pkg\nname", "--config", "../pkg", "pkg\x1b[31m",
 ])

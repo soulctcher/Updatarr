@@ -101,6 +101,12 @@ type Update = {
   restart_needed: boolean | null;
   summary: string | null;
 };
+type PlanningIssue = {
+  source_id: string;
+  name: string;
+  stable_ids: string[];
+  message: string;
+};
 type CatalogItem = {
   catalog_id: string;
   source_id: string;
@@ -285,6 +291,11 @@ const viewNames: Record<View, string> = {
   history: "History",
   settings: "Settings",
 };
+
+function initialView(): View {
+  const requested = new URL(window.location.href).searchParams.get("view");
+  return requested && requested in viewNames ? (requested as View) : "overview";
+}
 
 async function readError(response: Response): Promise<string> {
   try {
@@ -508,7 +519,7 @@ export function App() {
   const [csrf, setCsrf] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [view, setView] = useState<View>("overview");
+  const [view, setView] = useState<View>(initialView);
   const [overview, setOverview] = useState<Overview | null>(null);
   const [software, setSoftware] = useState<Software[]>([]);
   const [softwarePage, setSoftwarePage] = useState({
@@ -517,6 +528,8 @@ export function App() {
     offset: 0,
   });
   const [updates, setUpdates] = useState<Update[]>([]);
+  const [readyUpdateIds, setReadyUpdateIds] = useState<string[]>([]);
+  const [planningIssues, setPlanningIssues] = useState<PlanningIssue[]>([]);
   const [history, setHistory] = useState<HistoryData | null>(null);
   const [advisories, setAdvisories] = useState<Advisory[]>([]);
   const [policies, setPolicies] = useState<Policy[]>([]);
@@ -568,6 +581,8 @@ export function App() {
     if (response.ok) {
       const body = await response.json();
       setUpdates(body.items);
+      setReadyUpdateIds(body.readiness?.ready_stable_ids ?? []);
+      setPlanningIssues(body.readiness?.issues ?? []);
       setSelected((current) =>
         current.filter((id) =>
           body.items.some((item: Update) => item.stable_id === id),
@@ -808,14 +823,14 @@ export function App() {
     }
     setSelectionDecision(await response.json());
   }
-  async function preparePlan() {
+  async function preparePlan(selectedIds = selected) {
     if (!csrf || !overview?.snapshot) return;
     const response = await fetch(`${apiBase}/plans`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRF-Token": csrf },
       body: JSON.stringify({
         snapshot_id: overview.snapshot.snapshot_id,
-        selected_stable_ids: selected,
+        selected_stable_ids: selectedIds,
       }),
     });
     if (!response.ok) {
@@ -1016,6 +1031,8 @@ export function App() {
           ) : view === "updates" ? (
             <Updates
               items={updates}
+              readyUpdateIds={readyUpdateIds}
+              planningIssues={planningIssues}
               safetyItems={safetyItems}
               policies={policies}
               checkedAt={overview?.snapshot?.completed_at}
@@ -1023,7 +1040,12 @@ export function App() {
               setSelected={setSelected}
               decision={selectionDecision}
               checkSelection={checkSelection}
-              preparePlan={preparePlan}
+              preparePlan={() => preparePlan()}
+              updateReadySoftware={(readyIds) => {
+                setSelected(readyIds);
+                void preparePlan(readyIds);
+              }}
+              checkAgain={startCheck}
               approvePlan={approvePlan}
               plan={plan}
               run={run}
@@ -1613,6 +1635,8 @@ function SoftwarePage({
 
 function Updates({
   items,
+  readyUpdateIds,
+  planningIssues,
   safetyItems,
   policies,
   checkedAt,
@@ -1621,6 +1645,8 @@ function Updates({
   decision,
   checkSelection,
   preparePlan,
+  updateReadySoftware,
+  checkAgain,
   approvePlan,
   plan,
   run,
@@ -1629,6 +1655,8 @@ function Updates({
   showOverviewCheck,
 }: {
   items: Update[];
+  readyUpdateIds: string[];
+  planningIssues: PlanningIssue[];
   safetyItems: SafetyItem[];
   policies: Policy[];
   checkedAt?: string;
@@ -1637,6 +1665,8 @@ function Updates({
   decision: SelectionDecision | null;
   checkSelection: () => void;
   preparePlan: () => void;
+  updateReadySoftware: (readyIds: string[]) => void;
+  checkAgain: () => void;
   approvePlan: () => void;
   plan: UpdatePlan | null;
   run: UpdateRun | null;
@@ -1644,6 +1674,7 @@ function Updates({
   removeChoices: (ids: string[]) => void;
   showOverviewCheck: () => void;
 }) {
+  const [technicalDetailsOpen, setTechnicalDetailsOpen] = useState(false);
   function toggle(id: string, checked: boolean) {
     setSelected(
       checked
@@ -1679,6 +1710,7 @@ function Updates({
     {} as Record<string, number>,
   );
   const attentionCount = safetyCounts.blocked ?? 0;
+  const readyUpdateSet = new Set(readyUpdateIds);
   const updateIds = items.map((item) => item.stable_id);
   const selectedUpdateCount = updateIds.filter((id) =>
     selected.includes(id),
@@ -1688,16 +1720,16 @@ function Updates({
   const someUpdatesSelected = selectedUpdateCount > 0 && !allUpdatesSelected;
   return (
     <>
-      <div className="page-heading">
+      <div className="page-heading ready-updates-heading">
         <div>
-          <p className="eyebrow">Recorded results</p>
+          <p className="eyebrow">Software ready now</p>
           <div className="heading-with-help">
-            <h1>Review Updates</h1>
-            <HelpButton kind="wide" title="How Review Updates Works">
+            <h1>Ready Updates</h1>
+            <HelpButton kind="wide" title="How Ready Updates Work">
               <p>
-                Select updates, then choose{" "}
-                <b>Check whether selection is safe</b>. Nothing on this page
-                installs software.
+                Updatarr shows which updates are ready to plan from the checks
+                completed so far. Choose <b>Update Ready Software</b> to review
+                the exact changes before anything begins.
               </p>
               <dl className="help-choices">
                 <div>
@@ -1728,14 +1760,100 @@ function Updates({
               </p>
             </HelpButton>
           </div>
-          <p>Choose what to review now or save it for later.</p>
+          <p>
+            {items.length} {items.length === 1 ? "update was" : "updates were"}{" "}
+            found; {readyUpdateIds.length} {readyUpdateIds.length === 1 ? "is" : "are"}{" "}
+            ready from the last check at {formatTime(checkedAt)}.
+          </p>
         </div>
-        {items.length > 0 && (
-          <button className="primary" onClick={checkSelection}>
-            Check whether selection is safe
-          </button>
-        )}
+        <button className="quiet" onClick={checkAgain}>Check Again</button>
       </div>
+      {items.length > 0 && (
+        <section className="panel ready-update-worklist" aria-labelledby="ready-update-list-title">
+          <div className="section-heading">
+            <div>
+              <h2 id="ready-update-list-title">Updates Found</h2>
+              <p>Review the short list. Open details only when you need them.</p>
+            </div>
+            <span className="status ready">{readyUpdateIds.length} Ready</span>
+          </div>
+          <ul className="ready-update-list">
+            {items.map((item) => {
+              const choices = savedChoices(item);
+              const needsAttention =
+                choices.length === 0 && !readyUpdateSet.has(item.stable_id);
+              return (
+                <li className={needsAttention ? "needs-attention" : ""} key={`ready-${item.stable_id}-${item.available_version}`}>
+                  <div>
+                    <b>{item.name}</b>
+                    <span>{sourceLabel(item.source_id)} · {item.installed_version ?? "Not installed"} → {item.available_version}</span>
+                  </div>
+                  {needsAttention ? (
+                    <span className="status blocked">Needs Attention</span>
+                  ) : choices.length > 0 ? (
+                    <button className="quiet compact" onClick={() => void removeChoices(choices.map((choice) => choice.policy_id))}>
+                      Remove Saved Choice
+                    </button>
+                  ) : (
+                    <select
+                      aria-label={`Choice for ${item.name}`}
+                      defaultValue=""
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        event.target.value = "";
+                        void addChoice(item, value);
+                      }}
+                    >
+                      <option value="">Ready</option>
+                      <option value="postpone">Wait 24 Hours</option>
+                      <option value="skip_version">Skip This Version</option>
+                      <option value="pause_software">Pause This Software</option>
+                    </select>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+          {planningIssues.length > 0 && (
+            <section className="ready-issues" aria-labelledby="ready-issues-title">
+              <div>
+                <h3 id="ready-issues-title">{planningIssues.length} {planningIssues.length === 1 ? "Item Needs" : "Items Need"} Attention</h3>
+                <p>Open an item only when you need its instructions.</p>
+              </div>
+              {planningIssues.map((issue) => (
+                <details key={`issue-${issue.source_id}-${issue.stable_ids.join("-")}`}>
+                  <summary>{titleCase(issue.name)}</summary>
+                  <p>{issue.message}</p>
+                  {issue.source_id === "firmware" ? (
+                    <button className="quiet compact" type="button" onClick={checkAgain}>Check Again</button>
+                  ) : issue.source_id === "native" ? (
+                    <button
+                      className="quiet compact"
+                      type="button"
+                      onClick={() => {
+                        setTechnicalDetailsOpen(true);
+                        window.requestAnimationFrame(() => focusDetectedUpdateSource("native"));
+                      }}
+                    >
+                      Review System Package Updates
+                    </button>
+                  ) : null}
+                </details>
+              ))}
+            </section>
+          )}
+          <div className="ready-update-actions">
+            <p>You will review the exact plan and confirm it on this computer before updates begin.</p>
+            <button
+              className="primary"
+              disabled={readyUpdateIds.length === 0}
+              onClick={() => updateReadySoftware(readyUpdateIds)}
+            >
+              Update Ready Software
+            </button>
+          </div>
+        </section>
+      )}
       {decision && (
         <section
           className={`decision ${decision.allowed ? "allowed" : "refused"}`}
@@ -1760,6 +1878,18 @@ function Updates({
         </section>
       )}
       {plan && <PlanReview plan={plan} run={run} approve={approvePlan} />}
+      <details
+        className="workflow-details"
+        open={technicalDetailsOpen}
+        onToggle={(event) => setTechnicalDetailsOpen(event.currentTarget.open)}
+      >
+        <summary>Safety and technical details</summary>
+        {items.length > 0 && (
+          <div className="technical-actions">
+            <p>Select individual rows below only when you do not want to update everything that is ready.</p>
+            <button className="quiet" onClick={checkSelection}>Check Whether Selection Is Safe</button>
+          </div>
+        )}
       {safetyItems.length > 0 && (
         <section
           className="panel safety-readiness"
@@ -2066,6 +2196,7 @@ function Updates({
           </div>
         </section>
       )}
+      </details>
     </>
   );
 }

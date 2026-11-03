@@ -9,6 +9,7 @@ import subprocess
 import sys
 import shutil
 import hashlib
+import tomllib
 
 import pytest
 from fastapi.testclient import TestClient
@@ -233,7 +234,8 @@ def test_package_has_one_startup_owner_and_does_not_enable_itself() -> None:
     assert '--prefix=/usr' in package
     assert 'python-pydantic' in package
     assert '$startdir' not in package
-    archive = ROOT / "packaging" / "arch" / "updatarr-0.6.0.tar.gz"
+    version = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
+    archive = ROOT / "packaging" / "arch" / f"updatarr-{version}.tar.gz"
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
     assert digest in package
     assert "systemctl" not in package

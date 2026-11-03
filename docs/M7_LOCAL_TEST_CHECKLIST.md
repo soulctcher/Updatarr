@@ -1,7 +1,7 @@
 # Updatarr Local Test Checklist
 
 **Test address:** `http://127.0.0.1:8788`
-**Build:** signed M7 RC3 local pilot (`updatarr 0.6.0-2`)
+**Build:** M7.1 local correction (`updatarr 0.6.1-1`)
 
 **Safety boundary:** read-only inventory only; do not expect Updatarr to install
 or remove software
@@ -151,7 +151,7 @@ unit.
 ## 10. About Information
 
 - [ ] Open browser **Settings**, scroll to the final **About Updatarr** section
-      and confirm it shows Version 0.6.0, Build M7 and
+      and confirm it shows Version 0.6.1, Build M7.1 and
       `© 2026 ✦ ERIK WINBLAD ✦`.
 - [ ] Confirm the email opens a new message addressed to
       `soulctcher@soulctcher.net`.

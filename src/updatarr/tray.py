@@ -128,6 +128,14 @@ def should_notify(
     return current != previous or reminder_due
 
 
+def notification_target(url: str, status: TrayStatus) -> str:
+    """Open waiting updates directly; otherwise open the ordinary overview."""
+    if not status.attention:
+        return url
+    separator = "&" if "?" in url else "?"
+    return f"{url}{separator}view=updates"
+
+
 def edit_tray_preferences(current: TrayPreferences) -> TrayPreferences | None:
     """Show the local tray settings window and return a saved choice."""
     from PySide6.QtWidgets import (
@@ -301,8 +309,11 @@ def run_tray(
     heading.setEnabled(False)
     menu.addAction(heading)
     menu.addSeparator()
+    def open_current() -> None:
+        webbrowser.open(notification_target(url, current))
+
     open_action = QAction("Open Updatarr")
-    open_action.triggered.connect(lambda: webbrowser.open(url))
+    open_action.triggered.connect(open_current)
     menu.addAction(open_action)
     settings_action = QAction("Settings…")
     menu.addAction(settings_action)
@@ -311,11 +322,17 @@ def run_tray(
     quit_action.triggered.connect(app.quit)
     menu.addAction(quit_action)
     tray.setContextMenu(menu)
-    tray.activated.connect(lambda reason: webbrowser.open(url) if reason == QSystemTrayIcon.ActivationReason.Trigger else None)
+    tray.activated.connect(
+        lambda reason: open_current()
+        if reason == QSystemTrayIcon.ActivationReason.Trigger
+        else None
+    )
+    tray.messageClicked.connect(open_current)
 
     def refresh() -> None:
-        nonlocal last_notification_at, previous
+        nonlocal current, last_notification_at, previous
         latest = TrayStatus.from_overview(source.read() or {"snapshot": None, "summary": {}})
+        current = latest
         tray.setIcon(build_status_icon(latest.icon_state, base_icon))
         tray.setToolTip(f"{latest.title}\n{latest.detail}")
         heading.setText(latest.title)

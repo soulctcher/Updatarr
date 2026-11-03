@@ -15,6 +15,7 @@ from updatarr.tray import (  # noqa: E402
     TrayStatus,
     build_status_icon,
     edit_tray_preferences,
+    notification_target,
     save_tray_preferences,
     should_notify,
 )
@@ -44,6 +45,20 @@ def test_tray_count_uses_ready_updates_and_notifications_do_not_repeat() -> None
     assert current.title.endswith("3 ready to review")
     assert should_notify(previous, current) is True
     assert should_notify(current, current) is False
+
+
+def test_notification_opens_ready_updates_directly() -> None:
+    base = "http://127.0.0.1:8788/"
+    waiting = TrayStatus.from_overview({
+        "snapshot": {"snapshot_id": "one"},
+        "summary": {"updates_found": 2, "ready_to_review": 1, "blocked": 1},
+    })
+    clear = TrayStatus.from_overview({
+        "snapshot": {"snapshot_id": "two"},
+        "summary": {"updates_found": 0, "blocked": 0},
+    })
+    assert notification_target(base, waiting) == base + "?view=updates"
+    assert notification_target(base, clear) == base
 
 
 def test_tray_status_distinguishes_not_checked_clear_and_updates() -> None:

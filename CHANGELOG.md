@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.1-m7.1 — local test correction 2026-11-03
+
+- Replaced the dense Updates screen with a concise **Ready Updates** workflow,
+  gated problem instructions, authoritative server-side readiness and one
+  primary **Update Ready Software** action.
+- Kept the native system package group indivisible when saved choices exist,
+  and excluded firmware or AUR work that is not ready from the primary action.
+- Made update notifications and tray activation open **Ready Updates** after
+  authentication when attention is needed.
+- Added verified spacing between expired-plan and safety sections, retained the
+  complete technical checklist behind progressive disclosure, and expanded
+  desktop/mobile/theme regression coverage.
+- Added the fail-closed AUR readiness seam and official clean-build pipeline
+  research. Live AUR remains disabled until the separately approved production
+  pipeline and host tooling exist.
+
 ## 0.6.0-m6 — accepted 2026-10-30
 
 - M5 accepted by the user; repository work advanced to the separately gated M6

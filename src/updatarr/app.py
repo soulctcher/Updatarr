@@ -202,7 +202,10 @@ def create_app(config: AppConfig) -> FastAPI:
                 pass  # Tray display failure must not change the inventory result.
 
     inventory = InventoryCoordinator(adapters, store, events, snapshot_listener=snapshot_status)
-    planner = Planner()
+    # Simulator AUR work runs only in the deterministic executor. Live mode
+    # stays closed until the complete source, dependency and build pipeline is
+    # present and attested by the local companion.
+    planner = Planner(aur_pipeline_ready=config.provider_mode == "simulator")
     simulator_executor = SimulatorExecutor()
     run_cancellations: dict[str, threading.Event] = {}
     run_tasks: set[asyncio.Task[None]] = set()
@@ -425,10 +428,66 @@ def create_app(config: AppConfig) -> FastAPI:
     async def updates(request: Request) -> dict[str, object]:
         current_session(request)
         snapshot, effective = effective_updates()
+        ready_ids: list[str] = []
+        issues: list[dict[str, object]] = []
+        candidates: list[tuple[DetectedUpdate, ...]] = []
+        native = tuple(item for item in effective if item.source_id == "native")
+        if native:
+            candidates.append(native)
+        candidates.extend(
+            (item,) for item in effective if item.source_id != "native"
+        )
+        if snapshot is not None:
+            for candidate in candidates:
+                if any(item.state is not SourceState.READY_TO_REVIEW for item in candidate):
+                    if candidate[0].source_id == "native":
+                        issues.append({
+                            "source_id": "native",
+                            "name": "System Packages",
+                            "stable_ids": [item.stable_id for item in candidate],
+                            "message": "System packages must update together. Remove or change the saved choice before updating this group.",
+                        })
+                    else:
+                        item = candidate[0]
+                        issues.append({
+                            "source_id": item.source_id,
+                            "name": item.name,
+                            "stable_ids": [item.stable_id],
+                            "message": item.summary or f"{item.name} is not ready to update.",
+                        })
+                    continue
+                try:
+                    candidate_plan = planner.prepare(
+                        snapshot,
+                        effective,
+                        [item.stable_id for item in candidate],
+                        store.policies(),
+                    )
+                except (PlanningError, PolicyError, ValueError) as error:
+                    issues.append({
+                        "source_id": candidate[0].source_id,
+                        "name": candidate[0].name,
+                        "stable_ids": [item.stable_id for item in candidate],
+                        "message": str(error),
+                    })
+                    continue
+                if candidate_plan.blockers:
+                    issues.append({
+                        "source_id": candidate[0].source_id,
+                        "name": candidate[0].name,
+                        "stable_ids": [item.stable_id for item in candidate],
+                        "message": candidate_plan.blockers[0],
+                    })
+                else:
+                    ready_ids.extend(item.stable_id for item in candidate)
         return {
             "snapshot_id": snapshot.snapshot_id if snapshot else None,
             "items": [item.to_dict() for item in effective],
             "saved_choices": saved_choice_counts(effective),
+            "readiness": {
+                "ready_stable_ids": ready_ids,
+                "issues": issues,
+            },
         }
 
     @app.get(f"{base}/api/v1/safety-readiness")

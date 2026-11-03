@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from test_m2_browser import _run_check, _server, _signed_in_page
+from test_m2_browser import _open_update_details, _run_check, _server, _signed_in_page
 
 
 THEMES = [
@@ -57,6 +57,7 @@ def test_safety_readiness_explains_blocks_restart_and_no_mutation(viewport: dict
         page = _signed_in_page(browser, base_url, viewport)
         _run_check(page)
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         page.get_by_role("heading", name="Safety Checklist").wait_for()
         help_button = page.get_by_role("button", name="Information: About the Safety Checklist")
         help_button.focus()
@@ -88,12 +89,15 @@ def test_safety_readiness_explains_blocks_restart_and_no_mutation(viewport: dict
             "() => document.activeElement?.id === 'check-software'"
         )
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         page.get_by_role("heading", name="Safety Checklist").wait_for()
         firmware = page.locator(".checklist-item", has_text="Example Firmware Device")
         firmware.get_by_text("View details", exact=True).click()
         assert page.get_by_text("External power is not connected", exact=False).is_visible()
         assert page.get_by_text("Restart the computer to use the new version", exact=False).count() >= 1
-        assert page.get_by_text("folder reserved for system packages", exact=False).is_visible()
+        assert page.locator(".safety-readiness").get_by_text(
+            "folder reserved for system packages", exact=False
+        ).is_visible()
         assert page.get_by_text("does not know how uv was installed", exact=False).is_visible()
         npm = page.locator(".checklist-item", has_text="Global npm Packages")
         npm.get_by_role(
@@ -121,6 +125,108 @@ def test_safety_readiness_explains_blocks_restart_and_no_mutation(viewport: dict
                                 "host_changes_performed": False}
         width = page.evaluate("() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]")
         assert width[0] <= width[1]
+        browser.close()
+
+
+@pytest.mark.parametrize("viewport", [
+    {"width": 1280, "height": 900}, {"width": 390, "height": 844},
+])
+def test_ready_updates_is_a_short_guided_workflow(viewport: dict[str, int]) -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    with _server() as base_url, playwright.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(headless=True)
+        page = _signed_in_page(browser, base_url, viewport)
+        _run_check(page)
+        page.get_by_role("button", name="Updates", exact=True).click()
+
+        page.get_by_role("heading", name="Ready Updates", exact=True).wait_for()
+        assert page.get_by_role("button", name="Check Again", exact=True).is_visible()
+        assert page.get_by_role("button", name="Update Ready Software", exact=True).is_visible()
+        assert page.get_by_text("4 Ready", exact=True).is_visible()
+        assert page.locator(".ready-update-list li", has_text="Example Firmware Device").get_by_text(
+            "Needs Attention", exact=True
+        ).is_visible()
+        assert page.get_by_text("Safety Checklist", exact=True).is_hidden()
+        assert page.get_by_text("Review code", exact=True).count() == 0
+
+        page.get_by_role("button", name="Update Ready Software", exact=True).click()
+        page.get_by_role("heading", name="Ready for Your Review", exact=True).wait_for()
+        assert page.locator(".plan-review", has_text="Example Firmware Device").count() == 0
+
+        details = page.get_by_text("Safety and technical details", exact=True)
+        details.click()
+        assert page.get_by_role("heading", name="Safety Checklist", exact=True).is_visible()
+        browser.close()
+
+
+def test_notification_link_lands_on_ready_updates_after_sign_in() -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    with _server() as base_url, playwright.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(headless=True)
+        page = browser.new_page(viewport={"width": 1280, "height": 900})
+        page.goto(base_url + "/?view=updates")
+        page.get_by_label("Password").fill("test-only-password")
+        page.get_by_role("button", name="Sign in", exact=True).click()
+        page.get_by_role("heading", name="Ready Updates", exact=True).wait_for()
+        assert page.get_by_role("button", name="Updates", exact=True).get_attribute("aria-current") == "page"
+        browser.close()
+
+
+def test_primary_action_never_selects_part_of_the_system_package_group() -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    with _server() as base_url, playwright.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(headless=True)
+        page = _signed_in_page(browser, base_url, {"width": 1280, "height": 900})
+        _run_check(page)
+        page.get_by_role("button", name="Updates", exact=True).click()
+        page.get_by_label("Choice for Firefox", exact=True).select_option("skip_version")
+
+        system_issue = page.locator(".ready-issues", has_text="System Packages")
+        system_issue.wait_for()
+        native_rows = page.locator(
+            ".ready-update-list li", has_text="System packages"
+        )
+        assert native_rows.count() == 2
+        assert native_rows.evaluate_all(
+            "rows => rows.every(row => row.textContent.includes('Needs Attention') || row.textContent.includes('Remove Saved Choice'))"
+        )
+
+        page.get_by_role("button", name="Update Ready Software", exact=True).click()
+        page.get_by_role("heading", name="Ready for Your Review", exact=True).wait_for()
+        assert page.get_by_text("Update the complete system package group", exact=False).count() == 0
+        browser.close()
+
+
+def test_expired_plan_has_space_before_safety_details() -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    with _server() as base_url, playwright.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(headless=True)
+        page = _signed_in_page(browser, base_url, {"width": 1280, "height": 900})
+        _run_check(page)
+        page.route(
+            "**/api/v1/plans/latest",
+            lambda route: route.fulfill(json={
+                "plan": {
+                    "plan_id": "plan-expired-example",
+                    "digest": "a" * 64,
+                    "state": "expired",
+                    "created_at": "2026-11-03T12:00:00+00:00",
+                    "expires_at": "2026-11-03T12:15:00+00:00",
+                    "steps": [],
+                    "warnings": [],
+                    "blockers": [],
+                    "unknowns": [],
+                    "requires_administrator": False,
+                },
+                "run": None,
+            }),
+        )
+        page.get_by_role("button", name="Updates", exact=True).click()
+        page.get_by_role("heading", name="Plan Expired", exact=True).wait_for()
+        plan_box = page.locator(".plan-review").bounding_box()
+        details_box = page.locator(".workflow-details").bounding_box()
+        assert plan_box is not None and details_box is not None
+        assert details_box["y"] - (plan_box["y"] + plan_box["height"]) >= 18
         browser.close()
 
 
@@ -164,6 +270,7 @@ def test_live_inventory_safety_row_exposes_recorded_source_details() -> None:
             ),
         )
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         developer_tools = page.locator(".checklist-item", has_text="Developer Tools")
         developer_tools.get_by_text("View details", exact=True).click()
         assert developer_tools.get_by_text("Global npm packages", exact=True).is_visible()
@@ -178,6 +285,7 @@ def test_safety_readiness_uses_every_theme_profile() -> None:
         browser = runtime.chromium.launch(headless=True)
         page = _signed_in_page(browser, base_url, {"width": 1280, "height": 900})
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         page.get_by_role("heading", name="Safety Checklist").wait_for()
         for theme in THEMES:
             page.evaluate("theme => theme === 'system' ? delete document.documentElement.dataset.theme : document.documentElement.dataset.theme = theme", theme)
@@ -211,7 +319,7 @@ def test_rail_shows_faint_version_and_build_below_preview_box() -> None:
         browser = runtime.chromium.launch(headless=True)
         page = _signed_in_page(browser, base_url, {"width": 1280, "height": 900})
         safe_box = page.locator(".safe-mode").bounding_box()
-        stamp = page.get_by_text("Version 0.6.0 · Build M7", exact=True)
+        stamp = page.get_by_text("Version 0.6.1 · Build M7.1", exact=True)
         stamp_box = stamp.bounding_box()
         assert safe_box is not None and stamp_box is not None
         assert stamp_box["y"] >= safe_box["y"] + safe_box["height"]
@@ -257,7 +365,7 @@ def test_settings_ends_with_version_contact_and_license_information() -> None:
         page.get_by_role("button", name="Settings", exact=True).click()
         about = page.locator(".about-settings")
         assert about.get_by_role("heading", name="About Updatarr", exact=True).is_visible()
-        assert about.get_by_text("Version 0.6.0 · Build M7", exact=True).is_visible()
+        assert about.get_by_text("Version 0.6.1 · Build M7.1", exact=True).is_visible()
         assert about.get_by_text("© 2026 ✦ ERIK WINBLAD ✦", exact=True).is_visible()
         contact = about.get_by_role("link", name="soulctcher@soulctcher.net", exact=True)
         assert contact.get_attribute("href") == "mailto:soulctcher@soulctcher.net"
@@ -278,6 +386,7 @@ def test_titles_use_title_case_and_preserve_product_casing() -> None:
             "heading", name="Example Notice Requiring Review", exact=True
         ).is_visible()
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         page.get_by_role("heading", name="Safety Checklist").wait_for()
         for heading in (
             "Safety Checklist",
@@ -324,11 +433,12 @@ def test_help_is_available_on_hover_and_focus_on_every_page() -> None:
         opened_help.update(_open_visible_help(page))
 
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         opened_help.update(_open_visible_help(page))
         page.get_by_role("checkbox", name="Include Visual Studio Code in safety check").check()
         page.get_by_role("button", name="Check whether selection is safe").click()
         page.get_by_role("button", name="Prepare update plan").click()
-        page.get_by_text("Live AUR builds are not available yet", exact=False).first.wait_for()
+        page.get_by_role("heading", name="Ready for Your Review", exact=True).wait_for()
         opened_help.update(_open_visible_help(page))
 
         page.get_by_role("button", name="History", exact=True).click()
@@ -352,13 +462,13 @@ def test_help_is_available_on_hover_and_focus_on_every_page() -> None:
         for view in ("Overview", "Software", "Updates", "History", "Settings"):
             page.get_by_role("button", name=view, exact=True).click()
         page.get_by_role("button", name="Updates", exact=True).click()
-        page_help_button = page.get_by_role("button", name="Information: How Review Updates Works")
+        page_help_button = page.get_by_role("button", name="Information: How Ready Updates Work")
         page_help_button.hover()
         page_help_id = page_help_button.get_attribute("aria-describedby")
         assert page_help_id
         page_help = page.locator(f'[id="{page_help_id}"]')
         assert page_help.is_visible()
-        assert page_help.get_by_text("Nothing on this page installs software", exact=False).is_visible()
+        assert page_help.get_by_text("checks completed so far", exact=False).is_visible()
         assert page_help.bounding_box()["width"] <= 380
         button_box = page_help_button.bounding_box()
         panel_box = page_help.bounding_box()
@@ -385,6 +495,7 @@ def test_help_is_available_on_hover_and_focus_on_every_page() -> None:
             assert abs(current_box["y"] - panel_box["y"]) < 0.5
         page.mouse.move(0, 0)
         page_help.wait_for(state="hidden")
+        _open_update_details(page)
         checklist_button = page.get_by_role("button", name="Information: About the Safety Checklist")
         checklist_button.hover()
         checklist_button.focus()
@@ -436,12 +547,13 @@ def test_every_rendered_page_and_safety_detail_uses_plain_language() -> None:
         collected.extend(value.lower() for pair in _open_visible_help(page) for value in pair)
         collected.append(page.locator("body").text_content().lower())
         page.get_by_role("button", name="Updates", exact=True).click()
+        _open_update_details(page)
         page.get_by_role("heading", name="Safety Checklist").wait_for()
         page.locator("details").evaluate_all("items => items.forEach(item => item.open = true)")
         page.get_by_role("checkbox", name="Include Visual Studio Code in safety check").check()
         page.get_by_role("button", name="Check whether selection is safe").click()
         page.get_by_role("button", name="Prepare update plan").click()
-        page.get_by_text("Live AUR builds are not available yet", exact=False).first.wait_for()
+        page.get_by_role("heading", name="Ready for Your Review", exact=True).wait_for()
         collected.extend(value.lower() for pair in _open_visible_help(page) for value in pair)
         collected.append(page.locator("body").text_content().lower())
         page.get_by_role("button", name="History", exact=True).click()
