@@ -620,6 +620,17 @@ p {
 .table-wrap {
   overflow-x: auto;
 }
+.software-table-wrap {
+  max-height: min(68vh, 760px);
+  overflow: auto;
+}
+.software-table-wrap thead th {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  background: var(--surface);
+  box-shadow: 0 1px 0 var(--line);
+}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -764,6 +775,51 @@ td small {
 }
 .settings-section + .settings-section {
   margin-top: 16px;
+}
+.about-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.about-list > div {
+  min-width: 0;
+  padding: 14px 16px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.about-list > div:nth-child(2n) {
+  border-right: 0;
+}
+.about-list > div:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+.about-list dt {
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.about-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-weight: 650;
+}
+.about-list dd span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+.about-list a {
+  color: var(--brand);
+  text-underline-offset: 2px;
 }
 .segmented {
   display: inline-flex;
@@ -1228,6 +1284,7 @@ td small {
   margin: 10px 0 0;
 }
 .preview-details > ul,
+.observed-source-list,
 .subcheck-list {
   display: grid;
   gap: 8px;
@@ -1236,10 +1293,16 @@ td small {
   list-style: none;
 }
 .preview-details li b,
-.preview-details li span {
+.preview-details li span,
+.observed-source-list li b,
+.observed-source-list li span {
   display: block;
 }
 .preview-details li span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.observed-source-list li span {
   color: var(--muted);
   font-size: 11px;
 }
@@ -1710,6 +1773,18 @@ td small {
   }
   .settings-panel > a {
     justify-self: start;
+  }
+  .about-list {
+    grid-template-columns: 1fr;
+  }
+  .about-list > div,
+  .about-list > div:nth-child(2n),
+  .about-list > div:nth-last-child(-n + 2) {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .about-list > div:last-child {
+    border-bottom: 0;
   }
   .filter-bar {
     grid-template-columns: minmax(0, 1fr) auto;

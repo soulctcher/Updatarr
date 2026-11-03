@@ -34,6 +34,7 @@ def _server():
         "UPDATARR_DEVELOPMENT_MODE": "1",
         "UPDATARR_PASSWORD": "test-only-password",
         "UPDATARR_STATE_PATH": str(Path(state_directory.name) / "state.db"),
+        "UPDATARR_STATIC_DIR": str(ROOT / "web" / "dist"),
     })
     process = subprocess.Popen(
         [sys.executable, "-m", "updatarr.main"], cwd=ROOT, env=env,
@@ -115,6 +116,56 @@ def test_catalog_results_are_explicit_source_choices() -> None:
         page.get_by_role("heading", name="kdenlive-git").wait_for()
         assert page.get_by_text("No earlier copy is recorded", exact=False).is_visible()
         assert page.locator(".aur-preview pre").get_by_text("build()", exact=False).is_visible()
+        browser.close()
+
+
+def test_installed_software_hides_repeated_names_and_pins_the_table_header() -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    with _server() as base_url, playwright.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(headless=True)
+        page = _signed_in_page(browser, base_url, {"width": 1280, "height": 620})
+        assert page.get_by_text("Not checked means installed software was recorded", exact=False).is_visible()
+        _run_check(page)
+        page.get_by_role("button", name="Software", exact=True).click()
+        rows = page.locator(".software-table-wrap tbody tr")
+        rows.first.wait_for()
+        repeated_identifiers = rows.evaluate_all("""rows => rows.filter(row => {
+            const name = row.querySelector('td b')?.textContent?.trim().toLocaleLowerCase();
+            const identifier = row.querySelector('td small')?.textContent?.trim().toLocaleLowerCase();
+            return name && identifier && name === identifier;
+        }).length""")
+        assert repeated_identifiers == 0
+        header = page.locator(".software-table-wrap thead th").first
+        assert header.evaluate("node => getComputedStyle(node).position") == "sticky"
+        assert header.evaluate("node => getComputedStyle(node).top") == "0px"
+        page.locator(".software-table-wrap tbody").evaluate("""body => {
+            const row = body.querySelector('tr');
+            for (let index = 0; index < 30; index += 1) body.append(row.cloneNode(true));
+        }""")
+        header_top = header.bounding_box()["y"]
+        page.locator(".software-table-wrap").evaluate("node => node.scrollTop = 600")
+        assert abs(header.bounding_box()["y"] - header_top) <= 1
+        browser.close()
+
+
+def test_detected_updates_header_selects_and_clears_every_update() -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    with _server() as base_url, playwright.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(headless=True)
+        page = _signed_in_page(browser, base_url, {"width": 1280, "height": 800})
+        _run_check(page)
+        page.get_by_role("button", name="Updates", exact=True).click()
+        select_all = page.get_by_role("checkbox", name="Select all detected updates")
+        update_boxes = page.locator('.detected-updates tbody input[type="checkbox"]')
+        select_all.check()
+        assert update_boxes.count() > 1
+        assert update_boxes.evaluate_all("boxes => boxes.every(box => box.checked)")
+        update_boxes.first.uncheck()
+        assert select_all.evaluate("box => box.indeterminate") is True
+        select_all.click()
+        assert update_boxes.evaluate_all("boxes => boxes.every(box => box.checked)")
+        select_all.uncheck()
+        assert update_boxes.evaluate_all("boxes => boxes.every(box => !box.checked)")
         browser.close()
 
 

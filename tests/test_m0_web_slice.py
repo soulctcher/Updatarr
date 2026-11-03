@@ -60,6 +60,7 @@ def _server(url_base: str = "", event_history_limit: int = 100, seed=None):  # t
             "UPDATARR_DEVELOPMENT_MODE": "1",
         "UPDATARR_PASSWORD": "test-only-password",
         "UPDATARR_STATE_PATH": str(state_path),
+        "UPDATARR_STATIC_DIR": str(ROOT / "web" / "dist"),
         "UPDATARR_EVENT_HISTORY_LIMIT": str(event_history_limit),
     })
     process = subprocess.Popen(

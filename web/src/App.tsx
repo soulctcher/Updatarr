@@ -267,6 +267,7 @@ type SafetyItem = {
   checks: SafetyCheck[];
   simulated: boolean;
   details?: {
+    observed_sources?: Source[];
     preview?: {
       retention: string;
       candidates: MaintenanceCandidate[];
@@ -1093,7 +1094,9 @@ function OverviewPage({
             </HelpButton>
           </div>
           <p>
-            See what was recorded and what is waiting before anything changes.
+            Records installed software and checks for newer versions only where
+            the update source supports it. <b>Not checked</b> means installed
+            software was recorded, but newer versions were not checked.
           </p>
         </div>
         <button
@@ -1394,7 +1397,7 @@ function SoftwarePage({
                 </div>
               </nav>
               <section className="panel table-panel">
-                <div className="table-wrap">
+                <div className="table-wrap software-table-wrap">
                   <table>
                   <thead>
                     <tr>
@@ -1416,7 +1419,10 @@ function SoftwarePage({
                             rel="noopener noreferrer"
                           >
                             <b>{item.name}</b>
-                            <small>{item.software_id}</small>
+                            {item.name.trim().toLocaleLowerCase() !==
+                              item.software_id.trim().toLocaleLowerCase() && (
+                              <small>{item.software_id}</small>
+                            )}
                           </a>
                         </td>
                         <td>{item.installed_version ?? "Unknown"}</td>
@@ -1673,6 +1679,13 @@ function Updates({
     {} as Record<string, number>,
   );
   const attentionCount = safetyCounts.blocked ?? 0;
+  const updateIds = items.map((item) => item.stable_id);
+  const selectedUpdateCount = updateIds.filter((id) =>
+    selected.includes(id),
+  ).length;
+  const allUpdatesSelected =
+    updateIds.length > 0 && selectedUpdateCount === updateIds.length;
+  const someUpdatesSelected = selectedUpdateCount > 0 && !allUpdatesSelected;
   return (
     <>
       <div className="page-heading">
@@ -1855,6 +1868,7 @@ function Updates({
                   )}
                   {(item.state === "ready" ||
                     item.checks.length > 0 ||
+                    (item.details?.observed_sources?.length ?? 0) > 0 ||
                     item.details?.preview) && (
                     <details>
                       <summary>View details</summary>
@@ -1885,6 +1899,18 @@ function Updates({
                             )}
                           </ul>
                         </div>
+                      )}
+                      {(item.details?.observed_sources?.length ?? 0) > 0 && (
+                        <ul className="observed-source-list">
+                          {item.details?.observed_sources?.map((source) => (
+                            <li key={`${source.source_id}-${source.scope}`}>
+                              <b>{source.name}</b>
+                              <span>
+                                {source.state_label} · {source.message}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
                       )}
                       {item.checks.length > 0 && (
                         <ul className="subcheck-list">
@@ -1947,9 +1973,17 @@ function Updates({
               <thead>
                 <tr>
                   <th>
-                    <span className="visually-hidden">
-                      Include in safety check
-                    </span>
+                    <input
+                      type="checkbox"
+                      aria-label="Select all detected updates"
+                      checked={allUpdatesSelected}
+                      ref={(node) => {
+                        if (node) node.indeterminate = someUpdatesSelected;
+                      }}
+                      onChange={(event) =>
+                        setSelected(event.target.checked ? updateIds : [])
+                      }
+                    />
                   </th>
                   <th>Software</th>
                   <th>Installed</th>
@@ -2514,6 +2548,42 @@ function Settings({
               ))}
           </div>
         )}
+      </section>
+      <section className="panel settings-section about-settings">
+        <div className="section-heading">
+          <h2>About Updatarr</h2>
+        </div>
+        <dl className="about-list">
+          <div>
+            <dt>Version</dt>
+            <dd>Version {releaseVersion} · Build {buildLabel}</dd>
+          </div>
+          <div>
+            <dt>Copyright</dt>
+            <dd>© 2026 ✦ ERIK WINBLAD ✦</dd>
+          </div>
+          <div>
+            <dt>Contact</dt>
+            <dd>
+              <a href="mailto:soulctcher@soulctcher.net">
+                soulctcher@soulctcher.net
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt>License</dt>
+            <dd>
+              <a
+                href="https://www.gnu.org/licenses/agpl-3.0.html"
+                target="_blank"
+                rel="noreferrer"
+              >
+                AGPL-3.0-or-later
+              </a>
+              <span>GNU Affero General Public License v3.0 or later</span>
+            </dd>
+          </div>
+        </dl>
       </section>
     </>
   );

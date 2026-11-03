@@ -73,6 +73,27 @@ All notable project changes will be recorded here once implementation begins.
 
 ### Changed
 
+- Corrected the rejected RC2 trusted-executable check for systemd per-user
+  namespaces while keeping `PrivateTmp=true`, fixed system paths, read-only
+  ownership checks and expected package ownership.
+- Clarified that **Check software** records installed software and checks for
+  newer versions only where supported; **Not checked** no longer reads like a
+  failed or completed newer-version check.
+- Removed duplicate software identifiers, pinned the long installed-software
+  table header and added an accessible mixed-state Select all checkbox to
+  Detected Updates.
+- Added live update-source details and explicit no-action wording to Safety
+  Checklist results, and replaced the checklist's “loopback page” wording with
+  the exact local address.
+- Added a final Settings → About Updatarr section with the visible M7 build,
+  owner-supplied display copyright, email contact and official AGPL link.
+- Added truthful status-backed tray colors: muted red for recorded updates,
+  muted green for a recorded no-update result and neutral gray before a check.
+- Added a tray **Settings…** dialog with private, validated choices for status
+  refresh timing, notification behavior, optional reminder frequency and
+  notification display time. These choices do not run checks or change update
+  policy.
+
 - The user accepted the proposed M7 scope on 2026-10-30 and authorized
   project-local release-candidate work. Host installation, service/notifier
   changes, public release, signing-key use and live software mutation remain

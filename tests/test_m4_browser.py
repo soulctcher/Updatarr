@@ -124,6 +124,54 @@ def test_safety_readiness_explains_blocks_restart_and_no_mutation(viewport: dict
         browser.close()
 
 
+def test_live_inventory_safety_row_exposes_recorded_source_details() -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    with _server() as base_url, playwright.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(headless=True)
+        page = _signed_in_page(browser, base_url, {"width": 1280, "height": 800})
+        page.route(
+            "**/api/v1/safety-readiness",
+            lambda route: route.fulfill(
+                json={
+                    "mode": "Read-only",
+                    "items": [{
+                        "capability_id": "developer-tools",
+                        "category": "Developer tools",
+                        "name": "Developer tools",
+                        "state": "blocked",
+                        "summary": "Global npm packages need attention.",
+                        "next_step": "No action is available in Updatarr for this source.",
+                        "restart_action": "none",
+                        "checks": [],
+                        "simulated": False,
+                        "details": {"observed_sources": [{
+                            "source_id": "npm",
+                            "name": "Global npm packages",
+                            "scope": "system",
+                            "state": "blocked",
+                            "state_label": "Blocked",
+                            "message": "This system folder must remain under system package management.",
+                            "software_count": 8,
+                            "update_count": 0,
+                        }]},
+                    }],
+                    "preservation": {
+                        "package_ownership_changed": False,
+                        "flatpak_origins_changed": False,
+                        "host_changes_performed": False,
+                    },
+                }
+            ),
+        )
+        page.get_by_role("button", name="Updates", exact=True).click()
+        developer_tools = page.locator(".checklist-item", has_text="Developer Tools")
+        developer_tools.get_by_text("View details", exact=True).click()
+        assert developer_tools.get_by_text("Global npm packages", exact=True).is_visible()
+        assert developer_tools.get_by_text("This system folder must remain", exact=False).is_visible()
+        assert developer_tools.get_by_text("No action is available in Updatarr", exact=False).is_visible()
+        browser.close()
+
+
 def test_safety_readiness_uses_every_theme_profile() -> None:
     playwright = pytest.importorskip("playwright.sync_api")
     with _server() as base_url, playwright.sync_playwright() as runtime:
@@ -198,6 +246,24 @@ def test_rail_shows_faint_version_and_build_below_preview_box() -> None:
                 return (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05);
             }""")
             assert contrast >= 4.5, f"{theme} build stamp contrast was {contrast:.2f}:1"
+        browser.close()
+
+
+def test_settings_ends_with_version_contact_and_license_information() -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    with _server() as base_url, playwright.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(headless=True)
+        page = _signed_in_page(browser, base_url, {"width": 1280, "height": 900})
+        page.get_by_role("button", name="Settings", exact=True).click()
+        about = page.locator(".about-settings")
+        assert about.get_by_role("heading", name="About Updatarr", exact=True).is_visible()
+        assert about.get_by_text("Version 0.6.0 · Build M7", exact=True).is_visible()
+        assert about.get_by_text("© 2026 ✦ ERIK WINBLAD ✦", exact=True).is_visible()
+        contact = about.get_by_role("link", name="soulctcher@soulctcher.net", exact=True)
+        assert contact.get_attribute("href") == "mailto:soulctcher@soulctcher.net"
+        license_link = about.get_by_role("link", name="AGPL-3.0-or-later", exact=True)
+        assert license_link.get_attribute("href") == "https://www.gnu.org/licenses/agpl-3.0.html"
+        assert about.evaluate("node => node === node.parentElement.lastElementChild") is True
         browser.close()
 
 

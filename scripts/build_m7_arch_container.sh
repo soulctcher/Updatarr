@@ -4,7 +4,7 @@ set -euo pipefail
 project_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 output_root=${1:-"$project_root/build/m7-container-package"}
 output_root=$(realpath -m "$output_root")
-package_release=${2:-1}
+package_release=${2:-$(sed -n 's/^pkgrel=//p' "$project_root/packaging/arch/PKGBUILD")}
 image_name=updatarr-m7-arch-builder:local
 
 if [[ ! "$package_release" =~ ^[1-9][0-9]*$ ]]; then

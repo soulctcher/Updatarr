@@ -491,13 +491,24 @@ def live_read_only_report(snapshot: Any | None = None) -> dict[str, Any]:
     def observed_capability(identity: str, category: str, name: str, source_ids: tuple[str, ...]) -> M4Capability:
         observed = matching(*source_ids)
         count = sum(len(source.software) for source in observed)
-        blocked = any(source.state.value in {"blocked", "error"} for source in observed)
+        blocked_sources = [source for source in observed if source.state.value in {"blocked", "error"}]
+        blocked = bool(blocked_sources)
+        item_word = "item" if count == 1 else "items"
+        source_word = "source" if len(observed) == 1 else "sources"
+        recorded = (
+            f"The read-only software check found {count} installed software {item_word} across "
+            f"{len(observed)} related update {source_word}. It did not check for newer versions or "
+            "whether changes would be safe."
+        )
+        if blocked_sources:
+            problems = " ".join(f"{source.name} needs attention: {source.message}" for source in blocked_sources)
+            recorded = f"{recorded} {problems}"
         return M4Capability(
             identity, category, name, Readiness.BLOCKED if blocked else Readiness.NOT_CHECKED,
-            (f"The read-only software check recorded {count} software records from {len(observed)} matching update sources. "
-             "New versions and change safety were not checked.") if observed else
+            recorded if observed else
             "No matching read-only inventory has completed, so Updatarr does not claim this change is ready.",
-            "Resolve the recorded source problem before checking again." if blocked else
+            ("No action is available in Updatarr for this result. Follow the update source's message, "
+             "then choose Check software again.") if blocked else
             "Complete the source-specific version and safety checks before preparing a plan.",
             details={"observed_sources": [source.to_dict(include_software=False) for source in observed]},
         )

@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
+import stat
 import sys
+from types import SimpleNamespace
 from pathlib import Path
 
 import pytest
@@ -142,6 +145,93 @@ def test_unexpected_executable_owner_is_rejected(monkeypatch, tmp_path):
     assert path is None
     assert owner is None
     assert "owner" in error
+
+
+def test_root_owner_is_recognized_inside_a_verified_user_namespace(monkeypatch, tmp_path):
+    uid_map = tmp_path / "uid_map"
+    overflow_uid = tmp_path / "overflowuid"
+    uid_map.write_text("       1000       1000          1\n", encoding="utf-8")
+    overflow_uid.write_text("65534\n", encoding="utf-8")
+    monkeypatch.setattr(probe_module, "UID_MAP_PATH", uid_map)
+    monkeypatch.setattr(probe_module, "OVERFLOW_UID_PATH", overflow_uid)
+    metadata = SimpleNamespace(st_uid=65534, st_mode=stat.S_IFREG | 0o755)
+    assert probe_module.root_owner_is_safe(metadata) is True
+
+    uid_map.write_text("          0          0 4294967295\n", encoding="utf-8")
+    assert probe_module.root_owner_is_safe(metadata) is False
+    metadata.st_uid = 12345
+    assert probe_module.root_owner_is_safe(metadata) is False
+
+
+def test_namespaced_root_exception_does_not_allow_writable_system_paths(monkeypatch):
+    metadata = SimpleNamespace(st_uid=65534, st_mode=stat.S_IFREG | 0o775)
+    monkeypatch.setattr(probe_module, "root_owner_is_safe", lambda _metadata: True)
+    assert probe_module.system_executable_is_safe(Path("/usr/bin/pacman"), metadata) is False
+    assert probe_module.system_executable_is_safe(Path("/opt/bin/pacman"), metadata) is False
+
+
+def test_namespaced_root_owned_system_symlink_uses_the_same_owner_check(monkeypatch, tmp_path):
+    npm = Path("/usr/bin/npm")
+    original_lstat = Path.lstat
+    real_link = original_lstat(npm)
+    values = list(real_link)
+    values[4] = 65534
+    namespaced_link = os.stat_result(values)
+    uid_map = tmp_path / "uid_map"
+    overflow_uid = tmp_path / "overflowuid"
+    uid_map.write_text("       1000       1000          1\n", encoding="utf-8")
+    overflow_uid.write_text("65534\n", encoding="utf-8")
+    monkeypatch.setattr(probe_module, "UID_MAP_PATH", uid_map)
+    monkeypatch.setattr(probe_module, "OVERFLOW_UID_PATH", overflow_uid)
+    monkeypatch.setattr(
+        Path,
+        "lstat",
+        lambda path: namespaced_link if path == npm else original_lstat(path),
+    )
+    path, owner, error = probe_module.trusted_executable("npm")
+    assert path == npm
+    assert owner == "npm"
+    assert error is None
+
+
+def test_system_link_target_outside_usr_is_rejected(monkeypatch):
+    candidate = Path("/usr/bin/example-tool")
+    metadata = SimpleNamespace(st_uid=0, st_mode=stat.S_IFREG | 0o755)
+    monkeypatch.setattr(
+        Path,
+        "resolve",
+        lambda path, strict=False: Path("/tmp/example-tool") if path == candidate else path,
+    )
+    assert probe_module.system_executable_is_safe(candidate, metadata) is False
+
+
+@pytest.mark.parametrize("bad_parent_kind", ["writable", "symbolic-link"])
+def test_unsafe_system_link_target_parent_is_rejected(monkeypatch, bad_parent_kind):
+    candidate = Path("/usr/bin/example-tool")
+    resolved = Path("/usr/lib/example/tool")
+    bad_parent = Path("/usr/lib/example")
+    metadata = SimpleNamespace(st_uid=0, st_mode=stat.S_IFREG | 0o755)
+    monkeypatch.setattr(
+        Path,
+        "resolve",
+        lambda path, strict=False: resolved if path == candidate else path,
+    )
+    monkeypatch.setattr(
+        Path,
+        "stat",
+        lambda path: SimpleNamespace(
+            st_uid=0,
+            st_mode=stat.S_IFDIR | (0o775 if path == bad_parent and bad_parent_kind == "writable" else 0o755),
+        ),
+    )
+    monkeypatch.setattr(Path, "is_dir", lambda _path: True)
+    monkeypatch.setattr(
+        Path,
+        "is_symlink",
+        lambda path: path == bad_parent and bad_parent_kind == "symbolic-link",
+    )
+    monkeypatch.setattr(probe_module.os, "access", lambda *_args, **_kwargs: False)
+    assert probe_module.system_executable_is_safe(candidate, metadata) is False
 
 
 def test_public_probe_list_redacts_home_paths():

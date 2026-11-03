@@ -1,13 +1,12 @@
 # Updatarr milestones
 
 **Current phase:** M7 accepted; managed-computer read-only pilot
-**Current authorization:** the exact signed RC2 package, its missing declared
-runtime dependencies, owner-only pilot configuration, a manual loopback-only
-read-only core and a manual tray test were authorized by the user on
-2026-11-02. Enabling either user service at login, changing autostart or the
-existing notifier, removing Octopi or Pamac, release publication, remote push
-and every software update or other live software mutation remain separately
-gated and unauthorized.
+**Current authorization:** on 2026-11-03 the user authorized the remaining RC3
+follow-up steps, including clean packaging, signing, local installation and
+bounded manual read-only core/tray verification. Enabling either user service
+at login, changing autostart or the existing notifier, removing Octopi or
+Pamac, release publication, remote push and every software update or other live
+software mutation remain separately gated and unauthorized.
 
 ## Gate rules
 
@@ -392,3 +391,32 @@ remains disabled at login; it registered one Plasma status item and refused a
 duplicate instance. RC2 must not be published or enabled; a corrected candidate
 and independent review are required. Exact evidence:
 [M7 host pilot](docs/research/m7-host-pilot-2026-11-02.md).
+
+**M7 pilot follow-up (2026-11-02):** Owner interface findings were reproduced
+and corrected project-locally: truthful Check software guidance, non-repeated
+software identifiers, a pinned installed-software header, Detected Updates
+Select all, actionable Safety Checklist wording and live source details, plus a
+plain explanation of the local tray address. The rejected RC2 service defect
+now has a fail-closed namespace-aware trusted-owner check that preserves
+`PrivateTmp=true`; transient read-only service tests completed pacman discovery
+inside that namespace. The installed pilot remains RC2 and unchanged. A new
+package, independent review and separate installation approval are still
+required.
+
+The resulting unsigned `0.6.0-2` package passed two clean builds, normalized
+payload comparison, RC2-to-release-2 lifecycle recovery and the complete suite.
+Its initial independent review findings were fixed; final standards and spec
+re-reviews found no remaining issues. It has not been installed or signed. Evidence:
+[M7 release-2 candidate validation](docs/research/m7-release-2-candidate-validation.md).
+
+**M7 local-test follow-up (2026-11-03):** The owner requested a final browser
+About section and richer tray presentation/preferences. Project-local work adds
+the exact requested display copyright, contact and official license link;
+status-backed muted red, green and neutral tray icons; and an owner-only tray
+settings file for refresh and notification presentation. Tray preferences do
+not run software checks, alter update policy or create a command channel. The
+installed pilot remains unchanged until a new candidate passes review and is
+separately approved for installation. Project-local tests, exact source-archive
+inspection and independent review passed with no significant findings; clean
+Arch packaging, signing and installation remain separate gates. Evidence:
+[M7 local-test follow-up](docs/research/m7-local-test-follow-up-2026-11-03.md).

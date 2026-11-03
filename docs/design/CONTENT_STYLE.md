@@ -11,7 +11,7 @@ clear heading, status or action.
 
 1. Use the glossary term in visible text and accessible names. Internal state,
    database and adapter names do not appear as labels.
-2. Name actions with a verb and object: **Check for updates**, **Review system
+2. Name actions with a verb and object: **Check software**, **Review system
    updates**, **Postpone until…**, **Save this plan for later**.
 3. Name status by what it means now: **Ready to review**, **Blocked**, **Needs
    refresh**, **Source unavailable**, **Not supported**, **Turned off**.

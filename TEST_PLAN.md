@@ -152,6 +152,9 @@ Before the provisional web stack becomes accepted, demonstrate:
 - Polkit behavior with active, inactive, logged-out/linger, SSH and missing-agent
   cases;
 - tray/service separation across login, logout, restart and crash;
+- tray icon states for not checked, recorded no-updates and recorded-updates;
+- private tray-preference persistence, invalid-file recovery and notification
+  behavior without any core or update-source change;
 - an isolated clean Arch package build/install/upgrade/uninstall inventory.
 
 ## Milestone evidence format

@@ -134,3 +134,32 @@ not the accepted fix.
 Enabling either service at login, notifier migration, Octopi/Pamac removal, LAN
 access, live AUR execution and every software-changing action through Updatarr
 remain unauthorized.
+
+## Owner Interface Review and Project-Local Follow-Up
+
+The owner completed most of the local checklist and reported nine points. The
+project-local correction:
+
+- uses the actual **Check software** label and explains that **Not checked**
+  means installed software was recorded without a newer-version check;
+- hides a package identifier when it repeats the displayed software name;
+- keeps the installed-software table header visible inside its long scrolling
+  list;
+- adds a Select all checkbox to the Detected Updates table, including a mixed
+  selection state;
+- explains that **Passed** is a result rather than a button and can be zero;
+- leaves a Needs attention badge unlinked when Updatarr has no real action,
+  while stating that no action is available;
+- exposes recorded live update-source details under **View details**; and
+- replaces “loopback page” with the exact local address and a plain explanation.
+
+The browser build, focused behavior tests, full M2/M4 browser and readiness
+suites, all included themes, desktop/mobile layouts and visual screenshots
+passed in the project workspace. The installed RC2 pilot still serves its old
+files. A new reviewed package and separate installation approval are required
+before these changes replace it.
+
+The service correction preserves `PrivateTmp=true` and recognizes host root
+through verified user-namespace mapping, fixed read-only system paths and the
+expected package owner. Exact design and transient read-only evidence are in
+[M7 user-service namespace validation](m7-user-service-namespace-validation.md).

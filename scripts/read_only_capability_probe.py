@@ -27,6 +27,8 @@ from typing import Final
 SCHEMA_VERSION: Final = 1
 DEFAULT_TIMEOUT_SECONDS: Final = 15
 MAX_OUTPUT_BYTES: Final = 1_000_000
+UID_MAP_PATH: Final = Path("/proc/self/uid_map")
+OVERFLOW_UID_PATH: Final = Path("/proc/sys/kernel/overflowuid")
 UUID_PATTERN: Final = re.compile(
     r"\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
     r"[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b"
@@ -374,6 +376,55 @@ def probe_environment() -> dict[str, str]:
     return environment
 
 
+def root_owner_is_safe(metadata: os.stat_result) -> bool:
+    """Recognize host root after a per-user service maps it to overflow UID."""
+
+    if metadata.st_uid == 0:
+        return True
+    try:
+        overflow_uid = int(OVERFLOW_UID_PATH.read_text(encoding="ascii").strip())
+        mappings = [
+            tuple(int(value) for value in line.split())
+            for line in UID_MAP_PATH.read_text(encoding="ascii").splitlines()
+            if line.strip()
+        ]
+    except (FileNotFoundError, OSError, UnicodeError, ValueError):
+        return False
+    if metadata.st_uid != overflow_uid or not mappings:
+        return False
+    # If host UID 0 is mapped, stat() must report that mapped value rather than
+    # the overflow UID. Accept overflow only when root is demonstrably absent.
+    return not any(outside <= 0 < outside + length for _inside, outside, length in mappings)
+
+
+def system_executable_is_safe(path: Path, metadata: os.stat_result) -> bool:
+    """Validate fixed /usr/bin files without weakening the user namespace."""
+
+    if path.parent != Path("/usr/bin") or metadata.st_mode & 0o022:
+        return False
+    if not root_owner_is_safe(metadata):
+        return False
+    try:
+        resolved = path.resolve(strict=True)
+        system_root = Path("/usr")
+        if not resolved.is_relative_to(system_root):
+            return False
+        parents = {system_root, Path("/usr/bin")}
+        parent = resolved.parent
+        while parent != system_root:
+            parents.add(parent)
+            parent = parent.parent
+        for parent in parents:
+            parent_metadata = parent.stat()
+            if (not parent.is_dir() or parent.is_symlink()
+                    or parent_metadata.st_mode & 0o022
+                    or not root_owner_is_safe(parent_metadata)):
+                return False
+    except OSError:
+        return False
+    return not os.access(path, os.W_OK, effective_ids=True)
+
+
 def pacman_owner(executable: str) -> str | None:
     """Return the package owning an executable, without changing pacman state."""
 
@@ -382,7 +433,7 @@ def pacman_owner(executable: str) -> str | None:
         metadata = pacman.stat()
     except FileNotFoundError:
         return None
-    if metadata.st_uid != 0 or metadata.st_mode & 0o022:
+    if not system_executable_is_safe(pacman, metadata):
         return None
     try:
         result = subprocess.run(
@@ -414,10 +465,14 @@ def trusted_executable(name: str) -> tuple[Path | None, str | None, str | None]:
     if path.is_symlink():
         if policy.allow_unowned_user_file:
             return None, None, "unowned executable may not be a symbolic link"
-        if link_metadata.st_uid != 0:
+        if not root_owner_is_safe(link_metadata):
             return None, None, "executable link owner is unsafe"
-    expected_uid = os.getuid() if policy.allow_unowned_user_file else 0
-    if metadata.st_uid != expected_uid or metadata.st_mode & 0o022:
+    owner_is_safe = (
+        metadata.st_uid == os.getuid() and not metadata.st_mode & 0o022
+        if policy.allow_unowned_user_file
+        else system_executable_is_safe(path, metadata)
+    )
+    if not owner_is_safe:
         return None, None, "executable ownership or write permissions are unsafe"
     if not path.is_symlink() and link_metadata.st_mode & 0o022:
         return None, None, "executable link is group- or world-writable"

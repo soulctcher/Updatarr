@@ -55,6 +55,11 @@ visible demonstration password is development-only.
 
 - Use trusted absolute executable paths discovered and recorded by capability
   probing; never shell-concatenate metadata.
+- In an unprivileged systemd user namespace, host-root-owned files can appear
+  under Linux's overflow user ID. Accept that identity only when the namespace
+  map proves host root is absent, the fixed `/usr/bin` path and parents are not
+  writable, and the read-only package-owner check matches the closed registry.
+  Missing namespace evidence fails closed.
 - Build argv from typed operation data and validate package/ref identifiers
   again in the privileged executor.
 - Use a controlled environment and working directory. Remove secret-bearing

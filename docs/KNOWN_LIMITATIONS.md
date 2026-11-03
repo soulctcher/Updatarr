@@ -13,8 +13,10 @@ treated as working merely because its update source can be read.
    was accepted for a host pilot, but that pilot found that the packaged user
    unit's `PrivateTmp` namespace causes every root-owned trusted executable to
    be rejected. The normal service cannot provide truthful live inventory on
-   this host. A corrected candidate, repeated evidence and independent review
-   are required. There is no approved remote, push or public upload.
+   this host. A project-local correction now verifies the user-namespace map,
+   fixed read-only system path and expected package owner without removing
+   `PrivateTmp`; a corrected package, repeated evidence and independent review
+   are still required. There is no approved remote, push or public upload.
 2. **Live AUR builds remain blocked.** PKGBUILDs are arbitrary user-level code.
    The bounded M7 prototype hides credentials, state and unrelated user files
    in fixture tests, but isolated source acquisition, a clean dependency root

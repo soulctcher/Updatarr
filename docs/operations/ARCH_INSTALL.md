@@ -1,15 +1,15 @@
 # Arch installation and recovery
 
-These instructions describe the signed M7 RC2 package. The user authorized its
-local installation and bounded manual read-only pilot on 2026-11-02. Service
-enablement remains a separate approval decision in
+These instructions describe the M7 local candidates. The user authorized the
+reviewed RC3 follow-up (`updatarr 0.6.0-2`) for signing, local installation and
+bounded manual read-only testing on 2026-11-03. Service enablement remains a
+separate approval decision in
 [MILESTONES.md](../../MILESTONES.md).
 
-> **RC2 host-pilot blocker:** Do not enable `updatarr.service`. The 2026-11-02
-> managed-computer pilot found that its `PrivateTmp` namespace makes trusted
-> host executables appear non-root-owned and disables live provider discovery.
-> The installed package is retained only for the bounded transient local test
-> described in the [pilot evidence](../research/m7-host-pilot-2026-11-02.md).
+> **RC2 is rejected:** Do not reinstall or enable RC2. The reviewed RC3
+> follow-up preserves `PrivateTmp=true` and corrects its trusted executable
+> check. Keep both RC3 user units disabled at login until the manual packaged
+> service and tray checks pass and the owner separately approves enablement.
 
 ## Before installation
 
@@ -17,7 +17,7 @@ enablement remains a separate approval decision in
    `scripts/build_source_archive.sh`, and confirm its checksum matches the
    PKGBUILD. The archive is the only application source consumed by makepkg.
 2. Build and inspect the package in a clean Arch build environment.
-3. Review the file list with `pacman -Qlp updatarr-0.6.0-1-any.pkg.tar.zst`.
+3. Review the file list with `pacman -Qlp updatarr-0.6.0-2-any.pkg.tar.zst`.
 4. Confirm that it contains two user units and no enabled-service links, XDG
    autostart entry, privileged helper or Polkit rule.
 5. Copy `/usr/share/doc/updatarr/updatarr.env.example` to

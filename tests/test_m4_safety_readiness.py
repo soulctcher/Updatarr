@@ -267,8 +267,10 @@ def test_live_readiness_uses_recorded_inventory_without_claiming_update_safety()
     report = live_read_only_report(snapshot)
     tools = next(item for item in report["items"] if item["capability_id"] == "developer-tools")
     assert tools["state"] == "blocked"
-    assert "1 software records from 2 matching update sources" in tools["summary"]
+    assert "1 installed software item across 2 related update sources" in tools["summary"]
     assert len(tools["details"]["observed_sources"]) == 2
+    assert "Global npm packages" in tools["summary"]
+    assert "No action is available in Updatarr" in tools["next_step"]
     assert report["preservation"]["host_changes_performed"] is False
 
 

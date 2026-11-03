@@ -46,6 +46,16 @@ M5 selects this model in proposed ADR 0010 and ships no XDG autostart entry.
 The exact staged install, enable, disable, backup and recovery procedure is in
 [Arch installation and recovery](docs/operations/ARCH_INSTALL.md).
 
+The tray menu includes **Settings…** for tray-only preferences. They are saved
+in the current user's `$XDG_CONFIG_HOME/updatarr/tray-settings.json` with
+owner-only permissions. The refresh choice controls how often the tray rereads
+the service's recorded summary; it does not run **Check software**. Notification
+choices control when and how long desktop messages appear. The dialog also
+allows an optional hourly, four-hour or daily reminder while updates are
+waiting. Removing the preferences file restores the five-second refresh,
+notification on new or changed update counts, no repeated reminder and
+eight-second message defaults the next time the tray starts.
+
 ## Configuration and secrets
 
 Final paths will follow Arch/XDG conventions and package ownership. Separate:

@@ -2,7 +2,9 @@
 
 **Prepared:** 2026-11-01  
 **Status:** corrected RC2 label and release-file signatures verify locally;
-nothing has been pushed or published
+RC2 remains historical, and the owner authorized signing and locally installing
+the reviewed follow-up as RC3 on 2026-11-03. Nothing has been pushed or
+published.
 
 ## Official Public Identity
 
@@ -42,6 +44,8 @@ moved or reused after it identifies reviewed files; a correction receives a
 new candidate number. The first local M7 candidate label is `v0.6.0-rc.1`; it
 was rejected without moving or deleting it. The corrected candidate is
 `v0.6.0-rc.2`.
+The post-pilot interface, service-namespace and tray follow-up receives the new
+immutable label `v0.6.0-rc.3`; RC2 is not moved or reused.
 
 ## Rejected Local RC1
 
@@ -73,6 +77,19 @@ expected and is separate from the successful cryptographic signature check.
 
 RC2 remains a local candidate pending owner acceptance. These signatures do
 not authorize a push, upload or publication.
+
+## Local RC3 Follow-Up
+
+- **Label:** `v0.6.0-rc.3`
+- **Package release:** `updatarr 0.6.0-2`
+- **Purpose:** replace the rejected RC2 service behavior and include the
+  accepted local-test interface and tray follow-ups
+- **Authorization:** owner authorized clean packaging, local signing and local
+  installation on 2026-11-03
+
+The label and release files must be verified before installation. Publication,
+remote push, service enablement at login, notifier migration and live software
+updates remain separate and unauthorized.
 
 ## Verify the Public Key
 
