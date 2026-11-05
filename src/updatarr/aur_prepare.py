@@ -174,7 +174,7 @@ def _verify_user_namespace(user: str, home: Path) -> None:
             "--setenv", "PATH", "/usr/bin", "--",
             "/usr/bin/python", "-c",
             f"import os,socket; assert not os.path.exists({str(home)!r}); "
-            "assert set(os.environ)=={'PATH'}; "
+            "assert dict(os.environ)=={'PATH':'/usr/bin','PWD':'/','LC_CTYPE':'C.UTF-8'}; "
             "s=socket.socket(); assert s.connect_ex(('1.1.1.1',53)) != 0",
         ),
         timeout=30,
@@ -342,7 +342,7 @@ def main() -> None:
     try:
         prepare()
     except (AurPreparationError, OSError, subprocess.TimeoutExpired) as error:
-        raise SystemExit(f"AUR pipeline preparation failed: {error}") from None
+        raise SystemExit(f"AUR host-prerequisite preparation failed: {error}") from None
     print("The Updatarr AUR host prerequisites are ready for exact package review.")
 
 

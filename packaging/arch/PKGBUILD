@@ -2,7 +2,7 @@
 # M7.2 production-readiness package built from a deterministic source archive.
 pkgname=updatarr
 pkgver=0.7.0
-pkgrel=2
+pkgrel=3
 pkgdesc='Local-first software update review service for Arch Linux and KDE'
 arch=('any')
 url='https://github.com/updatarr/updatarr'
@@ -10,7 +10,7 @@ license=('AGPL-3.0-or-later')
 depends=('python' 'python-argon2-cffi' 'python-fastapi' 'python-pydantic' 'uvicorn' 'pyside6' 'bubblewrap' 'devtools')
 makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 source=("$pkgname-$pkgver.tar.gz")
-sha256sums=('62904a81d74e4d0b5903a0efd7181a9c05377aa485413cc1e445c1117c5487d5')
+sha256sums=('4425a184db5d73e425dfbf9d1404644cf7a12f0273cb854749072a26726c7135')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"

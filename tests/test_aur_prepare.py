@@ -53,6 +53,13 @@ def test_fixed_tool_set_covers_every_directly_invoked_interpreter() -> None:
     assert expected <= {path.as_posix() for path in aur_prepare.FIXED_TOOLS}
 
 
+def test_namespace_check_allows_only_observed_python_bootstrap_environment() -> None:
+    source = inspect.getsource(aur_prepare._verify_user_namespace)
+
+    assert "'PATH':'/usr/bin','PWD':'/','LC_CTYPE':'C.UTF-8'" in source
+    assert "UPDATARR_" not in source
+
+
 def test_canary_inputs_remain_read_only_and_outputs_are_separate(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

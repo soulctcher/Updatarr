@@ -65,13 +65,13 @@ Completed before signing:
 - independent review's two high and one medium AUR findings were reproduced,
   corrected and re-reviewed; no critical, high or medium findings remain;
 - two isolated Arch builds produced the same normalized payload digest,
-  `debcac7f21982905db891cf320725c26bd97956ac5f259f2a9fea4d252454ab5`,
+  `43ebcb3c8c706b16b78c7c3a9636b833fbe0ac5fc9ada1ac35da87830fcb6add`,
   and the same builder inventory digest,
   `a2cb2bf8ca6db33e144040b4e3a6fc74219f2bad6e9d68671b34362e03b682d0`;
 - source archive SHA-256:
-  `62904a81d74e4d0b5903a0efd7181a9c05377aa485413cc1e445c1117c5487d5`;
+  `4425a184db5d73e425dfbf9d1404644cf7a12f0273cb854749072a26726c7135`;
 - selected package SHA-256:
-  `484b3b7d4578b0c284f6bd22338ce3da55ffd09730c23fb486cde074ddee7ae0`;
+  `8ca6ac85df2f871e6b64b87de673502a097882d24e113275ada010d51cdb2d0c`;
   and
 - the disposable lifecycle passed install, startup, backup, restore, upgrade,
   downgrade, removal and user-state preservation for the exact 0.7.0 package.
@@ -92,3 +92,15 @@ writable build directory even for `--verifysource`. The root-owned canary input
 must remain read-only, so RC2 supplies a separate private user-owned `BUILDDIR`
 alongside the already separate source, log and package destinations. RC1 did
 not write a readiness record and must not be published as the current build.
+
+## RC2 Host Rejection
+
+The signed `v0.7.0-rc.2` package corrected the writable output boundary and
+installed cleanly. Its managed-host canary reached the Bubblewrap isolation
+check and failed closed because Python adds fixed `PWD=/` and
+`LC_CTYPE=C.UTF-8` bootstrap variables inside Bubblewrap's otherwise cleared
+environment. A direct networkless namespace observation confirmed the home was
+absent, network access returned `ENETUNREACH`, and the complete environment was
+exactly `PATH`, `PWD` and `LC_CTYPE`. RC3 checks those exact names and values;
+it does not permit arbitrary inherited variables. RC2 issued no readiness
+record and must not be published as the current build.
