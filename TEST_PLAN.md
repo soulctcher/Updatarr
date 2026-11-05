@@ -283,6 +283,12 @@ initial resource-limit check triggered a desktop low-memory notification.
 
 The corrected signed RC2 completed two clean builds, package inspection,
 disposable lifecycle testing, 324 complete-suite tests and independent review
-with no critical, high or medium findings. Live AUR execution remains blocked
-until isolated source acquisition, a clean dependency root and dependency
-preparation pass their separate gate.
+with no critical, high or medium findings.
+
+M7.2 adds host-prerequisite tests for the fixed zero-argument preparation
+helper, root-owned inputs, separate user-writable outputs, no-follow descriptor
+artifact handoff, root-owned expiring attestation, current tool-version checks,
+tamper/expiry rejection, exact evidence binding in non-executable AUR plans,
+and the secret-free host-temporary native update worker. The managed-host proof
+must additionally show a successful clean-build canary, unchanged service
+sandboxing, truthful native source state and no actual AUR package installation.

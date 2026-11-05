@@ -1,7 +1,7 @@
 {
   "name": "updatarr-web",
   "private": true,
-  "version": "0.6.1-m7.1",
+  "version": "0.7.0-m7.2",
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {

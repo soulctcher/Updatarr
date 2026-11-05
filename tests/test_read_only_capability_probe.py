@@ -106,6 +106,39 @@ def test_probe_environment_excludes_unrelated_secrets(monkeypatch):
     assert environment["PAGER"] == "cat"
 
 
+def test_native_update_probe_uses_fixed_secret_free_host_tmp_worker(monkeypatch):
+    captured: dict[str, object] = {}
+
+    monkeypatch.setattr(
+        probe_module,
+        "trusted_executable",
+        lambda name: (Path(f"/usr/bin/{name}"), "expected-owner", None),
+    )
+
+    def bounded(argv, timeout_seconds, *, max_records=None):
+        captured.update(
+            argv=argv,
+            timeout_seconds=timeout_seconds,
+            max_records=max_records,
+        )
+        return probe_module.BoundedResult(0, "rsync 1 -> 2\n", "", False, False)
+
+    monkeypatch.setattr(probe_module, "run_bounded", bounded)
+    monkeypatch.setenv("UPDATARR_PASSWORD", "must-not-cross")
+
+    result = probe_module.run_probe(probe_module.PROBES_BY_ID["native-updates"])
+
+    argv = captured["argv"]
+    assert isinstance(argv, tuple)
+    assert argv[0] == "/usr/bin/systemd-run"
+    assert "--property=PrivateTmp=false" in argv
+    assert "--property=NoNewPrivileges=true" in argv
+    assert "/usr/bin/env" in argv and "-i" in argv
+    assert argv[-2:] == ("/usr/bin/checkupdates", "--nocolor")
+    assert not any("must-not-cross" in argument for argument in argv)
+    assert result["state"] == "completed"
+
+
 def test_missing_executable_is_a_truthful_state(monkeypatch):
     missing = Path("/definitely/not/an/executable")
     monkeypatch.setitem(

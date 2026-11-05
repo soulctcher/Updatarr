@@ -9,9 +9,10 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_m7_scope_is_accepted_without_expanding_host_authority() -> None:
+def test_m7_scope_and_later_explicit_authority_remain_separate() -> None:
     proposal = (ROOT / "docs/M7_PROPOSAL.md").read_text()
     milestones = (ROOT / "MILESTONES.md").read_text()
+    normalized_milestones = " ".join(milestones.split())
     acceptance = (ROOT / "docs/M7_ACCEPTANCE.md").read_text()
 
     assert "[x] User accepts this proposed M7 scope" in proposal
@@ -19,7 +20,8 @@ def test_m7_scope_is_accepted_without_expanding_host_authority() -> None:
     assert "exact signed RC2 package" in milestones
     assert "manual loopback-only" in milestones
     assert "release publication" in milestones
-    assert "every software update or other live" in milestones
+    assert "production AUR readiness work" in milestones
+    assert "does not direct Updatarr to build or install an actual AUR update" in normalized_milestones
     assert "service enablement" in milestones
     assert "RC2 must not be published or enabled" in milestones
     pilot = (ROOT / "docs/research/m7-host-pilot-2026-11-02.md").read_text()
@@ -125,8 +127,10 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
     assert "The corrected candidate is `v0.6.0-rc.2`" in normalized_signing
 
     milestones = " ".join((ROOT / "MILESTONES.md").read_text().split())
-    assert "release publication, remote push" in milestones
-    assert "remain separately gated and unauthorized" in milestones
+    assert "signing, Git publication" in milestones
+    assert "not direct Updatarr to build or install an actual AUR update" in milestones
+    assert "change either user service's login enablement" in milestones
+    assert "change autostart/notifier ownership" in milestones
     rejected_tag = subprocess.run(
         ["git", "cat-file", "tag", "v0.6.0-rc.1"],
         cwd=ROOT,

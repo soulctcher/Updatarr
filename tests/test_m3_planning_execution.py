@@ -17,6 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from updatarr.app import AppConfig, create_app  # noqa: E402
+from updatarr.aur_pipeline import (  # noqa: E402
+    AUR_POLICY_VERSION,
+    AurPipelineReadiness,
+    StaticAurPipeline,
+)
 from updatarr.authorization import (  # noqa: E402
     AdministratorAuthorizer, AuthorizationRefused, FixedPkcheckRunner,
     POLKIT_ACTION, ProcessSubject,
@@ -84,19 +89,36 @@ def test_plan_fails_closed_on_drift_expiry_policy_change_and_aur() -> None:
     assert not planner.validate(policy_plan, snapshot, [replace(policy, reason="changed")], now=now).valid
 
 
-def test_aur_plan_is_executable_only_after_pipeline_readiness_is_proven() -> None:
+def _ready_aur_pipeline() -> StaticAurPipeline:
+    return StaticAurPipeline(AurPipelineReadiness(
+        True,
+        "The AUR host prerequisites passed.",
+        AUR_POLICY_VERSION,
+        "2026-11-03T00:00:00+00:00",
+        "a" * 64,
+    ))
+
+
+def test_aur_plan_names_package_review_after_host_prerequisites_pass() -> None:
     snapshot = _snapshot()
     aur = next(item for item in snapshot.updates if item.source_id == "aur")
 
     blocked = Planner().prepare(snapshot, snapshot.updates, [aur.stable_id], [])
     assert blocked.blockers
 
-    ready = Planner(aur_pipeline_ready=True).prepare(
+    ready = Planner(aur_readiness=_ready_aur_pipeline().assess()).prepare(
         snapshot, snapshot.updates, [aur.stable_id], []
     )
-    assert ready.blockers == ()
-    assert ready.steps[0].live_enabled is True
+    assert len(ready.blockers) == 1
+    assert "exact source changes and dependencies" in ready.blockers[0]
+    assert ready.steps[0].live_enabled is False
+    assert ready.steps[0].blocker == ready.blockers[0]
     assert ready.steps[0].operation is OperationKind.AUR_BUILD_INSTALL
+    assert ("aur-pipeline", "system", "a" * 64) in ready.tool_versions
+    assert Planner(
+        aur_readiness=_ready_aur_pipeline().assess()
+    ).validate(ready, snapshot, [], require_executable=False).valid
+    assert not Planner().validate(ready, snapshot, []).valid
 
 
 def test_live_updates_api_keeps_aur_out_of_the_ready_set(tmp_path: Path) -> None:
@@ -122,7 +144,33 @@ def test_live_updates_api_keeps_aur_out_of_the_ready_set(tmp_path: Path) -> None
             if issue["source_id"] == "aur"
         )
         assert issue["stable_ids"] == [aur["stable_id"]]
-        assert "isolated build pipeline" in issue["message"]
+        assert "prerequisites have not been prepared" in issue["message"]
+
+
+def test_attested_live_updates_api_names_remaining_package_review(tmp_path: Path) -> None:
+    app = create_app(AppConfig(
+        password="test-only-password",
+        public_origin="http://testserver",
+        storage_path=tmp_path / "state.db",
+        provider_mode="live",
+        adapters=(),
+        catalog_adapters=(),
+        advisory_adapters=(),
+        aur_pipeline=_ready_aur_pipeline(),
+    ))
+    with TestClient(app) as client:
+        _login(client)
+        snapshot = _snapshot()
+        client.app.state.store.save_snapshot(snapshot)
+        body = client.get("/api/v1/updates").json()
+        aur = next(item for item in body["items"] if item["source_id"] == "aur")
+
+        assert aur["stable_id"] not in body["readiness"]["ready_stable_ids"]
+        issue = next(
+            issue for issue in body["readiness"]["issues"]
+            if issue["source_id"] == "aur"
+        )
+        assert "exact source changes and dependencies" in issue["message"]
 
 
 @pytest.mark.parametrize("hostile", [

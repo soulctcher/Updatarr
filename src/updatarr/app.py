@@ -17,6 +17,11 @@ from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from .advisories import AdvisoryAdapter, AdvisoryService, ArchNewsAdapter, SimulatorAdvisoryAdapter
+from .aur_pipeline import (
+    AttestedAurPipeline,
+    AurReadinessProvider,
+    simulator_aur_pipeline,
+)
 from .catalog import (
     CatalogAdapter, CatalogService, aur_build_preview,
     live_catalog_adapters, simulator_catalog_adapters,
@@ -113,6 +118,7 @@ class AppConfig:
     adapters: tuple[ProviderAdapter, ...] | None = None
     catalog_adapters: tuple[CatalogAdapter, ...] | None = None
     advisory_adapters: tuple[AdvisoryAdapter, ...] | None = None
+    aur_pipeline: AurReadinessProvider | None = None
     local_agent_token: str | None = None
     tray_status_path: Path | None = None
     trusted_proxy_peers: tuple[str, ...] = ()
@@ -202,10 +208,15 @@ def create_app(config: AppConfig) -> FastAPI:
                 pass  # Tray display failure must not change the inventory result.
 
     inventory = InventoryCoordinator(adapters, store, events, snapshot_listener=snapshot_status)
-    # Simulator AUR work runs only in the deterministic executor. Live mode
-    # stays closed until the complete source, dependency and build pipeline is
-    # present and attested by the local companion.
-    planner = Planner(aur_pipeline_ready=config.provider_mode == "simulator")
+    aur_pipeline = config.aur_pipeline or (
+        AttestedAurPipeline()
+        if config.provider_mode == "live"
+        else simulator_aur_pipeline()
+    )
+
+    def current_planner() -> Planner:
+        return Planner(aur_readiness=aur_pipeline.assess())
+
     simulator_executor = SimulatorExecutor()
     run_cancellations: dict[str, threading.Event] = {}
     run_tasks: set[asyncio.Task[None]] = set()
@@ -216,6 +227,7 @@ def create_app(config: AppConfig) -> FastAPI:
     app.state.inventory = inventory
     app.state.catalog = catalog
     app.state.advisories = advisories
+    app.state.aur_pipeline = aur_pipeline
     app.state.store = store
 
     def saved_theme() -> str:
@@ -298,7 +310,7 @@ def create_app(config: AppConfig) -> FastAPI:
         return value
 
     def validate_plan(plan, state, *, require_executable: bool = True):  # type: ignore[no-untyped-def]
-        result = planner.validate(
+        result = current_planner().validate(
             plan, store.latest_snapshot(), store.policies(),
             require_executable=require_executable,
         )
@@ -427,6 +439,7 @@ def create_app(config: AppConfig) -> FastAPI:
     @app.get(f"{base}/api/v1/updates")
     async def updates(request: Request) -> dict[str, object]:
         current_session(request)
+        planner = current_planner()
         snapshot, effective = effective_updates()
         ready_ids: list[str] = []
         issues: list[dict[str, object]] = []
@@ -515,6 +528,7 @@ def create_app(config: AppConfig) -> FastAPI:
     @app.post(f"{base}/api/v1/plans", status_code=201)
     async def prepare_plan(body: SelectionBody, request: Request, x_csrf_token: str | None = Header(None)) -> dict[str, object]:
         require_mutation(request, x_csrf_token)
+        planner = current_planner()
         snapshot, effective = effective_updates()
         if snapshot is None or body.snapshot_id != snapshot.snapshot_id:
             raise HTTPException(status_code=409, detail="The update information changed. Check for updates again.")
@@ -534,7 +548,7 @@ def create_app(config: AppConfig) -> FastAPI:
             PlanState.AWAITING_REVIEW, PlanState.AWAITING_LOCAL_CONFIRMATION,
             PlanState.AWAITING_AUTHORIZATION, PlanState.READY_FOR_EXECUTION,
         }:
-            result = planner.validate(
+            result = current_planner().validate(
                 value[0], store.latest_snapshot(), store.policies(), require_executable=False,
             )
             if not result.valid:

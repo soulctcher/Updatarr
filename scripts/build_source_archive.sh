@@ -19,6 +19,7 @@ tar -C "$project_root" \
   --exclude='docs/research/m7-independent-review.md' \
   --exclude='docs/research/m7-release-2-candidate-validation.md' \
   --exclude='docs/research/m7-local-test-follow-up-2026-11-03.md' \
+  --exclude='docs/research/m7-2-production-readiness-2026-11-04.md' \
   -cf - src scripts tests docs prototypes web | tar -C "$source_root" -xf -
 cp -a "$project_root/packaging/systemd" "$source_root/packaging/"
 cp -a "$project_root/packaging/desktop" "$source_root/packaging/"

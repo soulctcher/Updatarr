@@ -97,6 +97,8 @@ TRUSTED_EXECUTABLES: Final = {
     "npm": TrustedExecutable(Path("/usr/bin/npm"), "npm"),
     "pacman": TrustedExecutable(Path("/usr/bin/pacman"), "pacman"),
     "rustup": TrustedExecutable(Path("/usr/bin/rustup"), "rustup"),
+    "systemd-run": TrustedExecutable(Path("/usr/bin/systemd-run"), "systemd"),
+    "env": TrustedExecutable(Path("/usr/bin/env"), "coreutils"),
     "uname": TrustedExecutable(Path("/usr/bin/uname"), "coreutils"),
     "uv": TrustedExecutable(Path.home() / ".local" / "bin" / "uv", None, True),
     "yay": TrustedExecutable(Path("/usr/bin/yay"), "yay"),
@@ -621,8 +623,46 @@ def run_probe(
         }
     )
 
+    argv = (str(executable), *probe.argv[1:])
+    if probe.probe_id == "native-updates":
+        systemd_run, _systemd_owner, systemd_error = trusted_executable("systemd-run")
+        env_tool, _env_owner, env_error = trusted_executable("env")
+        if systemd_run is None or env_tool is None:
+            return {
+                **base,
+                "state": "not_available",
+                "exit_code": None,
+                "stdout": "",
+                "stderr": "",
+                "output_truncated": False,
+                "trust_error": systemd_error or env_error,
+            }
+        home = Path.home()
+        argv = (
+            str(systemd_run),
+            "--user",
+            "--wait",
+            "--pipe",
+            "--collect",
+            "--quiet",
+            "--property=PrivateTmp=false",
+            "--property=NoNewPrivileges=true",
+            "--property=UMask=0077",
+            "--",
+            str(env_tool),
+            "-i",
+            f"HOME={home}",
+            "PATH=/usr/bin",
+            "LANG=C",
+            "LC_ALL=C",
+            "NO_COLOR=1",
+            f"CHECKUPDATES_DB=/tmp/updatarr-checkup-db-{os.getuid()}",
+            str(executable),
+            *probe.argv[1:],
+        )
+
     result = run_bounded(
-        (str(executable), *probe.argv[1:]),
+        argv,
         timeout_seconds,
         max_records=probe.max_records,
     )

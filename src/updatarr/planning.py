@@ -8,6 +8,7 @@ import hashlib
 import json
 import re
 
+from .aur_pipeline import AUR_POLICY_VERSION, AurPipelineReadiness
 from .domain import (
     DetectedUpdate, InventorySnapshot, OperationKind, PermissionKind,
     PlanState, SelectionPolicy, SourceState, UpdatePlan, UpdatePlanStep,
@@ -49,8 +50,14 @@ def policy_digest(policies: list[SelectionPolicy]) -> str:
 class Planner:
     """Turns a specific inventory generation into a sealed, typed plan."""
 
-    def __init__(self, *, aur_pipeline_ready: bool = False) -> None:
-        self._aur_pipeline_ready = aur_pipeline_ready
+    def __init__(self, *, aur_readiness: AurPipelineReadiness | None = None) -> None:
+        self._aur_readiness = aur_readiness or AurPipelineReadiness(
+            False,
+            "The AUR host prerequisites have not been prepared on this computer.",
+            AUR_POLICY_VERSION,
+            datetime.now(UTC).isoformat(),
+            "",
+        )
 
     def prepare(
         self,
@@ -101,18 +108,30 @@ class Planner:
                 expected_changes=((item.stable_id, item.installed_version, item.available_version),),
             ))
         for item in sorted((item for item in selected if item.source_id == "aur"), key=lambda x: x.software_id):
-            blocker = None
-            if not self._aur_pipeline_ready:
-                blocker = ("AUR updates need the isolated build pipeline. This installation has not yet "
-                           "proved that the complete pipeline is ready.")
+            simulated = self._aur_readiness.policy_version == "simulator"
+            blocker = None if simulated else (
+                f"The AUR host prerequisites passed, but {item.name} still needs its exact source changes and dependencies reviewed before installation."
+                if self._aur_readiness.ready
+                else self._aur_readiness.explanation
+            )
+            if blocker:
                 blockers.append(blocker)
             steps.append(UpdatePlanStep(
                 step_id=f"aur-{len(steps) + 1}", operation=OperationKind.AUR_BUILD_INSTALL,
                 source_id=item.source_id, scope=item.scope,
                 target_stable_ids=(item.stable_id,), package_ids=(item.software_id,),
-                permission=PermissionKind.CURRENT_USER, summary=f"Review and build {item.name} as the current user.",
+                permission=PermissionKind.CURRENT_USER,
+                summary=(
+                    f"Review and build {item.name} in the safe simulator."
+                    if simulated
+                    else f"Review the exact source and dependencies for {item.name}."
+                ),
                 expected_changes=((item.stable_id, item.installed_version, item.available_version),),
-                live_enabled=self._aur_pipeline_ready, blocker=blocker,
+                # Only the deterministic simulator executes this operation.
+                # Live host prerequisites do not replace a package-specific
+                # reviewed tree and dependency plan.
+                live_enabled=simulated,
+                blocker=blocker,
             ))
         operation_details = {
             "firmware": (OperationKind.FIRMWARE_UPDATE, PermissionKind.ADMINISTRATOR,
@@ -149,7 +168,15 @@ class Planner:
         expires = (instant + PLAN_TTL).isoformat()
         active_policy_ids = tuple(sorted(policy.policy_id for policy in policies))
         active_policy_digest = policy_digest(policies)
-        tool_versions = tuple(sorted((source.source_id, source.scope, source.tool_version) for source in snapshot.sources))
+        recorded_tools = [
+            (source.source_id, source.scope, source.tool_version)
+            for source in snapshot.sources
+        ]
+        if any(step.operation is OperationKind.AUR_BUILD_INSTALL for step in steps):
+            recorded_tools.append(
+                ("aur-pipeline", "system", self._aur_readiness.evidence_digest)
+            )
+        tool_versions = tuple(sorted(recorded_tools))
         unknown_values = [
             f"{item.name}: download size is not known" for item in selected if item.size_bytes is None
         ]
@@ -203,6 +230,27 @@ class Planner:
         if (tuple(sorted(policy.policy_id for policy in policies)) != plan.policy_ids
                 or policy_digest(policies) != plan.policy_digest):
             return PlanValidation(False, PlanState.INVALIDATED, "A saved choice changed. Prepare and review a new plan.")
+        if any(step.operation is OperationKind.AUR_BUILD_INSTALL for step in plan.steps):
+            recorded_evidence = next(
+                (
+                    version
+                    for source_id, scope, version in plan.tool_versions
+                    if source_id == "aur-pipeline" and scope == "system"
+                ),
+                None,
+            )
+            if (
+                not self._aur_readiness.ready
+                or not recorded_evidence
+                or not __import__("hmac").compare_digest(
+                    recorded_evidence, self._aur_readiness.evidence_digest
+                )
+            ):
+                return PlanValidation(
+                    False,
+                    PlanState.INVALIDATED,
+                    "The AUR build readiness check changed or expired. Prepare and review a new plan.",
+                )
         if require_executable and plan.blockers:
             return PlanValidation(False, PlanState.INVALIDATED, plan.blockers[0])
         return PlanValidation(True, PlanState.READY_FOR_EXECUTION, "The plan still matches the reviewed software information.")

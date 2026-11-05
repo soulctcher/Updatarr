@@ -1,10 +1,10 @@
 # Updatarr Local Test Checklist
 
 **Test address:** `http://127.0.0.1:8788`
-**Build:** M7.1 local correction (`updatarr 0.6.1-1`)
+**Build:** M7.2 AUR production-readiness correction (`updatarr 0.7.0-1`)
 
-**Safety boundary:** read-only inventory only; do not expect Updatarr to install
-or remove software
+**Safety boundary:** inventory and plan review only; this checklist does not
+install or remove software
 
 Use the password chosen in the local setup dialog. Please record the page,
 action, expected result and actual result for anything that does not work. A
@@ -67,9 +67,10 @@ Expected: system, AUR, Flatpak, firmware and tool ownership remain distinct.
 - [ ] Confirm system-package updates that must stay together are treated as one
       group.
 
-Expected: Updatarr may check, summarize and prepare a plan. The current AUR
-updates remain blocked until the separate clean-build pipeline is available;
-this test must not install or update software.
+Expected: Updatarr may check, summarize and prepare a plan for supported items.
+After the host canary passes, an AUR issue should name the remaining exact
+source-change and dependency review instead of claiming the host tools are not
+prepared. This test must not install or update software.
 
 ## 5. Safety Checklist
 
@@ -143,7 +144,7 @@ systemctl --user start updatarr-tray.service
 - [X] Closing the browser does not stop the read-only core.
 - [X] Quitting the tray does not stop the core.
 - [ ] Confirm the core remains disabled at login and the tray remains enabled,
-      matching the state recorded before the M7.1 upgrade.
+      matching the state recorded before the M7.2 upgrade.
 - [ ] After a logout or reboot, confirm the tray starts. The core still needs to
       be started manually while its login enablement remains separately gated.
 
@@ -153,7 +154,7 @@ read-only test, but changing its login policy remains a separate approval.
 ## 10. About Information
 
 - [ ] Open browser **Settings**, scroll to the final **About Updatarr** section
-      and confirm it shows Version 0.6.1, Build M7.1 and
+      and confirm it shows Version 0.7.0, Build M7.2 and
       `© 2026 ✦ ERIK WINBLAD ✦`.
 - [ ] Confirm the email opens a new message addressed to
       `soulctcher@soulctcher.net`.

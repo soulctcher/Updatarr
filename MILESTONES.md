@@ -1,15 +1,13 @@
 # Updatarr milestones
 
-**Current phase:** M7 accepted; M7.1 managed-computer read-only testing
-**Current authorization:** on 2026-11-03 the user authorized the M7.1 workflow
-correction to be versioned, packaged, signed, installed locally and restarted.
-This does not authorize publication, a remote push, live AUR, or any software
-update through Updatarr. Earlier on 2026-11-03 the user authorized the remaining RC3
-follow-up steps, including clean packaging, signing, local installation and
-bounded manual read-only core/tray verification. Changing either user service's
-login enablement, changing autostart or the existing notifier, removing Octopi or
-Pamac, release publication, remote push and every software update or other live
-software mutation remain separately gated and unauthorized.
+**Current phase:** M7 accepted; M7.2 AUR production-readiness correction
+**Current authorization:** on 2026-11-04 the user explicitly authorized the
+production AUR readiness work, correction of native update discovery, signing,
+Git publication, and local installation/restart of the web and tray package.
+This includes installing the required official Arch build tooling and creating
+the managed clean-build root with a harmless local canary. It does not direct
+Updatarr to build or install an actual AUR update, change either user service's
+login enablement, change autostart/notifier ownership, or remove Octopi/Pamac.
 
 ## Gate rules
 
@@ -452,3 +450,12 @@ Build M7.1. Live AUR building remains fail-closed; publication, remote push,
 service-policy changes, notifier migration and live software mutation remain
 unauthorized. Evidence: [M7.1 RC2 signing and local
 installation](docs/research/m7-1-rc2-signing-installation-2026-11-03.md).
+
+**M7.2 authorization (2026-11-04):** The owner explicitly authorized resolving
+the AUR production-readiness and packaged native-update discovery defects,
+installing the required official Arch tools, signing and publishing the Git
+state, and locally installing/restarting the web and tray update. The accepted
+boundary permits a fixed local canary and managed clean root but not an actual
+AUR package build/install through Updatarr. Exact verification and publication
+evidence is recorded in
+[M7.2 validation](docs/research/m7-2-production-readiness-2026-11-04.md).

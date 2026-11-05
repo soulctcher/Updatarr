@@ -1,6 +1,6 @@
 [project]
 name = "updatarr"
-version = "0.6.1"
+version = "0.7.0"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
@@ -15,6 +15,7 @@ updatarr = "updatarr.main:main"
 updatarr-tray = "updatarr.tray:main"
 updatarr-local-approval = "updatarr.local_approval:main"
 updatarr-open = "updatarr.open_web:main"
+updatarr-aur-prepare = "updatarr.aur_prepare:main"
 
 [project.optional-dependencies]
 test = [

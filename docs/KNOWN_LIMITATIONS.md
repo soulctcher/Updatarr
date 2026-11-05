@@ -1,39 +1,31 @@
 # Known limitations and release blockers
 
-**Reviewed:** 2026-11-03
-**Applies to:** Updatarr M7 work in progress
+**Reviewed:** 2026-11-04
+**Applies to:** Updatarr M7.2 production-readiness work
 
 These limits are intentional and visible. A blocked capability must not be
 treated as working merely because its update source can be read.
 
 ## Release blockers
 
-1. **RC2 must not be published.** RC1 is rejected because its package contained
-   a built-in demonstration password. RC2 passed its project-local evidence and
-   was accepted for a host pilot, but that pilot found that the packaged user
-   unit's `PrivateTmp` namespace causes every root-owned trusted executable to
-   be rejected. The normal service cannot provide truthful live inventory on
-   this host. A project-local correction now verifies the user-namespace map,
-   fixed read-only system path and expected package owner without removing
-   `PrivateTmp`; a corrected package, repeated evidence and independent review
-   are still required. There is no approved remote, push or public upload.
-2. **The installed host is not ready for live AUR builds.** The planner now has
-   a fail-closed readiness seam instead of only a permanent prohibition, and
-   deterministic simulator AUR plans can reach review. The production
-   attestation provider is not implemented. Production still requires isolated
-   source acquisition, dependency preparation and an official `devtools` clean
-   root. This host does not currently have `devtools`, `pkgctl`,
-   `makechrootpkg` or `mkarchroot`; there is no unsafe fallback or override.
-3. **Every first live software-changing path remains unapproved.** Repository,
+1. **M7.2 must pass its release evidence before publication.** The owner has
+   authorized signing, Git publication and local installation, but the exact
+   candidate still requires complete tests, independent review, repeated clean
+   packaging, signature verification and managed-host checks. Earlier rejected
+   or superseded candidates remain audit history and must not be published as
+   the current build.
+2. **AUR host readiness is not package readiness.** M7.2 can prove the fixed
+   local clean-build prerequisites and replace the inaccurate missing-host-tool
+   explanation. AUR items remain outside **Update Ready Software** until their
+   exact source changes, dependencies and expected outputs have a reviewed
+   package-specific path. The prerequisite record expires and fails closed.
+3. **Every first live software-changing path remains approval-gated.** Repository,
    Flatpak, firmware, startup-related, toolchain and portable-app changes have
    fixture or simulator coverage only. Each first live trial still needs the
    separate approval named in [MILESTONES.md](../MILESTONES.md).
 
-RC1's clean-container builds, signatures and disposable package lifecycle drill
-passed before package inspection rejected it. Corrected RC2 repeated those
-checks, added package-level forbidden-password inspection and passed. None of
-this work installs or authorizes Updatarr on the managed computer or enables
-live AUR.
+Earlier M7 candidates and their rejection/correction evidence remain recorded
+under `docs/research`. M7.2 does not reinterpret those historical results.
 
 ## Unsupported or deliberately limited behavior
 

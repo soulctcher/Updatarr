@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.7.0-m7.2 — AUR production readiness 2026-11-04
+
+- Replaced the permanent “host pipeline not prepared” message with a
+  short-lived, root-owned prerequisite record produced only after fixed Arch
+  tools, a current `devtools` clean root, a harmless local source/build canary,
+  user-namespace isolation and safe artifact handoff all pass.
+- Bound the prerequisite evidence digest to every reviewed AUR plan. A changed
+  or expired record invalidates the plan instead of silently reusing it. AUR
+  steps remain marked non-executable until the exact package source and
+  dependency plan cross a separately reviewed seam.
+- Added the zero-argument `updatarr-aur-prepare` administrator helper. It
+  accepts no package, path, URL, command, environment or argument from the web
+  service and never installs an AUR package.
+- Fixed system-package update discovery under the packaged service's
+  `PrivateTmp=true` boundary by moving only the fixed `checkupdates` call into
+  a secret-free user worker with host `/tmp`; the web service retains its
+  private temporary directory.
+- Added `bubblewrap` and Arch `devtools` as declared package requirements and
+  advanced the visible application stamp to Version 0.7.0 / Build M7.2.
+
 ## 0.6.1-m7.1 — local test correction 2026-11-03
 
 - Replaced the dense Updates screen with a concise **Ready Updates** workflow,

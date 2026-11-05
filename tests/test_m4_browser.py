@@ -319,7 +319,7 @@ def test_rail_shows_faint_version_and_build_below_preview_box() -> None:
         browser = runtime.chromium.launch(headless=True)
         page = _signed_in_page(browser, base_url, {"width": 1280, "height": 900})
         safe_box = page.locator(".safe-mode").bounding_box()
-        stamp = page.get_by_text("Version 0.6.1 · Build M7.1", exact=True)
+        stamp = page.get_by_text("Version 0.7.0 · Build M7.2", exact=True)
         stamp_box = stamp.bounding_box()
         assert safe_box is not None and stamp_box is not None
         assert stamp_box["y"] >= safe_box["y"] + safe_box["height"]
@@ -365,7 +365,7 @@ def test_settings_ends_with_version_contact_and_license_information() -> None:
         page.get_by_role("button", name="Settings", exact=True).click()
         about = page.locator(".about-settings")
         assert about.get_by_role("heading", name="About Updatarr", exact=True).is_visible()
-        assert about.get_by_text("Version 0.6.1 · Build M7.1", exact=True).is_visible()
+        assert about.get_by_text("Version 0.7.0 · Build M7.2", exact=True).is_visible()
         assert about.get_by_text("© 2026 ✦ ERIK WINBLAD ✦", exact=True).is_visible()
         contact = about.get_by_role("link", name="soulctcher@soulctcher.net", exact=True)
         assert contact.get_attribute("href") == "mailto:soulctcher@soulctcher.net"

@@ -1,16 +1,16 @@
 # Maintainer: Updatarr contributors
-# Local M7 working package built from a deterministic source archive.
+# M7.2 production-readiness package built from a deterministic source archive.
 pkgname=updatarr
-pkgver=0.6.1
+pkgver=0.7.0
 pkgrel=1
 pkgdesc='Local-first software update review service for Arch Linux and KDE'
 arch=('any')
 url='https://github.com/updatarr/updatarr'
 license=('AGPL-3.0-or-later')
-depends=('python' 'python-argon2-cffi' 'python-fastapi' 'python-pydantic' 'uvicorn' 'pyside6')
+depends=('python' 'python-argon2-cffi' 'python-fastapi' 'python-pydantic' 'uvicorn' 'pyside6' 'bubblewrap' 'devtools')
 makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 source=("$pkgname-$pkgver.tar.gz")
-sha256sums=('7cd201142b60253af6f6f4379d05d7727b67a6830749dd58285de2efb1fb044d')
+sha256sums=('cc5f686dad505f11e586b07fd57ca9e337b0702d7d3a9bb1d56a211c170c9960')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
@@ -20,7 +20,7 @@ build() {
 package() {
   cd "$srcdir/$pkgname-$pkgver"
   python -m installer --destdir="$pkgdir" --prefix=/usr "$srcdir"/dist/*.whl
-  for launcher in updatarr updatarr-tray updatarr-local-approval updatarr-open; do
+  for launcher in updatarr updatarr-tray updatarr-local-approval updatarr-open updatarr-aur-prepare; do
     sed -i '1c#!/usr/bin/python' "$pkgdir/usr/bin/$launcher"
   done
 

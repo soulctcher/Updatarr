@@ -1,8 +1,9 @@
 # Updatarr operations and recovery
 
-**Status:** M7 operator runbook; exact RC2 package installation and a manual
-loopback-only read-only pilot were authorized on 2026-11-02. Service enablement
-and migration remain separately approval-gated.
+**Status:** M7.2 operator runbook; signed local installation, Git publication
+and production AUR readiness preparation were authorized on 2026-11-04.
+Service enablement, notifier migration and actual updates remain separately
+approval-gated.
 
 ## Supported deployment posture
 
@@ -68,6 +69,32 @@ Final paths will follow Arch/XDG conventions and package ownership. Separate:
 
 Exports exclude secrets by default. Configuration changes affecting bind
 address, authentication or trusted proxies require validation before restart.
+
+## AUR Build Readiness
+
+The packaged planner distinguishes prepared host prerequisites from the exact
+package review still required. It trusts the host prerequisite result only
+while `/var/lib/updatarr/aur/readiness.json` is a current, root-owned record
+produced by the fixed preparation helper. Prepare or renew it from the managed
+graphical session with:
+
+```bash
+pkexec /usr/bin/updatarr-aur-prepare
+```
+
+The command accepts no arguments. It verifies package ownership and current
+versions for every fixed prerequisite, creates or updates the `devtools` clean
+root, verifies a root-owned local canary source, checks a secret-free user
+namespace, builds the harmless canary in a clean working copy and hands its
+artifact through one no-follow file descriptor. It does not fetch, build or
+install an AUR package. Run it again after the record expires or after the Arch
+build tools change.
+
+The web service and tray remain unprivileged. An attempted AUR plan seals the
+current prerequisite digest, but remains blocked from the executable workflow.
+This record proves host capability only. Exact AUR Git source, source changes,
+dependencies and outputs remain package-specific review work, and AUR steps
+stay non-executable in this release.
 
 ## Backup and restore requirements
 
