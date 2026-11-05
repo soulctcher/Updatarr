@@ -134,6 +134,7 @@ def _safe_environment(*, home: Path, user: str, output_root: Path) -> dict[str, 
         "MAKEFLAGS": "-j2",
         "NPROC": "2",
         "PATH": "/usr/bin",
+        "BUILDDIR": str(output_root / "build"),
         "PKGDEST": str(output_root / "packages"),
         "LOGDEST": str(output_root / "logs"),
         "SRCDEST": str(output_root / "sources"),
@@ -155,7 +156,7 @@ def _prepare_canary(uid: int, gid: int) -> tuple[Path, Path]:
     output_root = Path(tempfile.mkdtemp(prefix="output.", dir=STATE_ROOT))
     os.chown(output_root, uid, gid)
     output_root.chmod(0o700)
-    for name in ("packages", "logs", "sources", "source-packages"):
+    for name in ("build", "packages", "logs", "sources", "source-packages"):
         path = output_root / name
         path.mkdir(mode=0o700)
         os.chown(path, uid, gid)
@@ -312,7 +313,11 @@ def prepare() -> None:
     _run(
         ("/usr/bin/runuser", "-u", user, "--", "/usr/bin/env", "-i",
          f"HOME={home}", "PATH=/usr/bin", "LANG=C.UTF-8", "LC_ALL=C.UTF-8",
+         f"BUILDDIR={output_root / 'build'}",
+         f"PKGDEST={output_root / 'packages'}",
+         f"LOGDEST={output_root / 'logs'}",
          f"SRCDEST={output_root / 'sources'}",
+         f"SRCPKGDEST={output_root / 'source-packages'}",
          "/usr/bin/makepkg", "--verifysource", "--noconfirm"),
         cwd=canary_root,
         timeout=300,

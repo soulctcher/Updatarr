@@ -65,13 +65,13 @@ Completed before signing:
 - independent review's two high and one medium AUR findings were reproduced,
   corrected and re-reviewed; no critical, high or medium findings remain;
 - two isolated Arch builds produced the same normalized payload digest,
-  `71001036284eb706c590b611bdfe27796fab81a9246a02138608ef2385263034`,
+  `debcac7f21982905db891cf320725c26bd97956ac5f259f2a9fea4d252454ab5`,
   and the same builder inventory digest,
   `a2cb2bf8ca6db33e144040b4e3a6fc74219f2bad6e9d68671b34362e03b682d0`;
 - source archive SHA-256:
-  `cc5f686dad505f11e586b07fd57ca9e337b0702d7d3a9bb1d56a211c170c9960`;
+  `62904a81d74e4d0b5903a0efd7181a9c05377aa485413cc1e445c1117c5487d5`;
 - selected package SHA-256:
-  `f5d447a64135b02dc1ffc19cc549206fe9b3a20bb2c74364503bcd4434497d5a`;
+  `484b3b7d4578b0c284f6bd22338ce3da55ffd09730c23fb486cde074ddee7ae0`;
   and
 - the disposable lifecycle passed install, startup, backup, restore, upgrade,
   downgrade, removal and user-state preservation for the exact 0.7.0 package.
@@ -83,3 +83,12 @@ Still to record after the reviewed source is frozen:
 - local package replacement with database/configuration preservation;
 - live browser, tray, native-source and AUR-message checks; and
 - publication of the reviewed branch and signed label.
+
+## RC1 Host Rejection
+
+The signed `v0.7.0-rc.1` package installed cleanly, but the first managed-host
+canary failed closed before source verification because `makepkg` requires a
+writable build directory even for `--verifysource`. The root-owned canary input
+must remain read-only, so RC2 supplies a separate private user-owned `BUILDDIR`
+alongside the already separate source, log and package destinations. RC1 did
+not write a readiness record and must not be published as the current build.

@@ -66,6 +66,7 @@ def test_canary_inputs_remain_read_only_and_outputs_are_separate(
     assert (source / "PKGBUILD").stat().st_mode & 0o777 == 0o644
     assert (source / "canary.txt").stat().st_mode & 0o777 == 0o644
     assert output.stat().st_mode & 0o777 == 0o700
+    assert (output / "build").stat().st_mode & 0o777 == 0o700
     assert (output / "packages").stat().st_mode & 0o777 == 0o700
 
 
