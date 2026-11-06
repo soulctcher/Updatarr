@@ -39,6 +39,44 @@ REQUIRED_TOOL_PACKAGES = frozenset(
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 
 
+def _visible_root_owner_ids(uid_map: str, overflow_uid: int) -> frozenset[int]:
+    """Return the file-owner IDs that can represent host root here.
+
+    A user service with ``PrivateTmp=true`` runs in a user namespace that may
+    leave host UID 0 unmapped. Linux then reports root-owned files with the
+    configured overflow UID. Accept that representation only when the current
+    namespace's UID map proves that inside UID 0 is not mapped.
+    """
+    root_is_mapped = False
+    valid_mapping_seen = False
+    for line in uid_map.splitlines():
+        fields = line.split()
+        if len(fields) != 3:
+            continue
+        try:
+            inside_start, _outside_start, length = (int(value) for value in fields)
+        except ValueError:
+            continue
+        valid_mapping_seen = True
+        if length > 0 and inside_start <= 0 < inside_start + length:
+            root_is_mapped = True
+            break
+    if not valid_mapping_seen or root_is_mapped:
+        return frozenset({0})
+    return frozenset({0, overflow_uid})
+
+
+def _current_visible_root_owner_ids() -> frozenset[int]:
+    try:
+        uid_map = Path("/proc/self/uid_map").read_text(encoding="ascii")
+        overflow_uid = int(
+            Path("/proc/sys/kernel/overflowuid").read_text(encoding="ascii").strip()
+        )
+    except (OSError, UnicodeError, ValueError):
+        return frozenset({0})
+    return _visible_root_owner_ids(uid_map, overflow_uid)
+
+
 @dataclass(frozen=True)
 class AurPipelineReadiness:
     ready: bool
@@ -77,7 +115,7 @@ class AttestedAurPipeline:
 
     def __init__(self) -> None:
         self._path = ATTESTATION_PATH
-        self._expected_owner = 0
+        self._expected_owners = _current_visible_root_owner_ids()
         self._now: Callable[[], datetime] = lambda: datetime.now(UTC)
         self._package_versions: Callable[[], dict[str, str]] = self._current_package_versions
 
@@ -114,7 +152,7 @@ class AttestedAurPipeline:
     ) -> "AttestedAurPipeline":
         subject = cls()
         subject._path = path
-        subject._expected_owner = expected_owner
+        subject._expected_owners = frozenset({expected_owner})
         subject._now = now
         subject._package_versions = package_versions
         return subject
@@ -131,7 +169,7 @@ class AttestedAurPipeline:
             metadata = self._path.lstat()
             if not stat.S_ISREG(metadata.st_mode) or self._path.is_symlink():
                 return blocked("The AUR readiness record is not an ordinary file.")
-            if metadata.st_uid != self._expected_owner or metadata.st_mode & 0o022:
+            if metadata.st_uid not in self._expected_owners or metadata.st_mode & 0o022:
                 return blocked("The AUR readiness record has unsafe ownership or permissions.")
             if metadata.st_size <= 0 or metadata.st_size > MAX_ATTESTATION_BYTES:
                 return blocked("The AUR readiness record has an invalid size.")

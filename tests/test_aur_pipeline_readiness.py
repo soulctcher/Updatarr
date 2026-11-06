@@ -12,6 +12,7 @@ from updatarr.aur_pipeline import (
     AurPipelineReadiness,
     REQUIRED_CHECKS,
     REQUIRED_TOOL_PACKAGES,
+    _visible_root_owner_ids,
 )
 
 
@@ -51,6 +52,12 @@ def test_complete_current_root_owned_attestation_enables_aur(tmp_path: Path) -> 
     assert readiness.ready is True
     assert readiness.evidence_digest
     assert readiness.policy_version == AUR_POLICY_VERSION
+
+
+def test_root_owner_visibility_follows_the_current_user_namespace() -> None:
+    assert _visible_root_owner_ids("0 0 4294967295\n", 65534) == frozenset({0})
+    assert _visible_root_owner_ids("1000 1000 1\n", 65534) == frozenset({0, 65534})
+    assert _visible_root_owner_ids("broken mapping\n", 65534) == frozenset({0})
 
 
 def test_missing_expired_tampered_or_incomplete_attestation_fails_closed(

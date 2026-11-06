@@ -1,7 +1,7 @@
 # M7.2 Production Readiness Validation
 
 **Prepared:** 2026-11-04  
-**Status:** reviewed candidate ready for signing and authorized local installation  
+**Status:** RC4 candidate verified and ready for signing and authorized local installation
 **Authorized boundary:** official Arch build-tool installation, fixed local
 canary, signed Git publication, Updatarr package installation and web/tray
 restart; no actual AUR update build or installation
@@ -104,3 +104,15 @@ absent, network access returned `ENETUNREACH`, and the complete environment was
 exactly `PATH`, `PWD` and `LC_CTYPE`. RC3 checks those exact names and values;
 it does not permit arbitrary inherited variables. RC2 issued no readiness
 record and must not be published as the current build.
+
+## RC3 Service Rejection
+
+The signed `v0.7.0-rc.3` package completed the managed-host canary and wrote a
+valid root-owned readiness record. Direct assessment passed, but the packaged
+web service rejected the same record. Its retained `PrivateTmp=true` boundary
+uses a restricted user namespace in which host UID 0 is unmapped and therefore
+appears as Linux's overflow UID. RC4 accepts that visible owner only when the
+current UID map proves root is unmapped. A normal namespace still requires UID
+0, and missing or malformed mapping evidence fails closed. A transient unit
+with the packaged service's `PrivateTmp`, `NoNewPrivileges` and umask settings
+successfully assessed the corrected rule before RC4 was frozen.

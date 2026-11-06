@@ -99,6 +99,16 @@ def _ready_aur_pipeline() -> StaticAurPipeline:
     ))
 
 
+def _blocked_aur_pipeline() -> StaticAurPipeline:
+    return StaticAurPipeline(AurPipelineReadiness(
+        False,
+        "The AUR host prerequisites have not been prepared on this computer.",
+        AUR_POLICY_VERSION,
+        "2026-11-03T00:00:00+00:00",
+        "",
+    ))
+
+
 def test_aur_plan_names_package_review_after_host_prerequisites_pass() -> None:
     snapshot = _snapshot()
     aur = next(item for item in snapshot.updates if item.source_id == "aur")
@@ -130,6 +140,7 @@ def test_live_updates_api_keeps_aur_out_of_the_ready_set(tmp_path: Path) -> None
         adapters=(),
         catalog_adapters=(),
         advisory_adapters=(),
+        aur_pipeline=_blocked_aur_pipeline(),
     ))
     with TestClient(app) as client:
         _login(client)

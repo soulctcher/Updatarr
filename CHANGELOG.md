@@ -17,6 +17,10 @@
   `PrivateTmp=true` boundary by moving only the fixed `checkupdates` call into
   a secret-free user worker with host `/tmp`; the web service retains its
   private temporary directory.
+- Made root-owned AUR readiness evidence verifiable from that restricted user
+  service namespace. Linux's overflow owner is accepted only when the current
+  UID map proves host root is unmapped; missing or malformed namespace evidence
+  still fails closed.
 - Added `bubblewrap` and Arch `devtools` as declared package requirements and
   advanced the visible application stamp to Version 0.7.0 / Build M7.2.
 
