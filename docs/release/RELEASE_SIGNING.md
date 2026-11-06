@@ -1,10 +1,8 @@
 # Release Signing
 
 **Prepared:** 2026-11-01  
-**Status:** corrected RC2 label and release-file signatures verify locally;
-RC2 remains historical, and the owner authorized signing and locally installing
-the reviewed follow-up as RC3 on 2026-11-03. Nothing has been pushed or
-published.
+**Status:** M7.2 RC4 label and release-file signatures verify locally; the
+public `main` branch and signed RC4 label were published on 2026-11-06.
 
 ## Official Public Identity
 
@@ -46,6 +44,8 @@ was rejected without moving or deleting it. The corrected candidate is
 `v0.6.0-rc.2`.
 The post-pilot interface, service-namespace and tray follow-up receives the new
 immutable label `v0.6.0-rc.3`; RC2 is not moved or reused.
+The M7.2 readiness corrections use immutable labels `v0.7.0-rc.1` through
+`v0.7.0-rc.4`; only RC4 is the published current candidate.
 
 ## Rejected Local RC1
 
@@ -93,9 +93,27 @@ not authorize a push, upload or publication.
 - **Verification:** the label, all three detached signatures and every checksum
   passed from a fresh keyring containing only the bundled public key
 
-The label and release files must be verified before installation. Publication,
-remote push, service enablement at login, notifier migration and live software
-updates remain separate and unauthorized.
+At that RC3 point, publication, remote push, service enablement at login,
+notifier migration and live software updates still required separate
+authorization. The owner later authorized the M7.2 Git publication recorded
+below; the other gates did not change.
+
+## Published M7.2 RC4
+
+- **Label:** `v0.7.0-rc.4`
+- **Commit:** `6bafa3dc670495cb90fa365f9f8f4103503e687c`
+- **Label object:** `e414794f5893a5d0961c9e2c21f9c82105f03ce0`
+- **Package release:** `updatarr 0.7.0-4`
+- **Remote:** <https://github.com/soulctcher/Updatarr>
+- **Verification:** the label, source, package, checksum signature and every
+  checksum passed from a fresh public-key-only keyring
+
+RC1 and RC2 failed their managed-host canaries without issuing readiness
+evidence. RC3 issued valid evidence but the private user service could not
+recognize host-root ownership in its restricted namespace. RC4 corrected that
+mapping without weakening the normal-namespace root-owner check. Release-file
+upload remains separate from the Git branch and label publication completed
+here.
 
 ## Verify the Public Key
 

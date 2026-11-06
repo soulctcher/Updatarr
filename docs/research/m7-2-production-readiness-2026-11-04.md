@@ -1,7 +1,7 @@
 # M7.2 Production Readiness Validation
 
 **Prepared:** 2026-11-04  
-**Status:** RC4 candidate verified and ready for signing and authorized local installation
+**Status:** RC4 signed, published, installed and verified on the managed host
 **Authorized boundary:** official Arch build-tool installation, fixed local
 canary, signed Git publication, Updatarr package installation and web/tray
 restart; no actual AUR update build or installation
@@ -53,36 +53,53 @@ updates, the corrected workspace probe reported both:
 After that upgrade, the same adapter truthfully reported **Up to Date** rather
 than **Not Checked**.
 
-## Evidence To Complete
+## Verification Evidence
 
 Completed before signing:
 
 - frontend type checking and the production Vite build passed;
 - the locked browser audit reported no known vulnerabilities;
-- the complete suite passed **358 tests** with two environment-dependent skips
+- the final complete suite passed **360 tests** with two environment-dependent skips
   and one existing Starlette deprecation warning;
 - Python compilation, shell parsing and Git whitespace checks passed;
 - independent review's two high and one medium AUR findings were reproduced,
   corrected and re-reviewed; no critical, high or medium findings remain;
-- two isolated Arch builds produced the same normalized payload digest,
-  `43ebcb3c8c706b16b78c7c3a9636b833fbe0ac5fc9ada1ac35da87830fcb6add`,
+- two isolated Arch builds produced the same 230-file normalized payload digest,
+  `a05f4c45e82e3acff5044a78c4f7cc1260f7a3434951dcaa398a32e1a5bf342d`,
   and the same builder inventory digest,
   `a2cb2bf8ca6db33e144040b4e3a6fc74219f2bad6e9d68671b34362e03b682d0`;
 - source archive SHA-256:
-  `4425a184db5d73e425dfbf9d1404644cf7a12f0273cb854749072a26726c7135`;
+  `c604de0a33d54b03cc59f331a1f07de0864d322f08dbb0fcdf084c0b00866c8c`;
 - selected package SHA-256:
-  `8ca6ac85df2f871e6b64b87de673502a097882d24e113275ada010d51cdb2d0c`;
+  `e8a7ba0d7601bcef1b7ff3b019b377fbea9397c9c21254444f6fca9eaaad151e`;
   and
 - the disposable lifecycle passed install, startup, backup, restore, upgrade,
   downgrade, removal and user-state preservation for the exact 0.7.0 package.
 
-Still to record after the reviewed source is frozen:
+Completed after the reviewed source was frozen:
 
-- signed Git label, package, source and checksum verification;
-- managed-host clean-build canary and prerequisite-record verification;
-- local package replacement with database/configuration preservation;
-- live browser, tray, native-source and AUR-message checks; and
-- publication of the reviewed branch and signed label.
+- signed label `v0.7.0-rc.4`, source, package and checksum signatures all
+  verified from a fresh public-key-only keyring;
+- the managed-host clean-build canary wrote a current root-owned prerequisite
+  record and retained artifact, both mode `0444`;
+- package `0.7.0-4` installed with **268 files and zero altered files**;
+- the database and pre-install backup passed SQLite integrity checks, while the
+  configuration SHA-256 remained
+  `ca6225f4dd953094455c9da2d9e4c8fe406f66dee3014dfc02c2c022f67aa91a`;
+- core and tray are active, with core still disabled and tray still enabled at
+  login; `PrivateTmp=true`, `NoNewPrivileges=true` and `UMask=0077` remain;
+- a fresh live check reported native packages **Up to Date** and five AUR
+  updates needing exact source/dependency review, with zero AUR items in the
+  install-ready set;
+- the installed browser showed Version 0.7.0 / Build M7.2 without horizontal
+  overflow or page errors; and
+- public branch `main` plus signed label `v0.7.0-rc.4` were published at
+  <https://github.com/soulctcher/Updatarr>.
+
+The retained pre-install backup is
+`~/.local/state/updatarr/backups/pre-m72-0.7.0-rc4-2026-11-06.db`, SHA-256
+`ceb0e194643861a5139df677d74649473c868c7c9ebe048f36382a91f17353b9`.
+No actual AUR package was fetched, built or installed by Updatarr.
 
 ## RC1 Host Rejection
 

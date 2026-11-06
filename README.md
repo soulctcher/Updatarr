@@ -5,9 +5,10 @@ Arch Linux. It combines package and update visibility in one responsive
 *arr-style web interface while preserving the real ownership and safety rules
 of pacman, AUR helpers, Flatpak, fwupd and supported user toolchains.
 
-The user has accepted **M0 through M7** and authorized the M7.2 AUR
-production-readiness correction, signed Git publication and local package
-installation. Service enablement, notifier migration and actual software
+The user has accepted **M0 through M7**. The M7.2 AUR production-readiness
+correction is installed locally and its signed RC4 Git state is published at
+[soulctcher/Updatarr](https://github.com/soulctcher/Updatarr). Service
+enablement, notifier migration and actual software
 updates through Updatarr remain under their separate gates.
 The current loopback-only application can use a safe simulator or live
 read-only inventory. Live execution remains disabled until each separate
@@ -140,15 +141,14 @@ supported initial model.
 
 ## Development status
 
-M0 through M7 are accepted. The owner authorized building, signing, publishing
-and locally installing the 0.7.0 / M7.2 AUR production-readiness correction on
-2026-11-04. Actual software mutation through Updatarr remains separately
-gated. Use the [local test
+M0 through M7 are accepted. Version 0.7.0-4 / Build M7.2 is locally installed,
+and signed label `v0.7.0-rc.4` is published. Actual software mutation through
+Updatarr remains separately gated. Use the [local test
 checklist](docs/M7_LOCAL_TEST_CHECKLIST.md).
-Retained publication and live-action gates are listed in
+Retained release-upload and live-action gates are listed in
 [MILESTONES.md](MILESTONES.md). Commands shown in research sources remain
-evidence, not setup instructions. System
-Service-policy changes, autostart/notifier changes, software updates through
+evidence, not setup instructions. Service-policy changes,
+autostart/notifier changes, software updates through
 Updatarr and Octopi migration remain unauthorized unless separately approved.
 
 The repeatable host probe has a closed list of local, read-only commands. List

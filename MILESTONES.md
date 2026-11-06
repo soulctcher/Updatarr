@@ -459,3 +459,12 @@ boundary permits a fixed local canary and managed clean root but not an actual
 AUR package build/install through Updatarr. Exact verification and publication
 evidence is recorded in
 [M7.2 validation](docs/research/m7-2-production-readiness-2026-11-04.md).
+
+**M7.2 completion (2026-11-06):** Signed RC4 corrected root-evidence visibility
+inside the retained private service namespace. The complete suite, two isolated
+package builds, disposable lifecycle, fresh-keyring signature verification and
+managed-host checks passed. Package `0.7.0-4` is installed; core and tray are
+active with their prior login policies preserved. The public `main` branch and
+signed `v0.7.0-rc.4` label are published at
+<https://github.com/soulctcher/Updatarr>. No AUR package was built or installed.
+Exact AUR recipe and dependency review remains a separate gate.

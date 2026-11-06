@@ -118,10 +118,8 @@ def test_release_public_key_matches_the_recorded_fingerprint() -> None:
 
     signing = (ROOT / "docs/release/RELEASE_SIGNING.md").read_text()
     normalized_signing = " ".join(signing.split())
-    assert (
-        "corrected RC2 label and release-file signatures verify"
-        in normalized_signing
-    )
+    assert "M7.2 RC4 label and release-file signatures verify" in normalized_signing
+    assert "public `main` branch and signed RC4 label were published" in normalized_signing
     assert "721E ED2D 67AD EE74 D26E 75C5 7DAF 7D14 02C8 082E" in signing
     assert "5BD6 C0A8 D98B 655A EAF0 5EC2 E689 CC8D 9BBB 0AA4" in signing
     assert "The corrected candidate is `v0.6.0-rc.2`" in normalized_signing
